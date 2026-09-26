@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Skyla — Motivation</title>
+    <link rel="stylesheet" href="/static/css/skyla.css">
+</head>
+
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <div class="brand">⚡ SKYLA</div>
+
+        <button onclick="Skyla.go('/')">🏠 Home</button>
+        <button class="active">🔥 Motivation</button>
+        <button onclick="Skyla.go('/discipline')">🧱 Discipline</button>
+        <button onclick="Skyla.go('/obsession')">⚡ Obsession</button>
+        <button onclick="Skyla.go('/daily-routine')">🕒 Routine</button>
+        <button onclick="Skyla.go('/habits')">✅ Habits</button>
+        <button onclick="Skyla.go('/goals')">🎯 Goals</button>
+        <button onclick="Skyla.go('/football')">⚽ Football</button>
+        <button onclick="Skyla.go('/fitness')">💪 Fitness</button>
+        <button onclick="Skyla.go('/analytics')">📊 Analytics</button>
+        <button onclick="Skyla.go('/finance')">💰 Finance</button>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <h1>🔥 Motivation</h1>
+                <p>Build your reasons. Build your drive.</p>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="card stat-card">
+                <span>🔥 Active Motivation</span>
+                <strong id="activeCount">0</strong>
+            </div>
+
+            <div class="card stat-card">
+                <span>🧠 Total Messages</span>
+                <strong id="totalCount">0</strong>
+            </div>
+
+            <div class="card stat-card">
+                <span>⚡ Focus</span>
+                <strong>100%</strong>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>➕ Add Motivation</h2>
+
+            <form id="motivationForm" class="form-grid">
+
+                <input
+                    id="title"
+                    placeholder="Title — e.g. My Why"
+                    required
+                >
+
+                <textarea
+                    id="message"
+                    placeholder="Write your motivation..."
+                    required
+                ></textarea>
+
+                <button class="primary-btn" type="submit">
+                    🔥 Save Motivation
+                </button>
+
+            </form>
+        </section>
+
+        <section>
+            <div class="section-title">
+                <h2>⚡ Your Motivation</h2>
+            </div>
+
+            <div id="motivationList" class="card-grid"></div>
+        </section>
+
+    </main>
+</div>
+
+<script src="/static/js/skyla.js"></script>
+
+<script>
+async function loadMotivation() {
+    const items = await Skyla.get("/api/motivation");
+
+    document.getElementById("totalCount").textContent = items.length;
+
+    document.getElementById("activeCount").textContent =
+        items.filter(x => x.active).length;
+
+    const list = document.getElementById("motivationList");
+
+    if (!items.length) {
+        list.innerHTML = `
+            <div class="card">
+                <h3>No motivation yet 🔥</h3>
+                <p>Add your first reason above.</p>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = items.map(item => `
+        <div class="card">
+
+            <div class="card-row">
+                <h3>${Skyla.esc(item.title)}</h3>
+
+                <span class="badge">
+                    ${item.active ? "ACTIVE" : "OFF"}
+                </span>
+            </div>
+
+            <p>${Skyla.esc(item.message)}</p>
+
+            <div class="button-row">
+
+                <button
+                    onclick="toggleMotivation(${item.id})">
+                    ${item.active ? "⏸ Disable" : "▶ Enable"}
+                </button>
+
+                <button
+                    class="danger-btn"
+                    onclick="deleteMotivation(${item.id})">
+                    🗑 Delete
+                </button>
+
+            </div>
+
+        </div>
+    `).join("");
+}
+
+async function toggleMotivation(id) {
+    try {
+        await Skyla.send(`/api/motivation/${id}/toggle`);
+        await loadMotivation();
+        Skyla.toast("Motivation updated");
+    } catch (e) {
+        Skyla.toast(e.message, "error");
+    }
+}
+
+async function deleteMotivation(id) {
+    if (!confirm("Delete this motivation?")) return;
+
+    try {
+        await Skyla.send(`/api/motivation/${id}`, "DELETE");
+        await loadMotivation();
+        Skyla.toast("Motivation deleted");
+    } catch (e) {
+        Skyla.toast(e.message, "error");
+    }
+}
+
+document.getElementById("motivationForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    try {
+        await Skyla.send("/api/motivation", "POST", {
+            title: document.getElementById("title").value,
+            message: document.getElementById("message").value,
+            active: true
+        });
+
+        e.target.reset();
+
+        await loadMotivation();
+
+        Skyla.toast("🔥 Motivation saved");
+    } catch (err) {
+        Skyla.toast(err.message, "error");
+    }
+});
+
+loadMotivation();
+</script>
+
+</body>
+</html>

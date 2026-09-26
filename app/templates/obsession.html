@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skyla — Obsession</title>
+<link rel="stylesheet" href="/static/css/skyla.css">
+<style>
+.timer{font-size:4rem;font-weight:900;text-align:center;margin:20px}
+.progress{height:12px;background:#222;border-radius:20px;overflow:hidden}
+.progress div{height:100%;background:linear-gradient(90deg,#8b5cf6,#ec4899)}
+</style>
+</head>
+
+<body>
+<div class="app-shell">
+
+<aside class="sidebar">
+<div class="brand">⚡ SKYLA</div>
+<button onclick="Skyla.go('/')">🏠 Home</button>
+<button onclick="Skyla.go('/motivation')">🔥 Motivation</button>
+<button onclick="Skyla.go('/discipline')">🧱 Discipline</button>
+<button class="active">⚡ Obsession</button>
+<button onclick="Skyla.go('/daily-routine')">🕒 Routine</button>
+<button onclick="Skyla.go('/habits')">✅ Habits</button>
+<button onclick="Skyla.go('/goals')">🎯 Goals</button>
+<button onclick="Skyla.go('/football')">⚽ Football</button>
+<button onclick="Skyla.go('/fitness')">💪 Fitness</button>
+<button onclick="Skyla.go('/analytics')">📊 Analytics</button>
+<button onclick="Skyla.go('/finance')">💰 Finance</button>
+</aside>
+
+<main class="main-content">
+
+<header class="page-header">
+<div>
+<h1>⚡ Obsession</h1>
+<p>Focused commitment toward your main target.</p>
+</div>
+</header>
+
+<section class="stats-grid">
+<div class="card stat-card">
+<span>🎯 Active Targets</span>
+<strong id="targetCount">0</strong>
+</div>
+
+<div class="card stat-card">
+<span>⏱️ Focus Minutes</span>
+<strong id="focusMinutes">0</strong>
+</div>
+
+<div class="card stat-card">
+<span>📈 Average Progress</span>
+<strong id="averageProgress">0%</strong>
+</div>
+</section>
+
+<section class="card">
+<h2>🎯 Add Main Target</h2>
+
+<form id="goalForm" class="form-grid">
+<input id="goalTitle" placeholder="Main target" required>
+<input id="goalTarget" type="number" min="1" value="100">
+<input id="goalDeadline" type="date">
+<textarea id="goalDescription" placeholder="Why does this target matter?"></textarea>
+<button class="primary-btn" type="submit">⚡ Create Target</button>
+</form>
+</section>
+
+<section class="card">
+<h2>⏱️ Focus Timer</h2>
+
+<div id="timer" class="timer">25:00</div>
+
+<div class="button-row">
+<button onclick="startTimer()">▶ Start</button>
+<button onclick="pauseTimer()">⏸ Pause</button>
+<button onclick="resetTimer()">↻ Reset</button>
+</div>
+
+<div class="form-grid">
+<input id="focusMinutesInput" type="number" min="1" value="25">
+<input id="focusNotes" placeholder="Focus session notes">
+</div>
+</section>
+
+<section>
+<h2>🔥 Targets</h2>
+<div id="goalList" class="card-grid"></div>
+</section>
+
+<section>
+<h2>⏱️ Focus History</h2>
+<div id="focusList" class="card-grid"></div>
+</section>
+
+</main>
+</div>
+
+<script src="/static/js/skyla.js"></script>
+
+<script>
+let seconds = 1500;
+let interval = null;
+
+function renderTimer(){
+    const m = Math.floor(seconds / 60).toString().padStart(2,"0");
+    const s = (seconds % 60).toString().padStart(2,"0");
+    document.getElementById("timer").textContent = m + ":" + s;
+}
+
+function startTimer(){
+    if(interval) return;
+
+    interval = setInterval(async function(){
+        if(seconds <= 0){
+            pauseTimer();
+            await saveFocus();
+            Skyla.toast("🔥 Focus session complete");
+            return;
+        }
+
+        seconds--;
+        renderTimer();
+    },1000);
+}
+
+function pauseTimer(){
+    clearInterval(interval);
+    interval = null;
+}
+
+function resetTimer(){
+    pauseTimer();
+    const m = Number(document.getElementById("focusMinutesInput").value) || 25;
+    seconds = m * 60;
+    renderTimer();
+}
+
+async function saveFocus(){
+    const minutes = Number(document.getElementById("focusMinutesInput").value) || 25;
+
+    await Skyla.send("/api/obsession/focus","POST",{
+        duration: minutes,
+        notes: document.getElementById("focusNotes").value
+    });
+
+    await loadData();
+}
+
+async function loadData(){
+    const data = await Skyla.get("/api/obsession");
+    const goals = data.goals || [];
+    const sessions = data.sessions || [];
+
+    document.getElementById("targetCount").textContent =
+        goals.filter(x => x.active).length;
+
+    const total = sessions.reduce(
+        (sum,x) => sum + Number(x.duration || 0),0
+    );
+
+    document.getElementById("focusMinutes").textContent = total;
+
+    const avg = goals.length
+        ? Math.round(goals.reduce(
+            (sum,x) =>
+                sum + Math.min(
+                    100,
+                    Number(x.progress || 0) /
+                    Math.max(Number(x.target || 100),1) * 100
+                ),0
+        ) / goals.length)
+        : 0;
+
+    document.getElementById("averageProgress").textContent =
+        avg + "%";
+
+    renderGoals(goals);
+    renderSessions(sessions);
+}
+
+function renderGoals(goals){
+    const box = document.getElementById("goalList");
+
+    if(!goals.length){
+        box.innerHTML = `
+        <div class="card">
+            <h3>No target yet ⚡</h3>
+            <p>Create your first target above.</p>
+        </div>`;
+        return;
+    }
+
+    box.innerHTML = goals.map(x => {
+        const target = Number(x.target || 100);
+        const progress = Math.min(
+            100,
+            Math.round(Number(x.progress || 0) / target * 100)
+        );
+
+        return `
+        <div class="card">
+            <div class="card-row">
+                <h3>${Skyla.esc(x.title)}</h3>
+                <span class="badge">${x.active ? "ACTIVE" : "OFF"}</span>
+            </div>
+
+            <p>${Skyla.esc(x.description || "")}</p>
+
+            <div class="progress">
+                <div style="width:${progress}%"></div>
+            </div>
+
+            <p>${Number(x.progress || 0)} / ${target} — ${progress}%</p>
+
+            <div class="button-row">
+                <button onclick="increaseProgress(${x.id})">+10 Progress</button>
+                <button onclick="toggleGoal(${x.id})">
+                    ${x.active ? "⏸ Disable" : "▶ Enable"}
+                </button>
+                <button class="danger-btn" onclick="deleteGoal(${x.id})">
+                    🗑 Delete
+                </button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+function renderSessions(sessions){
+    const box = document.getElementById("focusList");
+
+    if(!sessions.length){
+        box.innerHTML = `
+        <div class="card">
+            <h3>No focus sessions yet ⏱️</h3>
+        </div>`;
+        return;
+    }
+
+    box.innerHTML = sessions.map(x => `
+        <div class="card">
+            <h3>⏱️ ${Number(x.duration)} minutes</h3>
+            <p>${Skyla.esc(x.notes || "")}</p>
+            <button class="danger-btn"
+                onclick="deleteFocus(${x.id})">
+                🗑 Delete
+            </button>
+        </div>
+    `).join("");
+}
+
+async function increaseProgress(id){
+    const data = await Skyla.get("/api/obsession");
+    const goal = data.goals.find(x => x.id === id);
+
+    if(!goal) return;
+
+    const progress = Math.min(
+        Number(goal.target || 100),
+        Number(goal.progress || 0) + 10
+    );
+
+    await Skyla.send(
+        "/api/obsession/goals/" + id,
+        "PUT",
+        {progress:progress}
+    );
+
+    await loadData();
+    Skyla.toast("⚡ Progress increased");
+}
+
+async function toggleGoal(id){
+    await Skyla.send(
+        "/api/obsession/goals/" + id + "/toggle"
+    );
+
+    await loadData();
+    Skyla.toast("Target updated");
+}
+
+async function deleteGoal(id){
+    if(!confirm("Delete this target?")) return;
+
+    await Skyla.send(
+        "/api/obsession/goals/" + id,
+        "DELETE"
+    );
+
+    await loadData();
+    Skyla.toast("Target deleted");
+}
+
+async function deleteFocus(id){
+    if(!confirm("Delete this focus session?")) return;
+
+    await Skyla.send(
+        "/api/obsession/focus/" + id,
+        "DELETE"
+    );
+
+    await loadData();
+    Skyla.toast("Focus session deleted");
+}
+
+document.getElementById("goalForm").addEventListener("submit",async function(e){
+    e.preventDefault();
+
+    await Skyla.send("/api/obsession/goals","POST",{
+        title:document.getElementById("goalTitle").value,
+        target:Number(document.getElementById("goalTarget").value) || 100,
+        deadline:document.getElementById("goalDeadline").value,
+        description:document.getElementById("goalDescription").value
+    });
+
+    e.target.reset();
+    document.getElementById("goalTarget").value = 100;
+
+    await loadData();
+    Skyla.toast("⚡ Main target created");
+});
+
+document.getElementById("focusMinutesInput").addEventListener(
+    "change",
+    resetTimer
+);
+
+renderTimer();
+loadData();
+</script>
+
+</body>
+</html>

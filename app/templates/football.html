@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Skyla — Football</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skyla.css') }}">
+    <style>
+        .football-wrap{max-width:1200px;margin:auto}
+        .skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+        .skill-card{padding:20px}
+        .skill-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+        .skill-name{font-size:20px;font-weight:800}
+        .skill-score{font-size:28px;font-weight:900}
+        .skill-progress{height:10px;border-radius:99px;background:#202638;overflow:hidden;margin:12px 0}
+        .skill-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#00e5ff,#8b5cf6,#ff2bd6)}
+        .skill-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+        .skill-actions input{min-width:0}
+        .football-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+        .football-stat{padding:18px}
+        .football-stat strong{display:block;font-size:28px;margin-top:5px}
+        .history-row{display:grid;grid-template-columns:1fr 90px 90px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #252b3d}
+        .muted{opacity:.65}
+        @media(max-width:600px){
+            .history-row{grid-template-columns:1fr 70px}
+            .history-row .history-target{display:none}
+        }
+    </style>
+
+<style>
+.graph-card{
+    margin-top:18px;
+    padding:18px;
+    border-radius:16px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.training-graph{
+    min-height:220px;
+    margin-top:16px;
+    display:flex;
+    align-items:flex-end;
+    gap:5px;
+    overflow-x:auto;
+    padding:20px 8px 8px;
+}
+
+.graph-bar-wrap{
+    min-width:24px;
+    height:180px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+    gap:5px;
+}
+
+.graph-bar{
+    width:18px;
+    min-height:3px;
+    border-radius:7px 7px 2px 2px;
+    background:linear-gradient(180deg,#00e5ff,#7c4dff);
+    transition:height .3s ease;
+}
+
+.graph-label{
+    font-size:9px;
+    opacity:.6;
+    white-space:nowrap;
+}
+
+.skill-graph-row{
+    margin-bottom:18px;
+}
+
+.skill-graph-head{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:7px;
+}
+
+.skill-graph-track{
+    height:10px;
+    border-radius:99px;
+    background:#202638;
+    overflow:hidden;
+}
+
+.skill-graph-fill{
+    height:100%;
+    border-radius:99px;
+    background:linear-gradient(90deg,#00e5ff,#8b5cf6,#ff2bd6);
+}
+
+@media(max-width:600px){
+    .training-graph{
+        min-height:190px;
+    }
+}
+
+.graph-controls{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+    margin:0 0 18px;
+    padding:12px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    background:rgba(255,255,255,.025);
+}
+
+.graph-control-group{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.graph-control-label{
+    font-size:12px;
+    opacity:.65;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-right:4px;
+}
+
+.graph-range,
+.graph-metric{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.04);
+    color:inherit;
+    border-radius:9px;
+    padding:7px 12px;
+    cursor:pointer;
+    transition:.18s ease;
+}
+
+.graph-range:hover,
+.graph-metric:hover{
+    transform:translateY(-1px);
+    background:rgba(255,255,255,.09);
+}
+
+.graph-range.active,
+.graph-metric.active{
+    background:rgba(120,100,255,.25);
+    border-color:rgba(150,130,255,.55);
+}
+
+.graph-bar{
+    transition:height .35s ease, opacity .2s ease;
+}
+
+.graph-bar-wrap{
+    cursor:pointer;
+    transition:transform .18s ease;
+}
+
+.graph-bar-wrap:hover{
+    transform:translateY(-3px);
+}
+
+@media(max-width:700px){
+    .graph-controls{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .graph-control-group{
+        width:100%;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <div class="brand">⚡ Skyla Life OS</div>
+        <a href="/">🏠 Home</a>
+        <a href="/motivation">🔥 Motivation</a>
+        <a href="/discipline">🧱 Discipline</a>
+        <a href="/obsession">⚡ Obsession</a>
+        <a class="active" href="/football">⚽ Football</a>
+        <a href="/fitness">💪 Fitness</a>
+        <a href="/daily-routine">📅 Routine</a>
+        <a href="/habits">🔥 Habits</a>
+        <a href="/goals">🎯 Goals</a>
+        <a href="/analytics">📊 Analytics</a>
+        <a href="/finance">💰 Finance</a>
+    </aside>
+
+    <main class="main-content football-wrap">
+
+        <div class="page-header">
+            <div>
+                <h1>⚽ Football Dashboard</h1>
+                <p class="muted">Track your football development and training performance.</p>
+            </div>
+        </div>
+
+        <section class="football-stat-grid">
+            <div class="card football-stat">
+                <span class="muted">Training Sessions</span>
+                <strong id="sessionCount">0</strong>
+            </div>
+
+            <div class="card football-stat">
+                <span class="muted">Training Minutes</span>
+                <strong id="trainingMinutes">0</strong>
+            </div>
+
+            <div class="card football-stat">
+                <span class="muted">Average Rating</span>
+                <strong id="averageRating">0.0</strong>
+            </div>
+
+            <div class="card football-stat">
+                <span class="muted">Overall Skill</span>
+                <strong id="overallSkill">0%</strong>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top:20px">
+            <h2>🧬 Football Skills</h2>
+            <p class="muted">Update your current level and target for each skill.</p>
+
+            <div id="skillGrid" class="skill-grid"></div>
+        </section>
+
+        <section class="card" style="margin-top:20px">
+            <h2>📈 Skill History</h2>
+            <p class="muted">Your saved progress measurements.</p>
+            <div id="historyList"></div>
+        </section>
+
+        <section class="card" style="margin-top:20px">
+            <h2>⚽ Add Training Session</h2>
+
+            <form id="footballForm" class="form-grid">
+
+                <input id="trainingType"
+                       placeholder="Training type"
+                       required>
+
+                <input id="duration"
+                       type="number"
+                       min="0"
+                       placeholder="Duration (minutes)"
+                       required>
+
+                <input id="rating"
+                       type="number"
+                       min="0"
+                       max="10"
+                       step="0.1"
+                       placeholder="Rating / 10">
+
+                <input id="drills"
+                       placeholder="Drills">
+
+                <textarea id="notes"
+                          placeholder="Training notes"></textarea>
+
+                <button class="btn primary" type="submit">
+                    ➕ Save Training
+                </button>
+            </form>
+        </section>
+
+        <section class="card" style="margin-top:20px">
+            <h2>📋 Training History</h2>
+            <div id="trainingHistory"></div>
+        </section>
+
+    
+<section class="card" id="football-analytics" style="margin-top:20px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div>
+      <h2 style="margin:0;">📊 Football Analytics</h2>
+      <p style="opacity:.7;margin:6px 0 0;">Your training performance and progress</p>
+    </div>
+    <button class="btn" onclick="loadFootballAnalytics()">↻ Refresh</button>
+  </div>
+
+  <div class="stats-grid" style="margin-top:18px;">
+    <div class="card stat-card">
+      <div class="stat-label">Overall Skill</div>
+      <div class="stat-value" id="analytics-overall">0%</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">🔥 Training Streak</div>
+      <div class="stat-value" id="analytics-streak">0</div>
+      <div style="opacity:.65;">days</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">⭐ Average Rating</div>
+      <div class="stat-value" id="analytics-rating">0</div>
+      <div style="opacity:.65;">/ 10</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Weekly Training</div>
+      <div class="stat-value" id="analytics-weekly">0</div>
+      <div style="opacity:.65;">sessions</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Weekly Minutes</div>
+      <div class="stat-value" id="analytics-weekly-minutes">0</div>
+      <div style="opacity:.65;">minutes</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-label">Monthly Training</div>
+      <div class="stat-value" id="analytics-monthly">0</div>
+      <div style="opacity:.65;">sessions</div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;">
+    <h3>⚡ Skill Progress</h3>
+    <div id="analytics-skills" style="display:grid;gap:14px;"></div>
+  </div>
+</section>
+
+<section class="card" id="football-graphs" style="margin-top:20px;">
+    <div class="page-header">
+        <div>
+            <h2>📈 Training Analytics</h2>
+            <p class="muted">Interactive football performance tracking</p>
+        </div>
+        <button class="btn" onclick="loadFootballGraphs()">↻ Refresh Graphs</button>
+    </div>
+
+    <div class="graph-controls">
+        <div class="graph-control-group">
+            <span class="graph-control-label">Range</span>
+            <button type="button" class="graph-range active" data-days="7">7D</button>
+            <button type="button" class="graph-range" data-days="30">30D</button>
+            <button type="button" class="graph-range" data-days="90">90D</button>
+        </div>
+
+        <div class="graph-control-group">
+            <span class="graph-control-label">Metric</span>
+            <button type="button" class="graph-metric active" data-metric="minutes">Minutes</button>
+            <button type="button" class="graph-metric" data-metric="sessions">Sessions</button>
+        </div>
+    </div>
+
+    <div class="graph-card">
+        <h3 id="trainingGraphTitle">🏃 Daily Training Minutes</h3>
+        <div id="trainingGraph" class="training-graph"></div>
+    </div>
+
+    <div class="graph-card" style="margin-top:18px;">
+        <h3>⚡ Skill Progress History</h3>
+        <div id="skillHistoryGraph" class="training-graph"></div>
+    </div>
+</section>
+
+</main>
+</div>
+
+<div id="skyla-toast" class="skyla-toast hidden"></div>
+
+<script src="{{ url_for('static', filename='js/skyla.js') }}"></script>
+
+<script>
+let skills = [];
+
+function skillIcon(name){
+    const icons = {
+        Speed:"⚡",
+        Dribbling:"🌀",
+        Passing:"🎯",
+        Shooting:"🥅",
+        Stamina:"🫁",
+        Strength:"💪"
+    };
+    return icons[name] || "⚽";
+}
+
+async function loadSkills(){
+    skills = await Skyla.get("/api/football/skills");
+
+    const grid = document.getElementById("skillGrid");
+
+    grid.innerHTML = skills.map(skill => `
+        <div class="card skill-card">
+
+            <div class="skill-head">
+                <span class="skill-name">
+                    ${skillIcon(skill.skill)} ${Skyla.esc(skill.skill)}
+                </span>
+
+                <span class="skill-score">
+                    ${Number(skill.current).toFixed(0)}
+                </span>
+            </div>
+
+            <div class="skill-progress">
+                <div class="skill-fill"
+                     style="width:${skill.progress}%"></div>
+            </div>
+
+            <div class="muted">
+                ${skill.progress}% of target ${Number(skill.target).toFixed(0)}
+            </div>
+
+            <div class="skill-actions">
+                <input
+                    id="current-${skill.id}"
+                    type="number"
+                    min="0"
+                    placeholder="Current"
+                    value="${skill.current}">
+
+                <input
+                    id="target-${skill.id}"
+                    type="number"
+                    min="1"
+                    placeholder="Target"
+                    value="${skill.target}">
+            </div>
+
+            <button
+                class="btn primary"
+                style="width:100%;margin-top:10px"
+                onclick="saveSkill(${skill.id})">
+                Save Progress
+            </button>
+
+            <button
+                class="btn"
+                style="width:100%;margin-top:8px"
+                onclick="saveSkillLog(${skill.id})">
+                📌 Log Measurement
+            </button>
+
+        </div>
+    `).join("");
+
+    const total = skills.reduce((sum, x) => sum + x.progress, 0);
+    const overall = skills.length ? Math.round(total / skills.length) : 0;
+
+    document.getElementById("overallSkill").textContent = overall + "%";
+
+    await loadHistory();
+}
+
+async function saveSkill(id){
+    const current = Number(
+        document.getElementById(`current-${id}`).value
+    );
+
+    const target = Number(
+        document.getElementById(`target-${id}`).value
+    );
+
+    if (!Number.isFinite(current) || !Number.isFinite(target) || target <= 0){
+        Skyla.toast("Enter valid skill values", "error");
+        return;
+    }
+
+    await Skyla.send(
+        `/api/football/skills/${id}`,
+        "PUT",
+        {current, target}
+    );
+
+    Skyla.toast("Skill updated 🔥");
+    await loadSkills();
+}
+
+async function saveSkillLog(id){
+    const current = Number(
+        document.getElementById(`current-${id}`).value
+    );
+
+    if (!Number.isFinite(current)){
+        Skyla.toast("Enter a current value", "error");
+        return;
+    }
+
+    await Skyla.send(
+        `/api/football/skills/${id}/log`,
+        "POST",
+        {value: current}
+    );
+
+    Skyla.toast("Progress measurement saved 📈");
+    await loadSkills();
+}
+
+async function loadHistory(){
+    const box = document.getElementById("historyList");
+
+    let rows = [];
+
+    for (const skill of skills){
+        const history = await Skyla.get(
+            `/api/football/skills/${skill.id}/history`
+        );
+
+        history.forEach(item => {
+            rows.push({
+                skill: skill.skill,
+                date: item.date,
+                value: item.value
+            });
+        });
+    }
+
+    rows.sort((a,b) => {
+        return String(b.date).localeCompare(String(a.date));
+    });
+
+    if (!rows.length){
+        box.innerHTML = `<p class="muted">No measurements recorded yet.</p>`;
+        return;
+    }
+
+    box.innerHTML = rows.map(row => `
+        <div class="history-row">
+            <strong>${skillIcon(row.skill)} ${Skyla.esc(row.skill)}</strong>
+            <span>${Number(row.value).toFixed(0)}</span>
+            <span class="history-target muted">${Skyla.esc(row.date)}</span>
+        </div>
+    `).join("");
+}
+
+async function loadTraining(){
+    const rows = await Skyla.get("/api/football");
+
+    let minutes = 0;
+    let ratings = [];
+
+    rows.forEach(x => {
+        minutes += Number(x.duration || 0);
+
+        if (Number(x.rating || 0) > 0){
+            ratings.push(Number(x.rating));
+        }
+    });
+
+    document.getElementById("sessionCount").textContent = rows.length;
+    document.getElementById("trainingMinutes").textContent = minutes;
+
+    const average = ratings.length
+        ? ratings.reduce((a,b) => a+b, 0) / ratings.length
+        : 0;
+
+    document.getElementById("averageRating").textContent =
+        average.toFixed(1);
+
+    const box = document.getElementById("trainingHistory");
+
+    if (!rows.length){
+        box.innerHTML = `<p class="muted">No training sessions yet.</p>`;
+        return;
+    }
+
+    box.innerHTML = rows.map(x => `
+        <div class="history-row">
+
+            <div>
+                <strong>⚽ ${Skyla.esc(x.type)}</strong>
+                <div class="muted">
+                    ${x.date || "Today"} ·
+                    ${Number(x.duration || 0)} min
+                    ${x.rating ? ` · ⭐ ${x.rating}/10` : ""}
+                </div>
+
+                ${x.drills
+                    ? `<div class="muted">${Skyla.esc(x.drills)}</div>`
+                    : ""}
+            </div>
+
+            <span></span>
+
+            <button
+                class="btn danger"
+                onclick="deleteTraining(${x.id})">
+                Delete
+            </button>
+
+        </div>
+    `).join("");
+}
+
+async function deleteTraining(id){
+    if (!confirm("Delete this training session?")) return;
+
+    await Skyla.send(
+        `/api/football/${id}`,
+        "DELETE"
+    );
+
+    Skyla.toast("Training deleted");
+    await loadTraining();
+}
+
+document.getElementById("footballForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const data = {
+        type: document.getElementById("trainingType").value,
+        duration: Number(document.getElementById("duration").value || 0),
+        rating: Number(document.getElementById("rating").value || 0),
+        drills: document.getElementById("drills").value,
+        notes: document.getElementById("notes").value
+    };
+
+    await Skyla.send(
+        "/api/football",
+        "POST",
+        data
+    );
+
+    e.target.reset();
+
+    Skyla.toast("Training saved ⚽");
+
+    await loadTraining();
+});
+
+async function initFootball(){
+    try{
+        await loadSkills();
+        await loadTraining();
+    }catch(error){
+        console.error(error);
+        Skyla.toast(error.message, "error");
+    }
+}
+
+initFootball();
+</script>
+
+
+<script>
+async function loadFootballAnalytics() {
+    try {
+        const response = await fetch("/api/football/analytics");
+        if (!response.ok) throw new Error("Analytics request failed");
+
+        const data = await response.json();
+
+        const setText = (id, value) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        };
+
+        setText("analytics-overall", `${data.overall_skill}%`);
+        setText("analytics-streak", data.training_streak);
+        setText("analytics-rating", data.average_rating);
+        setText("analytics-weekly", data.weekly.sessions);
+        setText("analytics-weekly-minutes", data.weekly.minutes);
+        setText("analytics-monthly", data.monthly.sessions);
+
+        const box = document.getElementById("analytics-skills");
+        if (!box) return;
+
+        box.innerHTML = data.skills.map(skill => `
+            <div style="padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025);">
+                <div style="display:flex;justify-content:space-between;gap:10px;">
+                    <strong>${Skyla.esc(skill.skill)}</strong>
+                    <span>${skill.progress}%</span>
+                </div>
+
+                <div style="height:9px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-top:10px;">
+                    <div style="height:100%;width:${Math.min(100, skill.progress)}%;background:linear-gradient(90deg,#00e5ff,#7c4dff);border-radius:99px;"></div>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;opacity:.7;">
+                    <span>Current: ${skill.current}</span>
+                    <span>Target: ${skill.target}</span>
+                    <span>Best: ${skill.personal_best}</span>
+                </div>
+            </div>
+        `).join("");
+
+    } catch (error) {
+        console.error("Football analytics:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadFootballAnalytics);
+</script>
+
+
+<script>
+let footballGraphData = null;
+let footballGraphDays = 7;
+let footballGraphMetric = "minutes";
+
+async function loadFootballGraphs() {
+    try {
+        const response = await fetch("/api/football/graph-data");
+
+        if (!response.ok) {
+            throw new Error("Graph API failed: " + response.status);
+        }
+
+        footballGraphData = await response.json();
+
+        renderTrainingGraph(footballGraphData.daily);
+        renderSkillHistoryGraph(footballGraphData.skills);
+
+    } catch (error) {
+        console.error("Football graph error:", error);
+
+        const box = document.getElementById("trainingGraph");
+
+        if (box) {
+            box.innerHTML = `
+                <div class="muted">
+                    Unable to load training graph.
+                </div>
+            `;
+        }
+    }
+}
+
+function renderTrainingGraph(days) {
+    const box = document.getElementById("trainingGraph");
+    const title = document.getElementById("trainingGraphTitle");
+
+    if (!box || !Array.isArray(days)) return;
+
+    const filtered = days.slice(-footballGraphDays);
+
+    const metric = footballGraphMetric;
+
+    if (title) {
+        title.textContent =
+            metric === "minutes"
+                ? "🏃 Daily Training Minutes"
+                : "🔥 Daily Training Sessions";
+    }
+
+    const values = filtered.map(day => Number(day[metric] || 0));
+    const maxValue = Math.max(...values, 1);
+
+    box.innerHTML = filtered.map(day => {
+        const value = Number(day[metric] || 0);
+
+        const height = value > 0
+            ? Math.max(8, (value / maxValue) * 160)
+            : 3;
+
+        const date = new Date(day.date + "T00:00:00");
+
+        const label = date.toLocaleDateString(undefined, {
+            day: "numeric",
+            month: "short"
+        });
+
+        const unit = metric === "minutes"
+            ? "min"
+            : "session" + (value === 1 ? "" : "s");
+
+        return `
+            <div class="graph-bar-wrap"
+                 title="${Skyla.esc(label)} — ${value} ${unit}">
+
+                <div style="font-size:9px;opacity:.7;">
+                    ${value}
+                </div>
+
+                <div class="graph-bar"
+                     style="height:${height}px;">
+                </div>
+
+                <div class="graph-label">
+                    ${Skyla.esc(label)}
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderSkillHistoryGraph(skills) {
+    const box = document.getElementById("skillHistoryGraph");
+
+    if (!box || !Array.isArray(skills)) return;
+
+    box.innerHTML = skills.map(skill => {
+        const current = Number(skill.current || 0);
+        const target = Number(skill.target || 0);
+
+        const progress = target > 0
+            ? Math.min(100, (current / target) * 100)
+            : 0;
+
+        const history = Array.isArray(skill.history)
+            ? skill.history
+            : [];
+
+        let best = current;
+
+        history.forEach(item => {
+            best = Math.max(
+                best,
+                Number(item.value || 0)
+            );
+        });
+
+        return `
+            <div class="skill-graph-row">
+
+                <div class="skill-graph-head">
+                    <strong>
+                        ${Skyla.esc(skill.skill)}
+                    </strong>
+
+                    <span>
+                        ${current.toFixed(1)}
+                        /
+                        ${target.toFixed(1)}
+                    </span>
+                </div>
+
+                <div class="skill-graph-track">
+                    <div class="skill-graph-fill"
+                         style="width:${progress}%">
+                    </div>
+                </div>
+
+                <div class="muted"
+                     style="font-size:12px;margin-top:5px;display:flex;justify-content:space-between;gap:10px;">
+
+                    <span>
+                        ${progress.toFixed(0)}% of target
+                    </span>
+
+                    <span>
+                        PB: ${best.toFixed(1)}
+                    </span>
+
+                    <span>
+                        ${history.length}
+                        measurement${history.length === 1 ? "" : "s"}
+                    </span>
+                </div>
+
+            </div>
+        `;
+    }).join("");
+}
+
+document.addEventListener("click", function(event) {
+
+    const rangeButton =
+        event.target.closest(".graph-range");
+
+    if (rangeButton) {
+
+        footballGraphDays =
+            Number(rangeButton.dataset.days || 7);
+
+        document
+            .querySelectorAll(".graph-range")
+            .forEach(button => {
+                button.classList.toggle(
+                    "active",
+                    button === rangeButton
+                );
+            });
+
+        if (footballGraphData) {
+            renderTrainingGraph(
+                footballGraphData.daily
+            );
+        }
+
+        return;
+    }
+
+    const metricButton =
+        event.target.closest(".graph-metric");
+
+    if (metricButton) {
+
+        footballGraphMetric =
+            metricButton.dataset.metric || "minutes";
+
+        document
+            .querySelectorAll(".graph-metric")
+            .forEach(button => {
+                button.classList.toggle(
+                    "active",
+                    button === metricButton
+                );
+            });
+
+        if (footballGraphData) {
+            renderTrainingGraph(
+                footballGraphData.daily
+            );
+        }
+    }
+});
+
+document.addEventListener("DOMContentLoaded", loadFootballGraphs);
+</script>
+
+</body>
+</html>

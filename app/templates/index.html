@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+>
+
+<title>Skyla — Life OS</title>
+
+<link
+    rel="stylesheet"
+    href="/static/css/skyla.css"
+>
+
+</head>
+
+
+<body>
+
+<div class="app-shell">
+
+
+<aside class="sidebar">
+
+<div class="brand">
+⚡ SKYLA
+</div>
+
+
+<button class="active">
+🏠 Home
+</button>
+
+
+<button onclick="Skyla.go('/motivation')">
+🔥 Motivation
+</button>
+
+
+<button onclick="Skyla.go('/discipline')">
+🧱 Discipline
+</button>
+
+
+<button onclick="Skyla.go('/obsession')">
+⚡ Obsession
+</button>
+
+
+<button onclick="Skyla.go('/daily-routine')">
+🕒 Daily Routine
+</button>
+
+
+<button onclick="Skyla.go('/habits')">
+✅ Habits
+</button>
+
+
+<button onclick="Skyla.go('/goals')">
+🎯 Goals
+</button>
+
+
+<button onclick="Skyla.go('/football')">
+⚽ Football
+</button>
+
+
+<button onclick="Skyla.go('/fitness')">
+💪 Fitness
+</button>
+
+
+<button onclick="Skyla.go('/analytics')">
+📊 Analytics
+</button>
+
+
+<button onclick="Skyla.go('/finance')">
+💰 Finance
+</button>
+
+
+<button onclick="Skyla.go('/reminders')">
+🔔 Reminders
+</button>
+
+
+<button onclick="Skyla.go('/customization')">
+🎨 Customize
+</button>
+
+
+</aside>
+
+
+
+<main class="main-content">
+
+
+<header class="page-header">
+
+<div>
+
+<h1>
+⚡ Skyla Life OS
+</h1>
+
+<p>
+Your life. Your system. Your progress.
+</p>
+
+</div>
+
+</header>
+
+
+
+<section class="stats-grid">
+
+
+<div class="card stat-card">
+
+<span>
+🔥 Motivation
+</span>
+
+<strong id="motivationCount">
+0
+</strong>
+
+</div>
+
+
+<div class="card stat-card">
+
+<span>
+🧱 Discipline
+</span>
+
+<strong id="disciplineCount">
+0
+</strong>
+
+</div>
+
+
+<div class="card stat-card">
+
+<span>
+⚡ Obsession
+</span>
+
+<strong id="obsessionProgress">
+0%
+</strong>
+
+</div>
+
+
+<div class="card stat-card">
+
+<span>
+⏱️ Focus
+</span>
+
+<strong id="focusMinutes">
+0
+</strong>
+
+</div>
+
+
+</section>
+
+
+
+<section class="card">
+
+<h2>
+🔥 Motivation System
+</h2>
+
+<p>
+Active motivation systems:
+<strong id="motivationText">
+0
+</strong>
+</p>
+
+
+<button
+class="primary-btn"
+onclick="Skyla.go('/motivation')"
+>
+Open Motivation
+</button>
+
+</section>
+
+
+
+<section class="card">
+
+<h2>
+🧱 Discipline System
+</h2>
+
+<p>
+Active discipline routines:
+<strong id="disciplineText">
+0
+</strong>
+</p>
+
+
+<button
+class="primary-btn"
+onclick="Skyla.go('/discipline')"
+>
+Open Discipline
+</button>
+
+</section>
+
+
+
+<section class="card">
+
+<h2>
+⚡ Obsession System
+</h2>
+
+<p>
+Active targets:
+<strong id="obsessionText">
+0
+</strong>
+</p>
+
+
+<div class="progress">
+
+<div
+id="obsessionBar"
+style="width:0%"
+>
+</div>
+
+</div>
+
+
+<p>
+Overall target progress:
+<strong id="obsessionProgressText">
+0%
+</strong>
+</p>
+
+
+<button
+class="primary-btn"
+onclick="Skyla.go('/obsession')"
+>
+Open Obsession
+</button>
+
+</section>
+
+
+
+<section>
+
+<h2>
+🚀 Life OS
+</h2>
+
+
+<div class="card-grid">
+
+
+<div class="card">
+
+<h3>
+🕒 Daily Routine
+</h3>
+
+<p>
+Plan your day and control your time.
+</p>
+
+<button onclick="Skyla.go('/daily-routine')">
+Open
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+✅ Habits
+</h3>
+
+<p>
+Build consistency and streaks.
+</p>
+
+<button onclick="Skyla.go('/habits')">
+Open
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+🎯 Goals
+</h3>
+
+<p>
+Track your targets and milestones.
+</p>
+
+<button onclick="Skyla.go('/goals')">
+Open
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+⚽ Football
+</h3>
+
+<p>
+Track football training and performance.
+</p>
+
+<button onclick="Skyla.go('/football')">
+Open
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+💪 Fitness
+</h3>
+
+<p>
+Track workouts and physical progress.
+</p>
+
+<button onclick="Skyla.go('/fitness')">
+Open
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+📊 Analytics
+</h3>
+
+<p>
+See your overall progress.
+</p>
+
+<button onclick="Skyla.go('/analytics')">
+Open
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+💰 Finance
+</h3>
+
+<p>
+Private financial vault.
+</p>
+
+<button onclick="Skyla.go('/finance')">
+Open Vault
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+🔔 Reminders
+</h3>
+
+<p>
+Never miss important tasks.
+</p>
+
+<button onclick="Skyla.go('/reminders')">
+Open
+</button>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<script src="/static/js/skyla.js"></script>
+
+
+<script>
+
+async function loadDashboard(){
+
+    try{
+
+        const data =
+            await Skyla.get(
+                "/api/dashboard"
+            );
+
+
+        document.getElementById(
+            "motivationCount"
+        ).textContent =
+            data.motivation.active;
+
+
+        document.getElementById(
+            "motivationText"
+        ).textContent =
+            data.motivation.active;
+
+
+        document.getElementById(
+            "disciplineCount"
+        ).textContent =
+            data.discipline.active;
+
+
+        document.getElementById(
+            "disciplineText"
+        ).textContent =
+            data.discipline.active;
+
+
+        document.getElementById(
+            "obsessionText"
+        ).textContent =
+            data.obsession.active;
+
+
+        document.getElementById(
+            "obsessionProgress"
+        ).textContent =
+            data.obsession.progress + "%";
+
+
+        document.getElementById(
+            "obsessionProgressText"
+        ).textContent =
+            data.obsession.progress + "%";
+
+
+        document.getElementById(
+            "obsessionBar"
+        ).style.width =
+            data.obsession.progress + "%";
+
+
+        document.getElementById(
+            "focusMinutes"
+        ).textContent =
+            data.obsession.focus_minutes;
+
+    }
+
+    catch(error){
+
+        Skyla.toast(
+            "Dashboard data unavailable",
+            "error"
+        );
+
+        console.error(error);
+
+    }
+
+}
+
+
+loadDashboard();
+
+
+setInterval(
+    loadDashboard,
+    30000
+);
+
+</script>
+
+
+</body>
+
+</html>

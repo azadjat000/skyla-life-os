@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ title }} — Skyla Life OS</title>
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:#f5f7ff;
+    background:
+      radial-gradient(circle at 20% 10%,rgba(124,92,255,.18),transparent 30%),
+      radial-gradient(circle at 80% 20%,rgba(0,220,255,.12),transparent 28%),
+      #080b14;
+}
+.container{max-width:1200px;margin:auto;padding:28px}
+.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:28px;
+}
+.brand{font-size:22px;font-weight:800}
+.back{
+    border:1px solid #293047;
+    background:#111625;
+    color:#fff;
+    padding:11px 17px;
+    border-radius:12px;
+    text-decoration:none;
+}
+.back:hover{background:#182033}
+.hero{
+    padding:34px;
+    border:1px solid #252d43;
+    border-radius:24px;
+    background:linear-gradient(135deg,#111727,#0d1220);
+    box-shadow:0 20px 70px rgba(0,0,0,.3);
+}
+h1{font-size:42px;margin:0 0 10px}
+.subtitle{color:#9ba7c2;font-size:17px}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin-top:22px;
+}
+.card{
+    padding:22px;
+    min-height:150px;
+    border:1px solid #252d43;
+    border-radius:20px;
+    background:#101522;
+}
+.card h3{margin-top:0}
+.muted{color:#8995af}
+button{
+    cursor:pointer;
+    border:0;
+    color:white;
+    background:#6d4aff;
+    padding:12px 18px;
+    border-radius:12px;
+    font-weight:700;
+}
+button:hover{filter:brightness(1.15)}
+@media(max-width:600px){
+    .container{padding:18px}
+    h1{font-size:32px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <div class="top">
+        <div class="brand">🌌 Skyla Life OS</div>
+        <a class="back" href="/">← Home</a>
+    </div>
+
+    <section class="hero">
+        <h1>{{ title }}</h1>
+        <div class="subtitle">{{ subtitle }}</div>
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>➕ Add</h3>
+                <p class="muted">Create your own {{ module }} items.</p>
+                <button onclick="alert('Builder coming next')">Add New</button>
+            </div>
+
+            <div class="card">
+                <h3>📈 Progress</h3>
+                <p class="muted">Your {{ module }} progress will appear here.</p>
+                <strong>0%</strong>
+            </div>
+
+            <div class="card">
+                <h3>🔄 Customize</h3>
+                <p class="muted">Every module will become configurable.</p>
+                <button onclick="alert('Customization coming next')">Customize</button>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

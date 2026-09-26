@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+*.db
+*.sqlite
+*.sqlite3
+instance/
+.DS_Store
+
+# Local backup/source snapshots
+*.before_*
+*.bak
+*.backup
+backups/
+data/*_before_*.db
+data/*-before-*.db
+
+# Local runtime/test files
+/tmp/
+*.log

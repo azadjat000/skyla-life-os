@@ -1,0 +1,1370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skyla Life OS — Finance Vault</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg:#070914;
+  --panel:#101426;
+  --panel2:#151b31;
+  --text:#f7f8ff;
+  --muted:#8f98b5;
+  --line:#252d49;
+  --cyan:#00e5ff;
+  --green:#35f29b;
+  --red:#ff4d7d;
+  --purple:#a970ff;
+  --yellow:#ffd166;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 15% 0%,#14275a 0,transparent 35%),
+    radial-gradient(circle at 90% 20%,#32165b 0,transparent 32%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.app{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:240px 1fr;
+}
+
+.sidebar{
+  border-right:1px solid var(--line);
+  background:rgba(7,9,20,.88);
+  backdrop-filter:blur(18px);
+  padding:24px 16px;
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+
+.logo{
+  font-size:23px;
+  font-weight:900;
+  margin-bottom:28px;
+}
+
+.logo span{
+  color:var(--cyan);
+}
+
+.nav a{
+  display:block;
+  text-decoration:none;
+  color:var(--muted);
+  padding:12px 14px;
+  border-radius:13px;
+  margin:5px 0;
+}
+
+.nav a:hover,
+.nav a.active{
+  color:white;
+  background:linear-gradient(90deg,rgba(0,229,255,.14),rgba(169,112,255,.12));
+}
+
+main{
+  padding:28px;
+  max-width:1500px;
+  width:100%;
+  margin:auto;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:22px;
+}
+
+h1{
+  margin:0;
+  font-size:32px;
+}
+
+.subtitle{
+  color:var(--muted);
+  margin-top:6px;
+}
+
+.lock-status{
+  border:1px solid rgba(53,242,155,.3);
+  background:rgba(53,242,155,.08);
+  color:var(--green);
+  padding:9px 13px;
+  border-radius:999px;
+  font-weight:800;
+}
+
+.lock-status.locked{
+  color:var(--red);
+  border-color:rgba(255,77,125,.3);
+  background:rgba(255,77,125,.08);
+}
+
+.card{
+  background:rgba(16,20,38,.88);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 18px 50px rgba(0,0,0,.18);
+}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
+.stats{
+  grid-template-columns:repeat(4,1fr);
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.stat-value{
+  font-size:28px;
+  font-weight:900;
+  margin-top:8px;
+}
+
+.green{color:var(--green)}
+.red{color:var(--red)}
+.cyan{color:var(--cyan)}
+.purple{color:var(--purple)}
+.yellow{color:var(--yellow)}
+
+.two{
+  grid-template-columns:1.5fr 1fr;
+  margin-top:16px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+input,select{
+  width:100%;
+  border:1px solid var(--line);
+  background:#0a0e1d;
+  color:white;
+  padding:12px 13px;
+  border-radius:12px;
+  outline:none;
+}
+
+input:focus,select:focus{
+  border-color:var(--cyan);
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:11px 15px;
+  color:white;
+  font-weight:800;
+  background:linear-gradient(135deg,#00a8ff,#7b5cff);
+}
+
+button.danger{
+  background:linear-gradient(135deg,#ff315f,#a51dff);
+}
+
+button.secondary{
+  background:#202742;
+}
+
+button.green-btn{
+  background:linear-gradient(135deg,#00b87a,#00d9ff);
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+
+.section-title h2{
+  margin:0;
+  font-size:18px;
+}
+
+.chart-box{
+  height:300px;
+}
+
+.progress{
+  height:10px;
+  background:#080b17;
+  border-radius:999px;
+  overflow:hidden;
+  margin:10px 0;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  border-radius:inherit;
+}
+
+.goal{
+  padding:13px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.goal:last-child{
+  border-bottom:0;
+}
+
+.goal-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.transactions{
+  margin-top:10px;
+}
+
+.tx{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:13px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.tx small{
+  color:var(--muted);
+}
+
+.amount-income{
+  color:var(--green);
+  font-weight:900;
+}
+
+.amount-expense{
+  color:var(--red);
+  font-weight:900;
+}
+
+.lock-screen{
+  max-width:470px;
+  margin:80px auto;
+  text-align:center;
+}
+
+.lock-icon{
+  font-size:60px;
+  margin-bottom:12px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.notice{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
+#toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#151b31;
+  border:1px solid var(--line);
+  padding:13px 17px;
+  border-radius:13px;
+  z-index:9999;
+  box-shadow:0 15px 40px #0008;
+}
+
+@media(max-width:1000px){
+  .app{grid-template-columns:1fr}
+  .sidebar{
+    position:relative;
+    height:auto;
+    border-right:0;
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;
+    overflow:auto;
+    gap:5px;
+  }
+  .nav a{white-space:nowrap}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .two{grid-template-columns:1fr}
+}
+
+@media(max-width:600px){
+  main{padding:16px}
+  .topbar{align-items:flex-start}
+  h1{font-size:25px}
+  .stats{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .chart-box{height:240px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="toast" class="hidden"></div>
+
+<div id="lockScreen" class="lock-screen card hidden">
+  <div class="lock-icon">🔐</div>
+  <h1>Finance Vault</h1>
+  <p class="subtitle">Your financial dashboard is locked.</p>
+
+  <div style="margin-top:20px">
+    <input id="unlockPin" type="password" inputmode="numeric"
+           maxlength="8" placeholder="Enter PIN">
+  </div>
+
+  <button style="width:100%;margin-top:12px" onclick="unlockFinance()">
+    🔓 Unlock Finance
+  </button>
+
+  <p id="lockMessage" class="notice" style="margin-top:15px"></p>
+</div>
+
+<div id="app" class="app hidden">
+
+<aside class="sidebar">
+  <div class="logo">⚡ Skyla <span>Life OS</span></div>
+
+  <nav class="nav">
+    <a href="/">🏠 Home</a>
+    <a href="/motivation">🔥 Motivation</a>
+    <a href="/discipline">🧱 Discipline</a>
+    <a href="/obsession">⚡ Obsession</a>
+    <a href="/daily-routine">🗓 Routine</a>
+    <a href="/habits">🔥 Habits</a>
+    <a href="/goals">🎯 Goals</a>
+    <a href="/football">⚽ Football</a>
+    <a href="/fitness">💪 Fitness</a>
+    <a class="active" href="/finance">💰 Finance</a>
+    <a href="/analytics">📊 Analytics</a>
+    <a href="/customization">🎨 Customization</a>
+  </nav>
+</aside>
+
+<main>
+
+<div class="topbar">
+  <div>
+    <h1>💰 Finance Vault</h1>
+    <div class="subtitle">Private money dashboard • <span id="monthLabel"></span></div>
+  </div>
+
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+    <div id="financeTimer"
+         class="lock-status"
+         title="Automatic lock after inactivity">
+      ⏱️ Auto-lock: 15:00
+    </div>
+    <div id="statusBadge" class="lock-status">🔓 UNLOCKED</div>
+    <button class="danger" onclick="lockFinance()">🔒 Lock</button>
+  </div>
+</div>
+
+<section class="grid stats">
+
+  <div class="card">
+    <div class="stat-label">Balance</div>
+    <div id="balance" class="stat-value cyan">₹0</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-label">Income</div>
+    <div id="income" class="stat-value green">₹0</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-label">Expenses</div>
+    <div id="expenses" class="stat-value red">₹0</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-label">Budget Used</div>
+    <div id="budgetUsed" class="stat-value yellow">0%</div>
+  </div>
+
+</section>
+
+<section class="grid two">
+
+<div class="card">
+  <div class="section-title">
+    <h2>📈 Money Flow</h2>
+    <span class="notice">12 months</span>
+  </div>
+
+  <div class="chart-box">
+    <canvas id="moneyChart"></canvas>
+  </div>
+</div>
+
+<div class="card">
+  <div class="section-title">
+    <h2>🧾 Add Transaction</h2>
+  </div>
+
+  <div class="form-grid">
+    <select id="entryType">
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+
+    <input id="entryAmount" type="number" min="0" step="0.01"
+           placeholder="Amount ₹">
+
+    <input id="entryCategory" placeholder="Category">
+
+    <input id="entryDescription" placeholder="Description">
+
+    <input id="entryDate" type="date">
+  </div>
+
+  <button class="green-btn" style="margin-top:12px;width:100%"
+          onclick="addEntry()">
+    + Add Transaction
+  </button>
+</div>
+
+</section>
+
+<section class="grid two">
+
+<div class="card">
+  <div class="section-title">
+    <h2>💳 Monthly Budget</h2>
+  </div>
+
+  <div class="stat-value cyan" id="budgetAmount">₹0</div>
+
+  <div class="progress">
+    <span id="budgetBar" style="width:0%"></span>
+  </div>
+
+  <div class="notice" id="budgetText">No budget set.</div>
+
+  <div class="form-grid" style="margin-top:14px">
+    <input id="budgetMonth" type="month">
+    <input id="budgetValue" type="number" min="0"
+           placeholder="Budget ₹">
+  </div>
+
+  <button style="margin-top:10px" onclick="saveBudget()">
+    Save Budget
+  </button>
+</div>
+
+<div class="card">
+  <div class="section-title">
+    <h2>🥧 Expense Categories</h2>
+  </div>
+
+  <div class="chart-box">
+    <canvas id="categoryChart"></canvas>
+  </div>
+</div>
+
+</section>
+
+<section class="grid two">
+
+<div class="card">
+  <div class="section-title">
+    <h2>🎯 Savings Goals</h2>
+  </div>
+
+  <div class="form-grid">
+    <input id="goalName" placeholder="Goal name">
+    <input id="goalTarget" type="number" min="1"
+           placeholder="Target ₹">
+    <input id="goalSaved" type="number" min="0"
+           placeholder="Already saved ₹">
+  </div>
+
+  <button style="margin-top:10px" onclick="addSavingsGoal()">
+    + Add Savings Goal
+  </button>
+
+  <div id="goalsList" style="margin-top:15px"></div>
+</div>
+
+<div class="card">
+  <div class="section-title">
+    <h2>🧾 Recent Transactions</h2>
+  </div>
+
+  <div id="transactions"></div>
+</div>
+
+</section>
+
+<div class="card" style="margin-top:16px">
+  <div class="section-title">
+    <h2>🔐 Vault Security</h2>
+  </div>
+
+  <p class="notice">
+    Finance data is hidden whenever the vault is locked.
+    Keep your PIN private. Current application protection uses
+    a hashed PIN and session lock.
+  </p>
+
+  <button class="danger" onclick="lockFinance()">🔒 Lock Vault Now</button>
+
+  <button class="secondary" onclick="changeFinancePin()">
+    🔑 Change PIN
+  </button>
+
+  <div class="notice" style="margin-top:10px">
+    Auto-lock: 15 minutes of inactivity
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+let moneyChart = null;
+let categoryChart = null;
+
+const $ = id => document.getElementById(id);
+
+function money(value){
+  return "₹" + Number(value || 0).toLocaleString("en-IN", {
+    maximumFractionDigits: 2
+  });
+}
+
+function toast(message){
+  const box = $("toast");
+  box.textContent = message;
+  box.classList.remove("hidden");
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer = setTimeout(
+    () => box.classList.add("hidden"),
+    2500
+  );
+}
+
+let financeCsrfToken = null;
+
+async function getFinanceCsrfToken(){
+  if(financeCsrfToken){
+    return financeCsrfToken;
+  }
+
+  const response = await fetch("/api/finance/csrf",{
+    credentials:"same-origin",
+    cache:"no-store"
+  });
+
+  const data = await response.json().catch(()=>({}));
+
+  if(!response.ok || !data.csrf_token){
+    throw new Error(
+      data.error ||
+      data.message ||
+      "Could not initialize Finance security."
+    );
+  }
+
+  financeCsrfToken = data.csrf_token;
+
+  return financeCsrfToken;
+}
+
+async function api(url, options={}){
+  const method = String(options.method || "GET").toUpperCase();
+
+  const headers = {
+    "Content-Type":"application/json",
+    ...(options.headers || {})
+  };
+
+  if(["POST","PUT","DELETE"].includes(method)){
+    headers["X-CSRF-Token"] = await getFinanceCsrfToken();
+  }
+
+  const response = await fetch(url,{
+    credentials:"same-origin",
+    headers,
+    ...options
+  });
+
+  const data = await response.json().catch(()=>({}));
+
+  if(!response.ok){
+    throw new Error(data.error || data.message || "Request failed");
+  }
+
+  return data;
+}
+
+
+/* =========================================================
+   FINANCE INACTIVITY AUTO-LOCK UI
+   Backend remains the source of truth.
+   ========================================================= */
+
+const FINANCE_AUTO_LOCK_SECONDS = 15 * 60;
+const FINANCE_ACTIVITY_THROTTLE_MS = 1000;
+
+let financeLastActivity = Date.now();
+let financeTimerInterval = null;
+let financeActivityThrottle = 0;
+
+function resetFinanceActivityTimer(){
+  financeLastActivity = Date.now();
+  updateFinanceTimer();
+}
+
+function updateFinanceTimer(){
+  const timer = $("financeTimer");
+  if(!timer) return;
+
+  const elapsed = Math.floor(
+    (Date.now() - financeLastActivity) / 1000
+  );
+
+  const remaining = Math.max(
+    0,
+    FINANCE_AUTO_LOCK_SECONDS - elapsed
+  );
+
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
+
+  timer.textContent =
+    "⏱️ Auto-lock: " +
+    String(minutes).padStart(2,"0") +
+    ":" +
+    String(seconds).padStart(2,"0");
+
+  timer.classList.remove("locked");
+
+  if(remaining <= 120){
+    timer.classList.add("locked");
+    timer.textContent =
+      "⚠️ Auto-lock: " +
+      String(minutes).padStart(2,"0") +
+      ":" +
+      String(seconds).padStart(2,"0");
+  }
+
+  if(remaining <= 0){
+    clearInterval(financeTimerInterval);
+    financeTimerInterval = null;
+
+    checkStatus();
+  }
+}
+
+function startFinanceTimer(){
+  clearInterval(financeTimerInterval);
+
+  resetFinanceActivityTimer();
+
+  financeTimerInterval = setInterval(
+    updateFinanceTimer,
+    1000
+  );
+}
+
+function stopFinanceTimer(){
+  clearInterval(financeTimerInterval);
+  financeTimerInterval = null;
+}
+
+function registerFinanceActivity(){
+  if($("app")?.classList.contains("hidden")){
+    return;
+  }
+
+  const now = Date.now();
+
+  if(now - financeActivityThrottle < FINANCE_ACTIVITY_THROTTLE_MS){
+    return;
+  }
+
+  financeActivityThrottle = now;
+  resetFinanceActivityTimer();
+}
+
+/* User activity resets the inactivity countdown. */
+[
+  "mousemove",
+  "mousedown",
+  "keydown",
+  "touchstart",
+  "scroll",
+  "pointerdown"
+].forEach(eventName => {
+  document.addEventListener(
+    eventName,
+    registerFinanceActivity,
+    {passive:true}
+  );
+});
+
+async function checkStatus(){
+
+  try{
+
+    const data = await api("/api/finance/status");
+
+    if(data.unlocked || data.finance_unlocked){
+      showApp();
+    }else{
+      showLock();
+    }
+
+  }catch(error){
+    showLock();
+    $("lockMessage").textContent = error.message;
+  }
+}
+
+function showLock(){
+
+  stopFinanceTimer();
+
+  $("app").classList.add("hidden");
+  $("lockScreen").classList.remove("hidden");
+
+  $("statusBadge")?.classList.add("locked");
+
+  const timer = $("financeTimer");
+  if(timer){
+    timer.textContent = "🔒 Auto-lock: Vault locked";
+    timer.classList.add("locked");
+  }
+}
+
+function showApp(){
+
+  $("lockScreen").classList.add("hidden");
+  $("app").classList.remove("hidden");
+
+  $("statusBadge").classList.remove("locked");
+
+  startFinanceTimer();
+
+  loadFinance();
+}
+
+async function unlockFinance(){
+
+  const pin = $("unlockPin").value.trim();
+
+  if(!pin){
+    $("lockMessage").textContent = "Enter your PIN.";
+    return;
+  }
+
+  try{
+
+    await api("/api/finance/unlock",{
+      method:"POST",
+      body:JSON.stringify({pin})
+    });
+
+    $("unlockPin").value = "";
+
+    toast("Finance Vault unlocked 🔓");
+
+    showApp();
+
+  }catch(error){
+
+    $("lockMessage").textContent = error.message;
+  }
+}
+
+async function lockFinance(){
+
+  try{
+
+    await api("/api/finance/lock",{
+      method:"POST"
+    });
+
+    toast("Finance Vault locked 🔒");
+
+    showLock();
+
+  }catch(error){
+
+    toast(error.message);
+  }
+}
+
+async function loadFinance(){
+
+  try{
+
+    const analytics = await api("/api/finance/analytics");
+
+    $("monthLabel").textContent = analytics.month;
+
+    $("balance").textContent = money(analytics.balance);
+    $("income").textContent = money(analytics.income);
+    $("expenses").textContent = money(analytics.expenses);
+
+    $("budgetUsed").textContent =
+      Number(analytics.budget_used || 0) + "%";
+
+    $("budgetAmount").textContent =
+      money(analytics.budget);
+
+    const used = Math.min(
+      100,
+      Number(analytics.budget_used || 0)
+    );
+
+    $("budgetBar").style.width = used + "%";
+
+    if(analytics.budget > 0){
+      $("budgetText").textContent =
+        money(analytics.expenses) +
+        " spent of " +
+        money(analytics.budget);
+    }else{
+      $("budgetText").textContent =
+        "No budget set for this month.";
+    }
+
+    renderCategories(analytics.categories || []);
+
+    renderGoals(analytics.savings_goals || []);
+
+    await loadGraph();
+
+    await loadTransactions();
+
+    await loadBudget();
+
+  }catch(error){
+
+    if(error.message.includes("locked")){
+      showLock();
+      return;
+    }
+
+    toast(error.message);
+  }
+}
+
+async function addEntry(){
+
+  const type = $("entryType").value;
+
+  const amount = Number(
+    $("entryAmount").value
+  );
+
+  if(!amount || amount <= 0){
+    toast("Enter a valid amount.");
+    return;
+  }
+
+  try{
+
+    await api("/api/finance/entries",{
+      method:"POST",
+      body:JSON.stringify({
+        entry_type:type,
+        amount:amount,
+        category:$("entryCategory").value.trim() || "Other",
+        description:$("entryDescription").value.trim(),
+        entry_date:$("entryDate").value
+      })
+    });
+
+    $("entryAmount").value="";
+    $("entryCategory").value="";
+    $("entryDescription").value="";
+
+    toast("Transaction added");
+
+    loadFinance();
+
+  }catch(error){
+
+    toast(error.message);
+  }
+}
+
+async function loadTransactions(){
+
+  const data = await api("/api/finance/entries");
+
+  const entries =
+    Array.isArray(data) ? data :
+    data.entries || [];
+
+  const box = $("transactions");
+
+  if(!entries.length){
+
+    box.innerHTML =
+      '<div class="notice">No transactions yet.</div>';
+
+    return;
+  }
+
+  box.innerHTML = entries
+    .slice(-10)
+    .reverse()
+    .map(entry => {
+
+      const income =
+        entry.entry_type === "income";
+
+      return `
+        <div class="tx">
+          <div>
+            <strong>${escapeHtml(
+              entry.category || "Other"
+            )}</strong>
+            <br>
+            <small>
+              ${escapeHtml(
+                entry.description || ""
+              )}
+              ${entry.entry_date
+                ? " • " + escapeHtml(entry.entry_date)
+                : ""}
+            </small>
+          </div>
+
+          <div class="${income
+            ? "amount-income"
+            : "amount-expense"}">
+            ${income ? "+" : "-"}${money(entry.amount)}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+async function loadGraph(){
+
+  const data =
+    await api("/api/finance/graph-data");
+
+  const labels =
+    data.monthly.map(x => x.month);
+
+  const income =
+    data.monthly.map(x => x.income);
+
+  const expenses =
+    data.monthly.map(x => x.expenses);
+
+  const balance =
+    data.monthly.map(x => x.balance);
+
+  if(moneyChart)
+    moneyChart.destroy();
+
+  moneyChart = new Chart(
+    $("moneyChart"),
+    {
+      type:"line",
+      data:{
+        labels,
+        datasets:[
+          {
+            label:"Income",
+            data:income,
+            tension:.35
+          },
+          {
+            label:"Expenses",
+            data:expenses,
+            tension:.35
+          },
+          {
+            label:"Balance",
+            data:balance,
+            tension:.35
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{
+          mode:"index",
+          intersect:false
+        },
+        plugins:{
+          legend:{
+            labels:{color:"#dfe5ff"}
+          }
+        },
+        scales:{
+          x:{
+            ticks:{color:"#8f98b5"},
+            grid:{color:"rgba(255,255,255,.05)"}
+          },
+          y:{
+            ticks:{
+              color:"#8f98b5",
+              callback:value => "₹" +
+                Number(value).toLocaleString("en-IN")
+            },
+            grid:{color:"rgba(255,255,255,.05)"}
+          }
+        }
+      }
+    }
+  );
+}
+
+function renderCategories(categories){
+
+  if(categoryChart)
+    categoryChart.destroy();
+
+  if(!categories.length)
+    return;
+
+  categoryChart = new Chart(
+    $("categoryChart"),
+    {
+      type:"doughnut",
+      data:{
+        labels:categories.map(x=>x.category),
+        datasets:[
+          {
+            data:categories.map(x=>x.amount)
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{
+            position:"bottom",
+            labels:{color:"#dfe5ff"}
+          }
+        }
+      }
+    }
+  );
+}
+
+async function loadBudget(){
+
+  const month =
+    $("budgetMonth").value ||
+    new Date().toISOString().slice(0,7);
+
+  const data =
+    await api(
+      "/api/finance/budget?month=" +
+      encodeURIComponent(month)
+    );
+
+  $("budgetValue").value =
+    data.amount || "";
+}
+
+async function saveBudget(){
+
+  const month =
+    $("budgetMonth").value;
+
+  const amount =
+    Number($("budgetValue").value);
+
+  if(!month || !amount || amount <= 0){
+    toast("Enter month and budget.");
+    return;
+  }
+
+  try{
+
+    await api("/api/finance/budget",{
+      method:"POST",
+      body:JSON.stringify({
+        month,
+        amount
+      })
+    });
+
+    toast("Budget saved 💳");
+
+    loadFinance();
+
+  }catch(error){
+
+    toast(error.message);
+  }
+}
+
+function renderGoals(goals){
+
+  const box = $("goalsList");
+
+  if(!goals.length){
+
+    box.innerHTML =
+      '<div class="notice">No savings goals yet.</div>';
+
+    return;
+  }
+
+  box.innerHTML = goals.map(goal => {
+
+    const progress =
+      Math.min(100, Number(goal.progress || 0));
+
+    return `
+      <div class="goal">
+
+        <div class="goal-head">
+          <strong>${escapeHtml(goal.name)}</strong>
+          <span class="cyan">${progress}%</span>
+        </div>
+
+        <div class="progress">
+          <span style="width:${progress}%"></span>
+        </div>
+
+        <div class="notice">
+          ${money(goal.saved)} / ${money(goal.target)}
+        </div>
+
+        <div style="display:flex;gap:7px;margin-top:8px">
+          <button
+            class="secondary"
+            onclick="updateGoal(${goal.id},${goal.saved},${goal.target})">
+            Update
+          </button>
+
+          <button
+            class="danger"
+            onclick="deleteGoal(${goal.id})">
+            Delete
+          </button>
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+async function addSavingsGoal(){
+
+  const name =
+    $("goalName").value.trim();
+
+  const target =
+    Number($("goalTarget").value);
+
+  const saved =
+    Number($("goalSaved").value || 0);
+
+  if(!name || !target || target <= 0){
+    toast("Enter goal name and target.");
+    return;
+  }
+
+  try{
+
+    await api("/api/finance/savings-goals",{
+      method:"POST",
+      body:JSON.stringify({
+        name,
+        target,
+        saved
+      })
+    });
+
+    $("goalName").value="";
+    $("goalTarget").value="";
+    $("goalSaved").value="";
+
+    toast("Savings goal created 🎯");
+
+    loadFinance();
+
+  }catch(error){
+
+    toast(error.message);
+  }
+}
+
+async function updateGoal(id,currentSaved,currentTarget){
+
+  const saved =
+    prompt(
+      "Saved amount ₹",
+      currentSaved
+    );
+
+  if(saved === null)
+    return;
+
+  const target =
+    prompt(
+      "Target amount ₹",
+      currentTarget
+    );
+
+  if(target === null)
+    return;
+
+  try{
+
+    await api(
+      "/api/finance/savings-goals/" + id,
+      {
+        method:"PUT",
+        body:JSON.stringify({
+          saved:Number(saved),
+          target:Number(target)
+        })
+      }
+    );
+
+    toast("Savings goal updated");
+
+    loadFinance();
+
+  }catch(error){
+
+    toast(error.message);
+  }
+}
+
+async function deleteGoal(id){
+
+  if(!confirm("Delete this savings goal?"))
+    return;
+
+  try{
+
+    await api(
+      "/api/finance/savings-goals/" + id,
+      {
+        method:"DELETE"
+      }
+    );
+
+    toast("Savings goal deleted");
+
+    loadFinance();
+
+  }catch(error){
+
+    toast(error.message);
+  }
+}
+
+
+async function changeFinancePin(){
+
+  const oldPin = prompt("Current Finance PIN:");
+
+  if(oldPin === null)
+    return;
+
+  const newPin = prompt(
+    "New Finance PIN (4-8 digits):"
+  );
+
+  if(newPin === null)
+    return;
+
+  const confirmPin = prompt(
+    "Confirm new Finance PIN:"
+  );
+
+  if(confirmPin !== newPin){
+    toast("New PINs do not match.");
+    return;
+  }
+
+  try{
+
+    await api("/api/finance/change-pin",{
+      method:"POST",
+      body:JSON.stringify({
+        old_pin:oldPin,
+        new_pin:newPin
+      })
+    });
+
+    toast("Finance PIN changed 🔐");
+
+  }catch(error){
+
+    toast(error.message);
+  }
+}
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+$("budgetMonth").value =
+  new Date().toISOString().slice(0,7);
+
+$("entryDate").value =
+  new Date().toISOString().slice(0,10);
+
+checkStatus();
+</script>
+
+</body>
+</html>

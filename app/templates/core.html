@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skyla Life OS</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Inter,system-ui,sans-serif;
+background:#080b14;
+color:#f5f7ff;
+}
+.container{max-width:1100px;margin:auto;padding:24px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.brand{font-size:22px;font-weight:800}
+.back{
+background:#141a2a;color:white;text-decoration:none;
+padding:10px 16px;border-radius:12px;border:1px solid #293149
+}
+.hero{
+background:linear-gradient(135deg,#11182a,#0d1220);
+border:1px solid #252e45;
+border-radius:24px;padding:28px;margin-bottom:20px
+}
+h1{margin:0 0 8px;font-size:34px}
+.sub{color:#8f9bb5}
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:18px
+}
+.card{
+background:#101622;
+border:1px solid #252e45;
+border-radius:20px;
+padding:22px
+}
+input,select,textarea{
+width:100%;
+margin:7px 0;
+padding:12px;
+border-radius:10px;
+border:1px solid #30394f;
+background:#090d17;
+color:white;
+outline:none
+}
+textarea{min-height:80px;resize:vertical}
+button{
+border:0;
+border-radius:10px;
+padding:10px 15px;
+background:#6d4aff;
+color:white;
+font-weight:700;
+cursor:pointer;
+margin-top:6px
+}
+button:hover{filter:brightness(1.15)}
+button.danger{background:#d83d62}
+button.success{background:#168f6b}
+.item{
+background:#0b101b;
+border:1px solid #252e45;
+border-radius:14px;
+padding:15px;
+margin-top:10px
+}
+.item strong{display:block;font-size:16px}
+.meta{font-size:13px;color:#8490aa;margin:5px 0}
+.progress{
+height:8px;background:#252c3e;border-radius:20px;overflow:hidden;margin:10px 0
+}
+.progress div{
+height:100%;background:#6d4aff;width:0%
+}
+.empty{color:#68748e;text-align:center;padding:20px}
+.status{margin-top:12px;color:#73e6bd}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="top">
+<div class="brand">🌌 Skyla Life OS</div>
+<a class="back" href="/">← Home</a>
+</div>
+
+<div class="hero">
+<h1 id="title"></h1>
+<div class="sub" id="subtitle"></div>
+</div>
+
+<div class="grid">
+
+<div class="card" id="formCard"></div>
+
+<div class="card">
+<h2 id="listTitle"></h2>
+<div id="list"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+const moduleName = "{{ module }}";
+
+const config = {
+routine:{
+title:"🕒 Daily Routine",
+subtitle:"Create and manage your daily schedule.",
+list:"Your Routines",
+api:"/api/routines"
+},
+habits:{
+title:"🔥 Habits",
+subtitle:"Build consistency and track your streaks.",
+list:"Your Habits",
+api:"/api/habits"
+},
+goals:{
+title:"🎯 Goals",
+subtitle:"Track targets, milestones and progress.",
+list:"Your Goals",
+api:"/api/goals"
+}
+};
+
+const c=config[moduleName];
+
+document.getElementById("title").textContent=c.title;
+document.getElementById("subtitle").textContent=c.subtitle;
+document.getElementById("listTitle").textContent=c.list;
+
+function esc(value){
+return String(value ?? "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+function form(){
+const box=document.getElementById("formCard");
+
+if(moduleName==="routine"){
+box.innerHTML=`
+<h2>➕ Add Routine</h2>
+<input id="titleInput" placeholder="Routine title">
+<input id="timeInput" type="time">
+<input id="categoryInput" placeholder="Category e.g. Study">
+<select id="repeatInput">
+<option>Daily</option>
+<option>Weekdays</option>
+<option>Weekly</option>
+<option>Monthly</option>
+</select>
+<textarea id="descriptionInput" placeholder="Description"></textarea>
+<button onclick="addRoutine()">Add Routine</button>
+<div class="status" id="status"></div>`;
+}
+
+if(moduleName==="habits"){
+box.innerHTML=`
+<h2>➕ Add Habit</h2>
+<input id="nameInput" placeholder="Habit name">
+<input id="categoryInput" placeholder="Category e.g. Fitness">
+<input id="targetInput" type="number" min="1" max="7" value="7" placeholder="Target days">
+<button onclick="addHabit()">Add Habit</button>
+<div class="status" id="status"></div>`;
+}
+
+if(moduleName==="goals"){
+box.innerHTML=`
+<h2>➕ Add Goal</h2>
+<input id="titleInput" placeholder="Goal title">
+<input id="categoryInput" placeholder="Category">
+<input id="targetInput" type="number" value="100" placeholder="Target">
+<input id="deadlineInput" type="date">
+<textarea id="descriptionInput" placeholder="Description"></textarea>
+<button onclick="addGoal()">Add Goal</button>
+<div class="status" id="status"></div>`;
+}
+}
+
+async function load(){
+const res=await fetch(c.api);
+const data=await res.json();
+render(data);
+}
+
+function render(data){
+const list=document.getElementById("list");
+
+if(!data.length){
+list.innerHTML='<div class="empty">Nothing added yet.</div>';
+return;
+}
+
+if(moduleName==="routine"){
+list.innerHTML=data.map(x=>`
+<div class="item">
+<strong>${esc(x.title)}</strong>
+<div class="meta">⏰ ${esc(x.time||"No time")} · ${esc(x.category)} · ${esc(x.repeat)}</div>
+<div class="meta">${esc(x.description)}</div>
+<button class="danger" onclick="deleteItem(${x.id})">Delete</button>
+</div>`).join("");
+}
+
+if(moduleName==="habits"){
+list.innerHTML=data.map(x=>`
+<div class="item">
+<strong>${esc(x.name)}</strong>
+<div class="meta">${esc(x.category)} · 🔥 Streak: ${x.streak}</div>
+<button class="${x.completed_today?'success':''}" onclick="toggleHabit(${x.id})">
+${x.completed_today?'✓ Completed Today':'Mark Complete'}
+</button>
+<button class="danger" onclick="deleteItem(${x.id})">Delete</button>
+</div>`).join("");
+}
+
+if(moduleName==="goals"){
+list.innerHTML=data.map(x=>{
+let percent=x.target>0?Math.min(100,(x.progress/x.target)*100):0;
+return `
+<div class="item">
+<strong>${esc(x.title)}</strong>
+<div class="meta">${esc(x.category)} · Target: ${x.target}</div>
+<div class="progress"><div style="width:${percent}%"></div></div>
+<div class="meta">${x.progress} / ${x.target} · ${Math.round(percent)}%</div>
+<div class="meta">Deadline: ${esc(x.deadline||"No deadline")}</div>
+<button onclick="advanceGoal(${x.id},${x.progress},${x.target})">+ Progress</button>
+<button class="danger" onclick="deleteItem(${x.id})">Delete</button>
+</div>`;
+}).join("");
+}
+}
+
+async function addRoutine(){
+const data={
+title:document.getElementById("titleInput").value,
+time:document.getElementById("timeInput").value,
+category:document.getElementById("categoryInput").value||"General",
+repeat:document.getElementById("repeatInput").value,
+description:document.getElementById("descriptionInput").value
+};
+
+if(!data.title.trim()) return alert("Routine title required");
+
+await fetch("/api/routines",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+});
+
+document.getElementById("status").textContent="✓ Routine saved";
+document.getElementById("titleInput").value="";
+document.getElementById("descriptionInput").value="";
+load();
+}
+
+async function addHabit(){
+const data={
+name:document.getElementById("nameInput").value,
+category:document.getElementById("categoryInput").value||"General",
+target_days:Number(document.getElementById("targetInput").value)||7
+};
+
+if(!data.name.trim()) return alert("Habit name required");
+
+await fetch("/api/habits",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+});
+
+document.getElementById("status").textContent="✓ Habit saved";
+document.getElementById("nameInput").value="";
+load();
+}
+
+async function addGoal(){
+const data={
+title:document.getElementById("titleInput").value,
+category:document.getElementById("categoryInput").value||"General",
+target:Number(document.getElementById("targetInput").value)||100,
+deadline:document.getElementById("deadlineInput").value,
+description:document.getElementById("descriptionInput").value
+};
+
+if(!data.title.trim()) return alert("Goal title required");
+
+await fetch("/api/goals",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+});
+
+document.getElementById("status").textContent="✓ Goal saved";
+document.getElementById("titleInput").value="";
+document.getElementById("descriptionInput").value="";
+load();
+}
+
+async function toggleHabit(id){
+await fetch(`/api/habits/${id}/toggle`,{method:"POST"});
+load();
+}
+
+async function deleteItem(id){
+if(!confirm("Delete this item?")) return;
+
+await fetch(`${c.api}/${id}`,{method:"DELETE"});
+load();
+}
+
+async function advanceGoal(id,current,target){
+const next=Math.min(target,current+10);
+
+await fetch(`/api/goals/${id}`,{
+method:"PUT",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({progress:next})
+});
+
+load();
+}
+
+form();
+load();
+</script>
+
+</body>
+</html>

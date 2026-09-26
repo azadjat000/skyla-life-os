@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Skyla — Discipline</title>
+    <link rel="stylesheet" href="/static/css/skyla.css">
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <div class="brand">⚡ SKYLA</div>
+
+        <button onclick="Skyla.go('/')">🏠 Home</button>
+        <button onclick="Skyla.go('/motivation')">🔥 Motivation</button>
+        <button class="active">🧱 Discipline</button>
+        <button onclick="Skyla.go('/obsession')">⚡ Obsession</button>
+
+        <button onclick="Skyla.go('/daily-routine')">🕒 Routine</button>
+        <button onclick="Skyla.go('/habits')">✅ Habits</button>
+        <button onclick="Skyla.go('/goals')">🎯 Goals</button>
+
+        <button onclick="Skyla.go('/football')">⚽ Football</button>
+        <button onclick="Skyla.go('/fitness')">💪 Fitness</button>
+        <button onclick="Skyla.go('/analytics')">📊 Analytics</button>
+        <button onclick="Skyla.go('/finance')">💰 Finance</button>
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <h1>🧱 Discipline</h1>
+                <p>Small actions. Every day. No excuses.</p>
+            </div>
+        </header>
+
+
+        <section class="stats-grid">
+
+            <div class="card stat-card">
+                <span>🧱 Active Routines</span>
+                <strong id="activeCount">0</strong>
+            </div>
+
+            <div class="card stat-card">
+                <span>📋 Total Routines</span>
+                <strong id="totalCount">0</strong>
+            </div>
+
+            <div class="card stat-card">
+                <span>⚡ Discipline Score</span>
+                <strong id="disciplineScore">0%</strong>
+            </div>
+
+        </section>
+
+
+        <section class="card">
+
+            <h2>➕ Add Discipline Routine</h2>
+
+            <form id="disciplineForm" class="form-grid">
+
+                <input
+                    id="title"
+                    placeholder="Routine — e.g. Wake Up"
+                    required
+                >
+
+                <input
+                    id="time"
+                    type="time"
+                >
+
+                <input
+                    id="repeat"
+                    value="daily"
+                    placeholder="Repeat — daily / weekly"
+                >
+
+                <textarea
+                    id="description"
+                    placeholder="What needs to be done?"
+                ></textarea>
+
+                <button class="primary-btn" type="submit">
+                    🧱 Add Routine
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <section>
+
+            <div class="section-title">
+                <h2>🔥 My Discipline System</h2>
+            </div>
+
+            <div id="disciplineList" class="card-grid"></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="/static/js/skyla.js"></script>
+
+<script>
+
+async function loadDiscipline() {
+
+    const items = await Skyla.get("/api/discipline");
+
+    const active = items.filter(x => x.active).length;
+
+    document.getElementById("totalCount").textContent = items.length;
+    document.getElementById("activeCount").textContent = active;
+
+    const score = items.length
+        ? Math.round((active / items.length) * 100)
+        : 0;
+
+    document.getElementById("disciplineScore").textContent =
+        score + "%";
+
+
+    const list = document.getElementById("disciplineList");
+
+    if (!items.length) {
+
+        list.innerHTML = `
+            <div class="card">
+                <h3>No discipline routines yet 🧱</h3>
+                <p>Add your first routine above.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    list.innerHTML = items.map(item => `
+
+        <div class="card">
+
+            <div class="card-row">
+
+                <h3>
+                    ${Skyla.esc(item.title)}
+                </h3>
+
+                <span class="badge">
+                    ${item.active ? "ACTIVE" : "OFF"}
+                </span>
+
+            </div>
+
+
+            <p>
+                ⏰ ${Skyla.esc(item.time || "Any time")}
+            </p>
+
+            <p>
+                🔁 ${Skyla.esc(item.repeat || "daily")}
+            </p>
+
+            <p>
+                ${Skyla.esc(item.description || "")}
+            </p>
+
+
+            <div class="button-row">
+
+                <button
+                    onclick="toggleDiscipline(${item.id})">
+
+                    ${item.active ? "⏸ Disable" : "▶ Enable"}
+
+                </button>
+
+
+                <button
+                    class="danger-btn"
+                    onclick="deleteDiscipline(${item.id})">
+
+                    🗑 Delete
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join("");
+}
+
+
+async function toggleDiscipline(id) {
+
+    try {
+
+        await Skyla.send(
+            `/api/discipline/${id}/toggle`
+        );
+
+        await loadDiscipline();
+
+        Skyla.toast("Discipline routine updated");
+
+    } catch (e) {
+
+        Skyla.toast(e.message, "error");
+
+    }
+}
+
+
+async function deleteDiscipline(id) {
+
+    if (!confirm("Delete this discipline routine?")) {
+        return;
+    }
+
+    try {
+
+        await Skyla.send(
+            `/api/discipline/${id}`,
+            "DELETE"
+        );
+
+        await loadDiscipline();
+
+        Skyla.toast("Routine deleted");
+
+    } catch (e) {
+
+        Skyla.toast(e.message, "error");
+
+    }
+}
+
+
+document
+    .getElementById("disciplineForm")
+    .addEventListener("submit", async e => {
+
+        e.preventDefault();
+
+        try {
+
+            await Skyla.send(
+                "/api/discipline",
+                "POST",
+                {
+                    title:
+                        document.getElementById("title").value,
+
+                    time:
+                        document.getElementById("time").value,
+
+                    repeat:
+                        document.getElementById("repeat").value,
+
+                    description:
+                        document.getElementById("description").value,
+
+                    active: true
+                }
+            );
+
+            e.target.reset();
+
+            document.getElementById("repeat").value = "daily";
+
+            await loadDiscipline();
+
+            Skyla.toast("🧱 Discipline routine saved");
+
+        } catch (err) {
+
+            Skyla.toast(err.message, "error");
+
+        }
+
+    });
+
+
+loadDiscipline();
+
+</script>
+
+</body>
+</html>
