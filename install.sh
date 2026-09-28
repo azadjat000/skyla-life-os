@@ -10,6 +10,9 @@ echo
 
 cd "$APP_DIR"
 
+# Create runtime data directory required by SQLite.
+mkdir -p "$APP_DIR/data"
+
 if ! command -v python3 >/dev/null 2>&1; then
     echo "❌ Python 3 is required."
     exit 1
