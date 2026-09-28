@@ -409,17 +409,6 @@ def fitness_graph_data():
         "daily": daily
     })
 
-@fitness.get("/api/fitness/graph-data")
-def fitness_graph_data_v2():
-    """
-    Extended 90-day fitness graph data.
-
-    This endpoint intentionally uses the same URL as the original
-    graph-data endpoint only if the older endpoint is replaced below.
-    """
-    pass
-
-
 @fitness.get("/api/fitness/goals")
 def get_fitness_goals():
 
@@ -590,7 +579,7 @@ def fitness_goals_analytics():
         and x.metric_date <= today
     )
 
-    sleep_values = [
+    weekly_sleep_values = [
         float(x.sleep_hours or 0)
         for x in metrics
         if x.metric_date >= start_week
@@ -598,9 +587,22 @@ def fitness_goals_analytics():
         and float(x.sleep_hours or 0) > 0
     ]
 
-    average_sleep = (
-        sum(sleep_values) / len(sleep_values)
-        if sleep_values else 0
+    monthly_sleep_values = [
+        float(x.sleep_hours or 0)
+        for x in metrics
+        if x.metric_date >= start_month
+        and x.metric_date <= today
+        and float(x.sleep_hours or 0) > 0
+    ]
+
+    weekly_average_sleep = (
+        sum(weekly_sleep_values) / len(weekly_sleep_values)
+        if weekly_sleep_values else 0
+    )
+
+    monthly_average_sleep = (
+        sum(monthly_sleep_values) / len(monthly_sleep_values)
+        if monthly_sleep_values else 0
     )
 
     results = []
@@ -641,32 +643,71 @@ def fitness_goals_analytics():
             )
 
         elif goal.metric == "sleep":
-            actual = average_sleep
+            actual = (
+                weekly_average_sleep
+                if goal.period == "weekly"
+                else monthly_average_sleep
+            )
 
         elif goal.metric == "weight":
 
-            weight_rows = [
-                x for x in metrics
-                if float(x.weight or 0) > 0
-            ]
+            weight_rows = sorted(
+                [
+                    x for x in metrics
+                    if float(x.weight or 0) > 0
+                ],
+                key=lambda x: (x.metric_date, x.id)
+            )
 
             if weight_rows:
-                latest = sorted(
-                    weight_rows,
-                    key=lambda x: (x.metric_date, x.id)
-                )[-1]
-
-                actual = float(latest.weight or 0)
+                actual = float(weight_rows[-1].weight or 0)
 
         target = float(goal.target or 0)
 
-        if target > 0:
+        if goal.metric == "weight" and target > 0:
+
+            weight_rows = sorted(
+                [
+                    x for x in metrics
+                    if float(x.weight or 0) > 0
+                ],
+                key=lambda x: (x.metric_date, x.id)
+            )
+
+            if weight_rows:
+                starting_weight = float(weight_rows[0].weight or 0)
+
+                if abs(starting_weight - target) < 0.001:
+                    progress = 100
+                else:
+                    distance = abs(starting_weight - target)
+                    achieved = abs(starting_weight - actual)
+
+                    progress = min(
+                        100,
+                        max(0, (achieved / distance) * 100)
+                    )
+
+                    # Do not count movement beyond the target
+                    # as extra progress in the wrong direction.
+                    if starting_weight > target and actual > starting_weight:
+                        progress = 0
+                    elif starting_weight < target and actual < starting_weight:
+                        progress = 0
+        elif target > 0:
             progress = min(
                 100,
                 max(0, (actual / target) * 100)
             )
         else:
             progress = 0
+
+        if progress >= 100:
+            status = "Completed"
+        elif progress > 0:
+            status = "In progress"
+        else:
+            status = "Not started"
 
         results.append({
             "id": goal.id,
@@ -676,6 +717,7 @@ def fitness_goals_analytics():
             "target": target,
             "actual": round(actual, 2),
             "progress": round(progress, 1),
+            "status": status,
         })
 
     return jsonify({
@@ -686,6 +728,7 @@ def fitness_goals_analytics():
             "weekly_calories": weekly_calories,
             "weekly_running": round(weekly_running, 2),
             "monthly_running": round(monthly_running, 2),
-            "average_sleep": round(average_sleep, 2),
+            "weekly_average_sleep": round(weekly_average_sleep, 2),
+            "monthly_average_sleep": round(monthly_average_sleep, 2),
         }
     })

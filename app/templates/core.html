@@ -77,8 +77,173 @@ height:8px;background:#252c3e;border-radius:20px;overflow:hidden;margin:10px 0
 height:100%;background:#6d4aff;width:0%
 }
 .empty{color:#68748e;text-align:center;padding:20px}
+.goal-dashboard{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:12px;
+margin-bottom:16px
+}
+.goal-stat{
+background:#0b101b;
+border:1px solid #252e45;
+border-radius:16px;
+padding:15px
+}
+.goal-stat .value{
+font-size:24px;
+font-weight:800;
+margin-top:5px
+}
+.goal-stat .label{
+font-size:11px;
+color:#8490aa
+}
+.goal-card{
+background:linear-gradient(135deg,#0d1423,#0a0f1a);
+border:1px solid #252e45;
+border-radius:18px;
+padding:18px;
+margin-top:12px
+}
+.goal-head{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:12px
+}
+.goal-title{
+font-size:19px;
+font-weight:800
+}
+.goal-badge{
+font-size:11px;
+padding:5px 9px;
+border-radius:999px;
+background:#171f33;
+color:#9da9c3;
+white-space:nowrap
+}
+.goal-badge.done{
+background:#168f6b;
+color:#fff
+}
+.goal-badge.overdue{
+background:#7d243d;
+color:#fff
+}
+.goal-description{
+font-size:13px;
+color:#a5afc4;
+line-height:1.5;
+margin:9px 0
+}
+.goal-progress-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-top:14px
+}
+.goal-percent{
+font-size:22px;
+font-weight:900
+}
+.goal-progress{
+height:11px;
+background:#252c3e;
+border-radius:20px;
+overflow:hidden;
+margin:9px 0
+}
+.goal-progress > div{
+height:100%;
+background:linear-gradient(90deg,#6d4aff,#a66cff);
+border-radius:20px;
+transition:width .3s ease
+}
+.goal-milestones{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:6px;
+margin:12px 0
+}
+.goal-milestone{
+height:7px;
+border-radius:10px;
+background:#252c3e
+}
+.goal-milestone.reached{
+background:#168f6b
+}
+.goal-meta{
+display:flex;
+flex-wrap:wrap;
+gap:7px;
+margin:10px 0
+}
+.goal-chip{
+font-size:11px;
+padding:5px 8px;
+border-radius:999px;
+background:#151d30;
+border:1px solid #252e45;
+color:#8f9bb5
+}
+.goal-actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:12px
+}
+@media(max-width:800px){
+.goal-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:430px){
+.goal-dashboard{grid-template-columns:1fr 1fr}
+.goal-head{flex-direction:column}
+.goal-milestones{gap:4px}
+}
+
 .status{margin-top:12px;color:#73e6bd}
+
+.habit-dashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.habit-stat{background:#0b101b;border:1px solid #252e45;border-radius:16px;padding:15px}
+.habit-stat .value{font-size:24px;font-weight:800;margin-top:5px}
+.habit-stat .label{font-size:12px;color:#8490aa}
+.habit-card{background:linear-gradient(135deg,#0d1423,#0a0f1a);border:1px solid #252e45;border-radius:18px;padding:17px;margin-top:12px}
+.habit-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.habit-title{font-size:18px;font-weight:800}
+.habit-badge{font-size:11px;padding:5px 9px;border-radius:999px;background:#171f33;color:#9da9c3}
+.habit-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+.habit-metric{background:#090e18;border-radius:11px;padding:9px}
+.habit-metric strong{display:block;font-size:15px}
+.habit-metric span{font-size:11px;color:#77839b}
+.habit-actions{display:flex;gap:8px;flex-wrap:wrap}
+.habit-week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}
+.habit-day{height:10px;border-radius:4px;background:#252c3e}
+.habit-day.done{background:#168f6b}
+
+.habit-month{background:linear-gradient(135deg,#0d1423,#0a0f1a);border:1px solid #252e45;border-radius:18px;padding:18px;margin-bottom:16px}
+.habit-month-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.habit-month-title{font-size:18px;font-weight:800}
+.habit-month-sub{font-size:12px;color:#8490aa}
+.habit-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.habit-calendar-label{text-align:center;font-size:10px;color:#68748e;padding:3px 0}
+.habit-calendar-day{aspect-ratio:1/1;min-height:28px;border-radius:7px;background:#171e2d;border:1px solid #252e45;display:flex;align-items:center;justify-content:center;font-size:11px;color:#77839b}
+.habit-calendar-day.empty{background:transparent;border-color:transparent}
+.habit-calendar-day.done{background:#168f6b;border-color:#1ba77d;color:#fff;font-weight:800}
+.habit-calendar-day.today{outline:2px solid #6d4aff;outline-offset:1px}
+.habit-calendar-legend{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11px;color:#77839b}
+.habit-calendar-dot{width:10px;height:10px;border-radius:3px;background:#168f6b}
+@media(max-width:430px){
+.habit-calendar{gap:4px}
+.habit-calendar-day{min-height:24px;font-size:10px;border-radius:5px}
+}
+@media(max-width:700px){.habit-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:430px){.habit-dashboard{grid-template-columns:1fr 1fr}.habit-head{flex-direction:column}}
 </style>
+<link rel="stylesheet" href="/static/css/skyla-global.css">
+<link rel="stylesheet" href="/static/css/skyla-pages.css">
 </head>
 
 <body>
@@ -145,6 +310,30 @@ return String(value ?? "")
 .replaceAll("'","&#039;");
 }
 
+async function load(){
+    try{
+        const response = await fetch(c.api);
+
+        if(!response.ok){
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        render(Array.isArray(data) ? data : []);
+    }catch(error){
+        console.error("Skyla load error:", error);
+
+        const list = document.getElementById("list");
+        if(list){
+            list.innerHTML = `
+                <div class="empty">
+                    ⚠️ Could not load ${esc(c.list)}.<br>
+                    <small>${esc(error.message)}</small>
+                </div>`;
+        }
+    }
+}
+
 function form(){
 const box=document.getElementById("formCard");
 
@@ -179,22 +368,18 @@ if(moduleName==="goals"){
 box.innerHTML=`
 <h2>➕ Add Goal</h2>
 <input id="titleInput" placeholder="Goal title">
-<input id="categoryInput" placeholder="Category">
-<input id="targetInput" type="number" value="100" placeholder="Target">
+<input id="categoryInput" placeholder="Category e.g. Fitness">
+<input id="targetInput" type="number" min="1" value="100" placeholder="Target">
+<input id="progressInput" type="number" min="0" value="0" placeholder="Starting progress">
 <input id="deadlineInput" type="date">
-<textarea id="descriptionInput" placeholder="Description"></textarea>
-<button onclick="addGoal()">Add Goal</button>
+<textarea id="descriptionInput" placeholder="Why this goal matters / notes"></textarea>
+<button onclick="addGoal()">🚀 Add Goal</button>
 <div class="status" id="status"></div>`;
 }
 }
-
-async function load(){
-const res=await fetch(c.api);
-const data=await res.json();
-render(data);
-}
-
 function render(data){
+if(moduleName==="habits") window.__habitsData=data;
+if(moduleName==="goals") window.__goalsData=data;
 const list=document.getElementById("list");
 
 if(!data.length){
@@ -203,42 +388,358 @@ return;
 }
 
 if(moduleName==="routine"){
-list.innerHTML=data.map(x=>`
+const completed=data.filter(x=>x.completed_today).length;
+const total=data.length;
+const percent=total ? Math.round((completed/total)*100) : 0;
+
+list.innerHTML=`
+<div class="item" style="margin-bottom:14px">
+<strong>📊 Today's Routine Progress</strong>
+<div class="progress">
+<div style="width:${percent}%"></div>
+</div>
+<div class="meta">${completed} / ${total} completed · ${percent}%</div>
+</div>
+${data.map(x=>`
 <div class="item">
 <strong>${esc(x.title)}</strong>
 <div class="meta">⏰ ${esc(x.time||"No time")} · ${esc(x.category)} · ${esc(x.repeat)}</div>
 <div class="meta">${esc(x.description)}</div>
+
+<button
+class="${x.completed_today?'success':''}"
+onclick="toggleRoutine(${x.id})">
+${x.completed_today?'✓ Completed Today — Undo':'☑ Mark Complete'}
+</button>
+
 <button class="danger" onclick="deleteItem(${x.id})">Delete</button>
-</div>`).join("");
+</div>`).join("")}`;
 }
 
 if(moduleName==="habits"){
-list.innerHTML=data.map(x=>`
+window.__habitsData=data;
+
+const total=data.length;
+const completedToday=data.filter(x=>x.completed_today).length;
+const avgStreak=total
+    ? Math.round(data.reduce((sum,x)=>sum+(Number(x.streak)||0),0)/total)
+    : 0;
+const avgWeekly=total
+    ? Math.round(data.reduce((sum,x)=>sum+(Number(x.weekly_completion)||0),0)/total)
+    : 0;
+const todayPercent=total
+    ? Math.round((completedToday/total)*100)
+    : 0;
+
+list.innerHTML=`
+<div class="habit-dashboard">
+
+<div class="habit-stat">
+<div class="label">🔥 TODAY</div>
+<div class="value">${completedToday}/${total}</div>
+</div>
+
+<div class="habit-stat">
+<div class="label">🔥 AVG STREAK</div>
+<div class="value">${avgStreak}</div>
+</div>
+
+<div class="habit-stat">
+<div class="label">📊 WEEKLY</div>
+<div class="value">${avgWeekly}%</div>
+</div>
+
+</div>
+
 <div class="item">
-<strong>${esc(x.name)}</strong>
-<div class="meta">${esc(x.category)} · 🔥 Streak: ${x.streak}</div>
-<button class="${x.completed_today?'success':''}" onclick="toggleHabit(${x.id})">
-${x.completed_today?'✓ Completed Today':'Mark Complete'}
+<strong>🎯 Today's Habit Progress</strong>
+<div class="progress">
+<div style="width:${todayPercent}%"></div>
+</div>
+<div class="meta">${completedToday} of ${total} habits completed · ${todayPercent}%</div>
+</div>
+
+${data.map(x=>`
+<div class="habit-card">
+
+<div class="habit-head">
+<div>
+<div class="habit-title">${esc(x.name)}</div>
+<div class="meta">${esc(x.category)} · Target ${x.target_days} days/week</div>
+</div>
+
+<div class="habit-badge">
+${x.active?'ACTIVE':'PAUSED'}
+</div>
+</div>
+
+<div class="habit-metrics">
+
+<div class="habit-metric">
+<strong>🔥 ${x.streak}</strong>
+<span>Current streak</span>
+</div>
+
+<div class="habit-metric">
+<strong>${x.weekly_completion}%</strong>
+<span>7-day completion</span>
+</div>
+
+<div class="habit-metric">
+<strong>${x.completed_this_month}</strong>
+<span>This month</span>
+</div>
+
+</div>
+
+<div class="progress">
+<div style="width:${Math.min(100,x.monthly_completion||0)}%"></div>
+</div>
+
+<div class="meta">
+${x.monthly_completion}% monthly completion ·
+${x.total_completed} total completed days
+</div>
+
+<div class="habit-week">
+${(x.week || []).map(day =>
+`<div class="habit-day ${day.completed?'done':''}" title="${day.date}"></div>`
+).join("")}
+</div>
+
+<div class="habit-month">
+<div class="habit-month-head">
+<div>
+<div class="habit-month-title">📅 Monthly Calendar</div>
+<div class="habit-month-sub">Green = completed · Purple outline = today</div>
+</div>
+<div class="habit-month-sub">${new Date().toLocaleString("en-US",{month:"long",year:"numeric"})}</div>
+</div>
+
+<div class="habit-calendar">
+${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day =>
+`<div class="habit-calendar-label">${day}</div>`
+).join("")}
+
+${(() => {
+    const month = x.month || [];
+    if(!month.length) return "";
+
+    const first = new Date(month[0].date + "T00:00:00");
+    const jsDay = first.getDay();
+    const mondayOffset = jsDay === 0 ? 6 : jsDay - 1;
+
+    const blanks = Array.from(
+        {length:mondayOffset},
+        () => `<div class="habit-calendar-day empty"></div>`
+    ).join("");
+
+    const days = month.map(day =>
+        `<div
+            class="habit-calendar-day ${day.completed?'done ':''}${day.today?'today':''}"
+            title="${day.date}${day.completed?' · Completed':''}">
+            ${day.day}
+        </div>`
+    ).join("");
+
+    return blanks + days;
+})()}
+</div>
+
+<div class="habit-calendar-legend">
+<div class="habit-calendar-dot"></div>
+<span>Completed day</span>
+</div>
+</div>
+
+<div class="habit-actions">
+
+<button
+class="${x.completed_today?'success':''}"
+onclick="toggleHabit(${x.id})">
+${x.completed_today?'✓ Completed Today — Undo':'☑ Mark Complete'}
 </button>
-<button class="danger" onclick="deleteItem(${x.id})">Delete</button>
-</div>`).join("");
+
+<button onclick="editHabit(${x.id})">
+✏️ Edit
+</button>
+
+<button class="danger" onclick="deleteItem(${x.id})">
+Delete
+</button>
+
+</div>
+
+</div>
+`).join("")}`;
 }
 
 if(moduleName==="goals"){
-list.innerHTML=data.map(x=>{
-let percent=x.target>0?Math.min(100,(x.progress/x.target)*100):0;
-return `
+window.__goalsData=data;
+
+const total=data.length;
+const active=data.filter(x=>x.active).length;
+const completed=data.filter(x=>
+    Number(x.target)>0 &&
+    Number(x.progress)>=Number(x.target)
+).length;
+
+const avgProgress=total
+    ? Math.round(data.reduce((sum,x)=>{
+        const target=Number(x.target)||0;
+        const progress=Number(x.progress)||0;
+        return sum+(target>0?Math.min(100,(progress/target)*100):0);
+    },0)/total)
+    : 0;
+
+list.innerHTML=`
+<div class="goal-dashboard">
+<div class="goal-stat">
+<div class="label">🎯 TOTAL GOALS</div>
+<div class="value">${total}</div>
+</div>
+
+<div class="goal-stat">
+<div class="label">⚡ ACTIVE</div>
+<div class="value">${active}</div>
+</div>
+
+<div class="goal-stat">
+<div class="label">🏆 COMPLETED</div>
+<div class="value">${completed}</div>
+</div>
+
+<div class="goal-stat">
+<div class="label">📊 AVG PROGRESS</div>
+<div class="value">${avgProgress}%</div>
+</div>
+</div>
+
 <div class="item">
-<strong>${esc(x.title)}</strong>
-<div class="meta">${esc(x.category)} · Target: ${x.target}</div>
-<div class="progress"><div style="width:${percent}%"></div></div>
-<div class="meta">${x.progress} / ${x.target} · ${Math.round(percent)}%</div>
-<div class="meta">Deadline: ${esc(x.deadline||"No deadline")}</div>
-<button onclick="advanceGoal(${x.id},${x.progress},${x.target})">+ Progress</button>
-<button class="danger" onclick="deleteItem(${x.id})">Delete</button>
-</div>`;
-}).join("");
+<strong>📈 Overall Goal Progress</strong>
+<div class="progress">
+<div style="width:${avgProgress}%"></div>
+</div>
+<div class="meta">${avgProgress}% average progress across ${total} goal${total===1?"":"s"}</div>
+</div>
+
+${data.length ? data.map(x=>{
+const target=Number(x.target)||0;
+const progress=Number(x.progress)||0;
+const percent=target>0 ? Math.min(100,(progress/target)*100) : 0;
+
+const deadline=x.deadline ? new Date(x.deadline+"T23:59:59") : null;
+const today=new Date();
+
+let deadlineText="No deadline";
+let badgeClass="";
+
+if(deadline){
+    const diff=Math.ceil((deadline-today)/86400000);
+
+    if(percent>=100){
+        deadlineText="🏆 Completed";
+    }else if(diff<0){
+        deadlineText=`⚠️ ${Math.abs(diff)} day${Math.abs(diff)===1?"":"s"} overdue`;
+        badgeClass="overdue";
+    }else if(diff===0){
+        deadlineText="⏳ Due today";
+    }else{
+        deadlineText=`⏳ ${diff} day${diff===1?"":"s"} left`;
+    }
 }
+
+if(percent>=100) badgeClass="done";
+
+return `
+<div class="goal-card">
+
+<div class="goal-head">
+<div>
+<div class="goal-title">${esc(x.title)}</div>
+<div class="meta">${esc(x.category||"General")}</div>
+</div>
+
+<div class="goal-badge ${badgeClass}">
+${percent>=100 ? "✓ COMPLETED" : x.active ? "ACTIVE" : "PAUSED"}
+</div>
+</div>
+
+${x.description ? `
+<div class="goal-description">${esc(x.description)}</div>
+` : ""}
+
+<div class="goal-progress-row">
+<strong>Progress</strong>
+<div class="goal-percent">${Math.round(percent)}%</div>
+</div>
+
+<div class="goal-progress">
+<div style="width:${percent}%"></div>
+</div>
+
+<div class="goal-milestones">
+${[25,50,75,100].map(m=>
+`<div class="goal-milestone ${percent>=m?"reached":""}" title="${m}% milestone"></div>`
+).join("")}
+</div>
+
+<div class="goal-meta">
+<div class="goal-chip">📌 ${progress} / ${target}</div>
+<div class="goal-chip">${deadlineText}</div>
+${x.deadline ? `<div class="goal-chip">📅 ${esc(x.deadline)}</div>` : ""}
+</div>
+
+<div class="goal-actions">
+<button onclick="advanceGoal(${x.id},${progress},${target})">➕ +10 Progress</button>
+<button onclick="editGoal(${x.id})">✏️ Edit</button>
+<button class="danger" onclick="deleteItem(${x.id})">🗑 Delete</button>
+</div>
+
+</div>`;
+}).join("") : `
+<div class="empty">
+🎯 No goals yet.<br>
+Create your first goal above and start building progress.
+</div>`}`;
+}
+}
+
+async function editHabit(id){
+    const habit = window.__habitsData?.find(x => x.id === id);
+    if(!habit) return alert("Habit not found");
+
+    const name = prompt("Habit name:", habit.name);
+    if(name === null) return;
+
+    const category = prompt("Category:", habit.category || "General");
+    if(category === null) return;
+
+    const target = prompt("Target days per week (1-7):", habit.target_days);
+    if(target === null) return;
+
+    const targetDays = Number(target);
+    if(!Number.isInteger(targetDays) || targetDays < 1 || targetDays > 7){
+        return alert("Target days must be between 1 and 7.");
+    }
+
+    const response = await fetch(`/api/habits/${id}`, {
+        method: "PUT",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            name: name.trim(),
+            category: category.trim() || "General",
+            target_days: targetDays
+        })
+    });
+
+    if(!response.ok){
+        const error = await response.json().catch(()=>({}));
+        return alert(error.error || "Could not update habit.");
+    }
+
+    document.getElementById("status").textContent = "✓ Habit updated";
+    load();
 }
 
 async function addRoutine(){
@@ -288,7 +789,8 @@ async function addGoal(){
 const data={
 title:document.getElementById("titleInput").value,
 category:document.getElementById("categoryInput").value||"General",
-target:Number(document.getElementById("targetInput").value)||100,
+target:Math.max(1,Number(document.getElementById("targetInput").value)||100),
+progress:Math.max(0,Number(document.getElementById("progressInput").value)||0),
 deadline:document.getElementById("deadlineInput").value,
 description:document.getElementById("descriptionInput").value
 };
@@ -307,6 +809,19 @@ document.getElementById("descriptionInput").value="";
 load();
 }
 
+async function toggleRoutine(id){
+const res=await fetch(`/api/routines/${id}/toggle`,{
+method:"POST"
+});
+
+if(!res.ok){
+alert("Could not update routine.");
+return;
+}
+
+load();
+}
+
 async function toggleHabit(id){
 await fetch(`/api/habits/${id}/toggle`,{method:"POST"});
 load();
@@ -316,6 +831,65 @@ async function deleteItem(id){
 if(!confirm("Delete this item?")) return;
 
 await fetch(`${c.api}/${id}`,{method:"DELETE"});
+load();
+}
+
+async function editGoal(id){
+const goal = window.__goalsData?.find(x=>x.id===id);
+if(!goal) return alert("Goal not found");
+
+const title = prompt("Goal title:", goal.title);
+if(title === null) return;
+
+const category = prompt("Category:", goal.category || "General");
+if(category === null) return;
+
+const target = prompt("Target:", goal.target);
+if(target === null) return;
+
+const progress = prompt("Current progress:", goal.progress);
+if(progress === null) return;
+
+const deadline = prompt("Deadline (YYYY-MM-DD, blank for none):", goal.deadline || "");
+if(deadline === null) return;
+
+const description = prompt("Description:", goal.description || "");
+if(description === null) return;
+
+const targetValue = Number(target);
+const progressValue = Number(progress);
+
+if(!title.trim()){
+    return alert("Goal title required.");
+}
+
+if(!Number.isFinite(targetValue) || targetValue <= 0){
+    return alert("Target must be greater than 0.");
+}
+
+if(!Number.isFinite(progressValue) || progressValue < 0){
+    return alert("Progress must be 0 or greater.");
+}
+
+const response = await fetch(`/api/goals/${id}`,{
+    method:"PUT",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+        title:title.trim(),
+        category:category.trim() || "General",
+        target:targetValue,
+        progress:Math.min(progressValue,targetValue),
+        deadline:deadline.trim(),
+        description:description.trim()
+    })
+});
+
+if(!response.ok){
+    const error = await response.json().catch(()=>({}));
+    return alert(error.error || "Could not update goal.");
+}
+
+document.getElementById("status").textContent="✓ Goal updated";
 load();
 }
 
@@ -335,5 +909,7 @@ form();
 load();
 </script>
 
+<script src="/static/js/skyla-global.js"></script>
+<script src="/static/js/skyla-pages.js"></script>
 </body>
 </html>

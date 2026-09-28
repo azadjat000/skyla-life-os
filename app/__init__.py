@@ -1,4 +1,5 @@
 from flask import Flask
+from app.services.notification_service import start_notification_service
 from config import Config
 from .extensions import db
 
@@ -18,6 +19,7 @@ def create_app():
     from .routes.discipline import discipline
     from .routes.obsession import obsession
     from .routes.football import football
+    from .routes.sports import sports
     from .routes.football_skills import football_skills
     from .routes.fitness import fitness
 
@@ -30,11 +32,14 @@ def create_app():
     app.register_blueprint(discipline)
     app.register_blueprint(obsession)
     app.register_blueprint(football)
+    app.register_blueprint(sports)
     app.register_blueprint(football_skills)
     app.register_blueprint(fitness)
 
     with app.app_context():
         from . import models
         db.create_all()
+
+    start_notification_service(app)
 
     return app

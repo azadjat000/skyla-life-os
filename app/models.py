@@ -13,6 +13,18 @@ class Routine(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+class RoutineLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    routine_id = db.Column(
+        db.Integer,
+        db.ForeignKey("routine.id"),
+        nullable=False
+    )
+    log_date = db.Column(db.Date, default=date.today)
+    completed = db.Column(db.Boolean, default=False)
+    completed_at = db.Column(db.DateTime)
+
+
 class Habit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
@@ -43,6 +55,89 @@ class Goal(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+class Sport(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    icon = db.Column(db.String(20), default="🏆")
+    category = db.Column(db.String(50), default="custom")
+    active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class SportSession(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sport_id = db.Column(
+        db.Integer,
+        db.ForeignKey("sport.id"),
+        nullable=False
+    )
+    session_date = db.Column(db.Date, default=date.today)
+    session_type = db.Column(db.String(100), default="Training")
+    duration = db.Column(db.Integer, default=0)
+    intensity = db.Column(db.String(30), default="medium")
+    drills = db.Column(db.Text, default="")
+    notes = db.Column(db.Text, default="")
+    rating = db.Column(db.Float, default=0)
+    metrics = db.Column(db.Text, default="{}")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class SportSkill(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sport_id = db.Column(
+        db.Integer,
+        db.ForeignKey("sport.id"),
+        nullable=False
+    )
+    name = db.Column(db.String(100), nullable=False)
+    current = db.Column(db.Float, default=0)
+    target = db.Column(db.Float, default=100)
+    unit = db.Column(db.String(30), default="%")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class SportSkillLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    skill_id = db.Column(
+        db.Integer,
+        db.ForeignKey("sport_skill.id"),
+        nullable=False
+    )
+    value = db.Column(db.Float, default=0)
+    log_date = db.Column(db.Date, default=date.today)
+    notes = db.Column(db.Text, default="")
+
+
+class SportPersonalBest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sport_id = db.Column(
+        db.Integer,
+        db.ForeignKey("sport.id"),
+        nullable=False
+    )
+    metric = db.Column(db.String(100), nullable=False)
+    value = db.Column(db.Float, default=0)
+    unit = db.Column(db.String(30), default="")
+    record_date = db.Column(db.Date, default=date.today)
+    notes = db.Column(db.Text, default="")
+
+
+class SportTarget(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sport_id = db.Column(
+        db.Integer,
+        db.ForeignKey("sport.id"),
+        nullable=False
+    )
+    title = db.Column(db.String(200), nullable=False)
+    target = db.Column(db.Float, default=100)
+    actual = db.Column(db.Float, default=0)
+    unit = db.Column(db.String(30), default="")
+    deadline = db.Column(db.Date)
+    active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class FootballSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     session_date = db.Column(db.Date, default=date.today)
@@ -67,6 +162,17 @@ class Motivation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200))
     message = db.Column(db.Text, nullable=False)
+
+    # Motivation Dashboard sections
+    category = db.Column(db.String(50), default="daily")
+    reason = db.Column(db.Text, default="")
+    vision = db.Column(db.Text, default="")
+    reward = db.Column(db.String(200), default="")
+
+    # Daily reflection
+    morning_reflection = db.Column(db.Text, default="")
+    evening_reflection = db.Column(db.Text, default="")
+
     active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -105,6 +211,25 @@ class Reminder(db.Model):
     repeat = db.Column(db.String(50), default="daily")
     enabled = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class ReminderLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    reminder_id = db.Column(
+        db.Integer,
+        db.ForeignKey("reminder.id"),
+        nullable=False
+    )
+    triggered_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+    status = db.Column(
+        db.String(30),
+        default="triggered",
+        nullable=False
+    )
 
 
 class AppSettings(db.Model):

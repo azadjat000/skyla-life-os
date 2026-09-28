@@ -17,6 +17,8 @@
     href="/static/css/skyla.css"
 >
 
+<link rel="stylesheet" href="/static/css/skyla-global.css">
+<link rel="stylesheet" href="/static/css/skyla-pages.css">
 </head>
 
 
@@ -181,7 +183,9 @@ Your life. Your system. Your progress.
 
 
 
-<section class="card">
+<div class="home-system-grid">
+
+<section class="card home-system-card">
 
 <h2>
 🔥 Motivation System
@@ -206,7 +210,7 @@ Open Motivation
 
 
 
-<section class="card">
+<section class="card home-system-card">
 
 <h2>
 🧱 Discipline System
@@ -231,7 +235,7 @@ Open Discipline
 
 
 
-<section class="card">
+<section class="card home-system-card">
 
 <h2>
 ⚡ Obsession System
@@ -275,17 +279,67 @@ Open Obsession
 
 
 
-<section>
-
-<h2>
-🚀 Life OS
-</h2>
+</div>
 
 
-<div class="card-grid">
+<section class="today-command-section">
+
+<div class="today-command-heading">
+    <div>
+        <h2>📊 Today Command Center</h2>
+        <p>Live snapshot of your day.</p>
+    </div>
+</div>
 
 
-<div class="card">
+<div class="today-command-grid">
+
+<div class="card today-command-card">
+    <span>✅ Habits</span>
+    <strong id="todayHabits">0 / 0</strong>
+    <small id="todayHabitsPercent">0% complete</small>
+</div>
+
+
+<div class="card today-command-card">
+    <span>⚽ Football</span>
+    <strong id="todayFootballSessions">0</strong>
+    <small id="todayFootballMinutes">0 min today</small>
+</div>
+
+
+<div class="card today-command-card">
+    <span>🏋️ Fitness</span>
+    <strong id="todayFitnessWorkouts">0</strong>
+    <small id="todayFitnessMinutes">0 min today</small>
+</div>
+
+
+<div class="card today-command-card">
+    <span>⚡ Focus Today</span>
+    <strong id="todayFocusMinutes">0 min</strong>
+    <small>Deep work time</small>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="life-os-section">
+
+<div class="life-os-heading">
+<div>
+<h2>🚀 Life OS</h2>
+</div>
+<span>Your personal command center</span>
+</div>
+
+
+<div class="life-module-grid">
+
+
+<div class="card life-module">
 
 <h3>
 🕒 Daily Routine
@@ -302,7 +356,7 @@ Open
 </div>
 
 
-<div class="card">
+<div class="card life-module">
 
 <h3>
 ✅ Habits
@@ -319,7 +373,7 @@ Open
 </div>
 
 
-<div class="card">
+<div class="card life-module">
 
 <h3>
 🎯 Goals
@@ -336,7 +390,7 @@ Open
 </div>
 
 
-<div class="card">
+<div class="card life-module">
 
 <h3>
 ⚽ Football
@@ -353,7 +407,7 @@ Open
 </div>
 
 
-<div class="card">
+<div class="card life-module">
 
 <h3>
 💪 Fitness
@@ -370,7 +424,7 @@ Open
 </div>
 
 
-<div class="card">
+<div class="card life-module">
 
 <h3>
 📊 Analytics
@@ -387,7 +441,7 @@ Open
 </div>
 
 
-<div class="card">
+<div class="card life-module">
 
 <h3>
 💰 Finance
@@ -404,7 +458,7 @@ Open Vault
 </div>
 
 
-<div class="card">
+<div class="card life-module">
 
 <h3>
 🔔 Reminders
@@ -500,6 +554,54 @@ async function loadDashboard(){
         ).textContent =
             data.obsession.focus_minutes;
 
+
+        document.getElementById(
+            "todayHabits"
+        ).textContent =
+            data.habits.completed_today +
+            " / " +
+            data.habits.active;
+
+
+        document.getElementById(
+            "todayHabitsPercent"
+        ).textContent =
+            data.habits.completion +
+            "% complete";
+
+
+        document.getElementById(
+            "todayFootballSessions"
+        ).textContent =
+            data.football.sessions_today;
+
+
+        document.getElementById(
+            "todayFootballMinutes"
+        ).textContent =
+            data.football.minutes_today +
+            " min today";
+
+
+        document.getElementById(
+            "todayFitnessWorkouts"
+        ).textContent =
+            data.fitness.workouts_today;
+
+
+        document.getElementById(
+            "todayFitnessMinutes"
+        ).textContent =
+            data.fitness.minutes_today +
+            " min today";
+
+
+        document.getElementById(
+            "todayFocusMinutes"
+        ).textContent =
+            data.obsession.today_focus_minutes +
+            " min";
+
     }
 
     catch(error){
@@ -527,6 +629,8 @@ setInterval(
 </script>
 
 
+<script src="/static/js/skyla-global.js"></script>
+<script src="/static/js/skyla-pages.js"></script>
 </body>
 
 </html>

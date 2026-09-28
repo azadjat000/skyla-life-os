@@ -4,111 +4,1445 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ title }} — Skyla Life OS</title>
+
 <style>
 *{box-sizing:border-box}
 body{
-    margin:0;
-    min-height:100vh;
-    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    color:#f5f7ff;
-    background:
-      radial-gradient(circle at 20% 10%,rgba(124,92,255,.18),transparent 30%),
-      radial-gradient(circle at 80% 20%,rgba(0,220,255,.12),transparent 28%),
-      #080b14;
+ margin:0;min-height:100vh;
+ font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ color:#eefcf4;
+ background:
+ radial-gradient(circle at 15% 10%,rgba(34,197,94,.12),transparent 28%),
+ radial-gradient(circle at 85% 15%,rgba(16,185,129,.08),transparent 25%),
+ #07100c;
 }
-.container{max-width:1200px;margin:auto;padding:28px}
-.top{
+.container{max-width:1180px;margin:auto;padding:28px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.brand{font-size:20px;font-weight:800}
+.back{border:1px solid #1d3b2b;background:#0b1711;color:#fff;padding:10px 15px;border-radius:11px;text-decoration:none}
+.hero{
+ padding:28px;border:1px solid rgba(74,222,128,.14);border-radius:22px;
+ background:linear-gradient(135deg,#0b1711,#0a120e);
+}
+h1{font-size:38px;margin:0 0 7px}
+.subtitle{color:#91a99a}
+.dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.stat,.card,.item{
+ border:1px solid rgba(74,222,128,.12);
+ background:#0b1711;border-radius:17px;
+}
+.stat{padding:17px}
+.stat-label{font-size:12px;color:#769080}
+.stat-value{font-size:27px;font-weight:800;margin-top:5px}
+.main-grid{display:grid;grid-template-columns:340px 1fr;gap:16px;margin-top:17px}
+.card{padding:20px}
+.card h2{margin:0 0 15px;font-size:18px}
+input,select,textarea{
+ width:100%;margin:6px 0;padding:11px;border-radius:10px;
+ border:1px solid #234132;background:#07100c;color:#fff;
+}
+textarea{min-height:80px;resize:vertical}
+button{
+ border:0;border-radius:10px;padding:10px 14px;margin:5px 4px 0 0;
+ background:#16a05d;color:#fff;font-weight:700;cursor:pointer;
+}
+button:hover{filter:brightness(1.12)}
+button.danger{background:#b93655}
+button.secondary{background:#173324}
+button.success{background:#138454}
+.item{padding:16px;margin-top:10px}
+.item strong{display:block;font-size:16px}
+.meta{font-size:12px;color:#7f9788;margin-top:5px}
+.status{color:#5ee89c;min-height:20px;margin-top:10px}
+.empty{text-align:center;color:#688071;padding:28px}
+.progress{height:7px;background:#14251b;border-radius:20px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;background:linear-gradient(90deg,#16a05d,#4ade80)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.setting{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:13px 0;border-bottom:1px solid rgba(74,222,128,.08)
+}
+.switch{width:45px;height:24px;position:relative}
+.switch input{display:none}
+.slider{position:absolute;inset:0;background:#24382c;border-radius:20px;cursor:pointer}
+.slider:before{
+ content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;
+ background:#fff;border-radius:50%;transition:.2s
+}
+.switch input:checked+.slider{background:#16a05d}
+.switch input:checked+.slider:before{transform:translateX(21px)}
+.badge{display:inline-block;padding:4px 8px;border-radius:99px;background:#10291b;color:#72e6a0;font-size:11px}
+@media(max-width:850px){
+ .dashboard{grid-template-columns:repeat(2,1fr)}
+ .main-grid{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+ .container{padding:15px}
+ h1{font-size:30px}
+ .dashboard,.grid2{grid-template-columns:1fr 1fr}
+}
+
+
+/* Reminder History */
+.reminder-history-section{
+    margin-top:24px;
+    padding:22px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    background:rgba(255,255,255,.025);
+}
+
+.reminder-history-head{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:20px;
-    margin-bottom:28px;
+    gap:14px;
+    margin-bottom:18px;
 }
-.brand{font-size:22px;font-weight:800}
-.back{
-    border:1px solid #293047;
-    background:#111625;
-    color:#fff;
-    padding:11px 17px;
+
+.reminder-history-head h2{
+    margin:0;
+    font-size:20px;
+}
+
+.reminder-history-head p{
+    margin:5px 0 0;
+    opacity:.58;
+    font-size:13px;
+}
+
+.history-refresh-btn{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.05);
+    color:inherit;
     border-radius:12px;
-    text-decoration:none;
-}
-.back:hover{background:#182033}
-.hero{
-    padding:34px;
-    border:1px solid #252d43;
-    border-radius:24px;
-    background:linear-gradient(135deg,#111727,#0d1220);
-    box-shadow:0 20px 70px rgba(0,0,0,.3);
-}
-h1{font-size:42px;margin:0 0 10px}
-.subtitle{color:#9ba7c2;font-size:17px}
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:18px;
-    margin-top:22px;
-}
-.card{
-    padding:22px;
-    min-height:150px;
-    border:1px solid #252d43;
-    border-radius:20px;
-    background:#101522;
-}
-.card h3{margin-top:0}
-.muted{color:#8995af}
-button{
+    padding:9px 13px;
     cursor:pointer;
-    border:0;
-    color:white;
-    background:#6d4aff;
-    padding:12px 18px;
-    border-radius:12px;
+}
+
+.reminder-history-list{
+    display:grid;
+    gap:10px;
+}
+
+.history-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:13px 15px;
+    border-radius:14px;
+    background:rgba(0,0,0,.16);
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.history-main{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+}
+
+.history-icon{
+    width:38px;
+    height:38px;
+    display:grid;
+    place-items:center;
+    border-radius:11px;
+    background:rgba(72,190,120,.12);
+    flex:none;
+}
+
+.history-title{
     font-weight:700;
 }
-button:hover{filter:brightness(1.15)}
-@media(max-width:600px){
-    .container{padding:18px}
-    h1{font-size:32px}
+
+.history-time{
+    margin-top:3px;
+    font-size:12px;
+    opacity:.55;
 }
+
+.history-status{
+    font-size:11px;
+    font-weight:700;
+    padding:6px 9px;
+    border-radius:999px;
+    background:rgba(72,190,120,.12);
+    color:#75e0a2;
+    white-space:nowrap;
+}
+
+.history-empty{
+    padding:24px;
+    text-align:center;
+    opacity:.55;
+    border:1px dashed rgba(255,255,255,.1);
+    border-radius:14px;
+}
+
+@media(max-width:700px){
+    .reminder-history-section{
+        padding:16px;
+    }
+
+    .history-row{
+        align-items:flex-start;
+    }
+
+    .history-status{
+        font-size:10px;
+    }
+}
+
 </style>
+
+<link rel="stylesheet" href="/static/css/skyla-global.css">
+<link rel="stylesheet" href="/static/css/skyla-pages.css">
 </head>
+
 <body>
+
 <div class="container">
 
-    <div class="top">
-        <div class="brand">🌌 Skyla Life OS</div>
-        <a class="back" href="/">← Home</a>
-    </div>
+<div class="top">
+ <div class="brand">🌌 Skyla Life OS</div>
+ <a class="back" href="/">← Home</a>
+</div>
 
-    <section class="hero">
-        <h1>{{ title }}</h1>
-        <div class="subtitle">{{ subtitle }}</div>
+<section class="hero">
+ <h1>{{ title }}</h1>
+ <div class="subtitle">{{ subtitle }}</div>
 
-        <div class="grid">
+ <div class="dashboard">
+  <div class="stat"><div class="stat-label">Total</div><div class="stat-value" id="s1">0</div></div>
+  <div class="stat"><div class="stat-label">Completed</div><div class="stat-value" id="s2">0</div></div>
+  <div class="stat"><div class="stat-label">Progress</div><div class="stat-value" id="s3">0%</div></div>
+  <div class="stat"><div class="stat-label">Active</div><div class="stat-value" id="s4">0</div></div>
+ </div>
+</section>
 
-            <div class="card">
-                <h3>➕ Add</h3>
-                <p class="muted">Create your own {{ module }} items.</p>
-                <button onclick="alert('Builder coming next')">Add New</button>
-            </div>
+<div class="main-grid">
 
-            <div class="card">
-                <h3>📈 Progress</h3>
-                <p class="muted">Your {{ module }} progress will appear here.</p>
-                <strong>0%</strong>
-            </div>
+<div class="card" id="left"></div>
 
-            <div class="card">
-                <h3>🔄 Customize</h3>
-                <p class="muted">Every module will become configurable.</p>
-                <button onclick="alert('Customization coming next')">Customize</button>
-            </div>
-
-        </div>
-    </section>
+<div class="card">
+ <h2 id="rightTitle">📋 Dashboard</h2>
+ <div id="content"><div class="empty">Loading...</div></div>
+</div>
 
 </div>
+</div>
+
+
+<section class="reminder-history-section" id="reminder-history-section">
+    <div class="reminder-history-head">
+        <div>
+            <h2>🕘 Reminder History</h2>
+            <p>Recently triggered reminders</p>
+        </div>
+        <button type="button" class="history-refresh-btn"
+                onclick="loadReminderHistory()">
+            ↻ Refresh
+        </button>
+    </div>
+
+    <div id="reminder-history-list" class="reminder-history-list">
+        <div class="history-empty">
+            No reminder history yet.
+        </div>
+    </div>
+</section>
+
+<script>
+const moduleName="{{ module }}";
+
+const esc=v=>String(v??"")
+ .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;").replace(/"/g,"&quot;")
+ .replace(/'/g,"&#039;");
+
+const $=id=>document.getElementById(id);
+
+function setStats(a,b,c,d){
+ $("s1").textContent=a;
+ $("s2").textContent=b;
+ $("s3").textContent=c;
+ $("s4").textContent=d;
+}
+
+function status(t){
+ $("status") && ($("status").textContent=t);
+}
+
+async function json(url,options={}){
+ const r=await fetch(url,options);
+ if(!r.ok) throw new Error("HTTP "+r.status);
+ return r.json();
+}
+
+/* =========================================================
+   ROUTINE
+   ========================================================= */
+
+async function loadRoutine(){
+ $("left").innerHTML=`
+  <h2>➕ Add Routine</h2>
+  <input id="rtTitle" placeholder="Routine title">
+  <input id="rtTime" type="time">
+  <input id="rtCat" placeholder="Category">
+  <select id="rtRepeat">
+   <option>Daily</option><option>Weekdays</option>
+   <option>Weekly</option><option>Monthly</option>
+  </select>
+  <textarea id="rtDesc" placeholder="Description"></textarea>
+  <button onclick="addRoutine()">Add Routine</button>
+  <div class="status" id="status"></div>`;
+
+ const data=await json("/api/routines");
+ const total=data.length;
+ const done=data.filter(x=>x.completed_today).length;
+ const active=data.filter(x=>x.active).length;
+ const pct=total?Math.round(done/total*100):0;
+
+ setStats(total,done,pct+"%",active);
+
+ $("rightTitle").textContent="📋 Today's Schedule";
+
+ $("content").innerHTML=data.length?`
+  <div class="item">
+   <strong>📊 Today's Progress</strong>
+   <div class="progress"><div style="width:${pct}%"></div></div>
+   <div class="meta">${done} / ${total} completed · ${pct}%</div>
+  </div>
+  ${data.map(x=>`
+   <div class="item">
+    <strong>${esc(x.title)}</strong>
+    <div class="meta">
+     ⏰ ${esc(x.time||"No time")} ·
+     ${esc(x.category||"General")} · ${esc(x.repeat||"Daily")}
+    </div>
+    ${x.description?`<div class="meta">${esc(x.description)}</div>`:""}
+    <button class="${x.completed_today?"success":""}"
+     onclick="toggleRoutine(${x.id})">
+     ${x.completed_today?"✓ Completed — Undo":"☑ Mark Complete"}
+    </button>
+    <button class="danger" onclick="deleteRoutine(${x.id})">Delete</button>
+   </div>
+  `).join("")}`:
+  `<div class="empty">No routines yet.</div>`;
+}
+
+async function addRoutine(){
+ const title=$("rtTitle").value.trim();
+ if(!title){status("Enter a routine title.");return}
+ await json("/api/routines",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   title,
+   time:$("rtTime").value,
+   category:$("rtCat").value.trim()||"General",
+   repeat:$("rtRepeat").value,
+   description:$("rtDesc").value.trim()
+  })
+ });
+ await loadRoutine();
+}
+
+async function toggleRoutine(id){
+ await json("/api/routines/"+id+"/toggle",{method:"POST"});
+ await loadRoutine();
+}
+
+async function deleteRoutine(id){
+ if(!confirm("Delete this routine?"))return;
+ await json("/api/routines/"+id,{method:"DELETE"});
+ await loadRoutine();
+}
+
+/* =========================================================
+   REMINDERS
+   ========================================================= */
+
+async function loadReminders(){
+ const data=await json("/api/reminders");
+
+ const active=data.filter(x=>x.enabled).length;
+ const disabled=data.length-active;
+
+ setStats(
+  data.length,
+  active,
+  data.length ? Math.round(active/data.length*100)+"%" : "0%",
+  disabled
+ );
+
+ $("left").innerHTML=`
+  <h2>🔔 Add Reminder</h2>
+
+  <input id="rmTitle"
+   placeholder="Reminder title">
+
+  <input id="rmTime"
+   type="time">
+
+  <select id="rmRepeat">
+   <option value="daily">Every day</option>
+   <option value="weekdays">Weekdays</option>
+   <option value="weekly">Every week</option>
+   <option value="monthly">Every month</option>
+  </select>
+
+  <button onclick="addReminder()">
+   ➕ Add Reminder
+  </button>
+
+  <div class="status" id="status"></div>
+ `;
+
+ $("rightTitle").textContent="🔔 Reminder Center";
+
+ $("content").innerHTML=data.length
+  ? data.map(x=>`
+   <div class="item reminder-card">
+
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+
+     <div>
+      <strong>🔔 ${esc(x.title)}</strong>
+
+      <div class="meta">
+       ⏰ ${esc(x.reminder_time || "No time")}
+       · ${reminderRepeatLabel(x.repeat)}
+      </div>
+     </div>
+
+     <span class="badge">
+      ${x.enabled ? "● ON" : "○ OFF"}
+     </span>
+
+    </div>
+
+    <div class="reminder-actions">
+
+     <button
+      class="${x.enabled?"success":"secondary"}"
+      onclick="toggleReminder(${x.id})">
+      ${x.enabled?"🔔 Enabled":"🔕 Disabled"}
+     </button>
+
+     <button
+      class="secondary"
+      onclick='editReminder(
+       ${x.id},
+       ${JSON.stringify(x.title)},
+       ${JSON.stringify(x.reminder_time || "")},
+       ${JSON.stringify(x.repeat)}
+      )'>
+      ✏️ Edit
+     </button>
+
+     <button
+      class="danger"
+      onclick="deleteReminder(${x.id})">
+      🗑️ Delete
+     </button>
+
+    </div>
+
+   </div>
+  `).join("")
+  : `
+   <div class="empty">
+    <div style="font-size:2rem">🔔</div>
+    <strong>No reminders yet</strong>
+    <div class="meta">
+     Create your first reminder from the panel.
+    </div>
+   </div>
+  `;
+}
+
+
+function reminderRepeatLabel(value){
+ const labels={
+  daily:"Every day",
+  weekdays:"Weekdays",
+  weekly:"Every week",
+  monthly:"Every month"
+ };
+
+ return labels[value] || value || "Daily";
+}
+
+
+async function addReminder(){
+
+ const title=$("rmTitle").value.trim();
+
+ if(!title){
+  status("Enter a reminder title.");
+  return;
+ }
+
+ const result=await json("/api/reminders",{
+  method:"POST",
+  headers:{
+   "Content-Type":"application/json"
+  },
+  body:JSON.stringify({
+   title,
+   reminder_time:$("rmTime").value,
+   repeat:$("rmRepeat").value,
+   enabled:true
+  })
+ });
+
+ if(result?.error){
+  status(result.error);
+  return;
+ }
+
+ await loadReminders();
+}
+
+
+async function editReminder(id,title,time,repeat){
+
+ const newTitle=prompt(
+  "Reminder title:",
+  title
+ );
+
+ if(newTitle===null)return;
+
+ const cleanTitle=newTitle.trim();
+
+ if(!cleanTitle){
+  status("Reminder title cannot be empty.");
+  return;
+ }
+
+ const newTime=prompt(
+  "Time (HH:MM):",
+  time || ""
+ );
+
+ if(newTime===null)return;
+
+ const newRepeat=prompt(
+  "Repeat: daily / weekdays / weekly / monthly",
+  repeat || "daily"
+ );
+
+ if(newRepeat===null)return;
+
+ const result=await json(
+  "/api/reminders/"+id,
+  {
+   method:"PUT",
+   headers:{
+    "Content-Type":"application/json"
+   },
+   body:JSON.stringify({
+    title:cleanTitle,
+    reminder_time:newTime.trim(),
+    repeat:newRepeat.trim().toLowerCase()
+   })
+  }
+ );
+
+ if(result?.error){
+  status(result.error);
+  return;
+ }
+
+ await loadReminders();
+}
+
+
+async function toggleReminder(id){
+ await json(
+  "/api/reminders/"+id+"/toggle",
+  {method:"POST"}
+ );
+
+ await loadReminders();
+}
+
+
+async function deleteReminder(id){
+
+ if(!confirm("Delete this reminder?"))return;
+
+ await json(
+  "/api/reminders/"+id,
+  {method:"DELETE"}
+ );
+
+ await loadReminders();
+}
+
+/* =========================================================
+   ANALYTICS
+   ========================================================= */
+
+async function loadAnalytics(){
+ const d=await json("/api/analytics");
+
+ const routinePct=Number(d.routines.today_percent||0);
+ const habitPct=Number(d.habits.today_percent||0);
+ const goalPct=Number(d.goals.average_progress||0);
+
+ const overall=Math.round(
+   (routinePct+habitPct+goalPct)/3
+ );
+
+ setStats(
+  d.goals.total+d.habits.total+d.routines.total,
+  d.routines.completed_today+d.habits.completed_today,
+  overall+"%",
+  d.routines.total+d.habits.total
+ );
+
+ $("left").innerHTML=`
+  <div class="analytics-side">
+   <h2>📊 Life Analytics</h2>
+   <div class="meta">
+    Your progress from local Skyla data.
+   </div>
+
+   <div class="analytics-side-card">
+    <div class="analytics-side-label">Overall Progress</div>
+    <div class="analytics-big-number">${overall}%</div>
+    <div class="analytics-progress">
+     <div style="width:${Math.min(overall,100)}%"></div>
+    </div>
+   </div>
+
+   <div class="analytics-side-card">
+    <div class="analytics-side-label">Today</div>
+    <strong>
+     ${d.routines.completed_today+d.habits.completed_today}
+     completed
+    </strong>
+   </div>
+
+   <div class="analytics-side-card">
+    <div class="analytics-side-label">Focus This Week</div>
+    <strong>${d.focus.week_minutes} min</strong>
+   </div>
+  </div>`;
+
+ $("rightTitle").textContent="📈 Progress Analytics";
+
+ $("content").innerHTML=`
+  <div class="analytics-dashboard">
+
+   <div class="analytics-hero">
+    <div>
+     <div class="analytics-eyebrow">LIFE OS ANALYTICS</div>
+     <h2>See your progress clearly.</h2>
+     <p>
+      Track routines, habits, goals, focus, sports and fitness
+      from one place.
+     </p>
+    </div>
+
+    <div class="analytics-hero-score">
+     <span>${overall}%</span>
+     <small>overall</small>
+    </div>
+   </div>
+
+   <div class="analytics-grid">
+
+    <div class="analytics-card">
+     <div class="analytics-card-icon">🕒</div>
+     <div class="analytics-card-title">Routine</div>
+     <div class="analytics-card-value">${routinePct}%</div>
+     <div class="analytics-progress">
+      <div style="width:${routinePct}%"></div>
+     </div>
+     <div class="analytics-card-meta">
+      ${d.routines.completed_today}/${d.routines.total}
+      completed today
+     </div>
+     <div class="analytics-card-sub">
+      This week: ${d.routines.week_completed}
+     </div>
+    </div>
+
+    <div class="analytics-card">
+     <div class="analytics-card-icon">🔥</div>
+     <div class="analytics-card-title">Habits</div>
+     <div class="analytics-card-value">${habitPct}%</div>
+     <div class="analytics-progress">
+      <div style="width:${habitPct}%"></div>
+     </div>
+     <div class="analytics-card-meta">
+      ${d.habits.completed_today}/${d.habits.total}
+      completed today
+     </div>
+     <div class="analytics-card-sub">
+      This week: ${d.habits.week_completed}
+     </div>
+    </div>
+
+    <div class="analytics-card">
+     <div class="analytics-card-icon">🎯</div>
+     <div class="analytics-card-title">Goals</div>
+     <div class="analytics-card-value">${goalPct}%</div>
+     <div class="analytics-progress">
+      <div style="width:${Math.min(goalPct,100)}%"></div>
+     </div>
+     <div class="analytics-card-meta">
+      ${d.goals.total} active goals
+     </div>
+     <div class="analytics-card-sub">
+      Average goal progress
+     </div>
+    </div>
+
+    <div class="analytics-card">
+     <div class="analytics-card-icon">⚡</div>
+     <div class="analytics-card-title">Focus</div>
+     <div class="analytics-card-value">
+      ${d.focus.today_minutes}
+      <small>min</small>
+     </div>
+     <div class="analytics-card-meta">
+      Today
+     </div>
+     <div class="analytics-card-sub">
+      This week: ${d.focus.week_minutes} min
+     </div>
+    </div>
+
+    <div class="analytics-card">
+     <div class="analytics-card-icon">⚽</div>
+     <div class="analytics-card-title">Football</div>
+     <div class="analytics-card-value">
+      ${d.football.sessions_today}
+     </div>
+     <div class="analytics-card-meta">
+      sessions today
+     </div>
+     <div class="analytics-card-sub">
+      Training activity
+     </div>
+    </div>
+
+    <div class="analytics-card">
+     <div class="analytics-card-icon">💪</div>
+     <div class="analytics-card-title">Fitness</div>
+     <div class="analytics-card-value">
+      ${d.fitness.workouts_today}
+     </div>
+     <div class="analytics-card-meta">
+      workouts today
+     </div>
+     <div class="analytics-card-sub">
+      Training activity
+     </div>
+    </div>
+
+   </div>
+
+   <div class="analytics-section">
+    <div class="analytics-section-head">
+     <div>
+      <h3>📌 Today at a glance</h3>
+      <p>How your main systems are moving today.</p>
+     </div>
+    </div>
+
+    <div class="analytics-bars">
+
+     <div class="analytics-bar-row">
+      <span>Routine</span>
+      <div class="analytics-bar-track">
+       <div style="width:${routinePct}%"></div>
+      </div>
+      <strong>${routinePct}%</strong>
+     </div>
+
+     <div class="analytics-bar-row">
+      <span>Habits</span>
+      <div class="analytics-bar-track">
+       <div style="width:${habitPct}%"></div>
+      </div>
+      <strong>${habitPct}%</strong>
+     </div>
+
+     <div class="analytics-bar-row">
+      <span>Goals</span>
+      <div class="analytics-bar-track">
+       <div style="width:${Math.min(goalPct,100)}%"></div>
+      </div>
+      <strong>${goalPct}%</strong>
+     </div>
+
+    </div>
+   </div>
+
+   <div class="analytics-section">
+    <div class="analytics-section-head">
+     <div>
+      <h3>⚡ Focus Activity</h3>
+      <p>Deep-work time recorded by Skyla.</p>
+     </div>
+    </div>
+
+    <div class="analytics-focus-grid">
+     <div>
+      <span>Today</span>
+      <strong>${d.focus.today_minutes} min</strong>
+     </div>
+
+     <div>
+      <span>This Week</span>
+      <strong>${d.focus.week_minutes} min</strong>
+     </div>
+    </div>
+   </div>
+
+   <div class="analytics-footer">
+    <span>🔒 Local-first analytics</span>
+    <span>Updated from your Skyla database</span>
+   </div>
+
+  </div>`;
+}
+
+/* =========================================================
+   CUSTOMIZATION
+   ========================================================= */
+
+async function loadCustomization(){
+ const s=await json("/api/settings");
+
+ $("left").innerHTML=`
+  <div class="custom-side">
+   <h2>🎨 Appearance</h2>
+   <div class="meta">Make Skyla feel like yours.</div>
+
+   <div class="custom-preview-mini" id="customPreviewMini">
+    <div class="custom-mini-dot"></div>
+    <strong>Skyla Life OS</strong>
+    <span>Live preview</span>
+   </div>
+
+   <div class="custom-side-note">
+    Changes are saved locally on this device.
+   </div>
+  </div>`;
+
+ $("rightTitle").textContent="🎨 Customization";
+
+ $("content").innerHTML=`
+  <div class="customization-dashboard">
+
+   <div class="customization-hero">
+    <div>
+     <div class="custom-eyebrow">PERSONALIZE SKYLA</div>
+     <h2>Your interface. Your rules.</h2>
+     <p>
+      Change the visual style without changing your Life OS data.
+     </p>
+    </div>
+    <div class="custom-hero-icon">🎨</div>
+   </div>
+
+   <div class="custom-settings-grid">
+
+    <div class="custom-setting-card">
+     <div class="custom-setting-icon">🌙</div>
+     <div>
+      <strong>Theme</strong>
+      <span>Choose your interface mode.</span>
+     </div>
+
+     <select id="setTheme">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+     </select>
+    </div>
+
+    <div class="custom-setting-card">
+     <div class="custom-setting-icon">✨</div>
+     <div>
+      <strong>Accent</strong>
+      <span>Choose your highlight color.</span>
+     </div>
+
+     <select id="setAccent">
+      <option value="green">Green</option>
+      <option value="blue">Blue</option>
+      <option value="purple">Purple</option>
+      <option value="orange">Orange</option>
+     </select>
+    </div>
+
+    <div class="custom-setting-card">
+     <div class="custom-setting-icon">🔤</div>
+     <div>
+      <strong>Font Size</strong>
+      <span>Adjust interface readability.</span>
+     </div>
+
+     <select id="setFont">
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="large">Large</option>
+     </select>
+    </div>
+
+    <div class="custom-setting-card">
+     <div class="custom-setting-icon">▦</div>
+     <div>
+      <strong>Card Density</strong>
+      <span>Control spacing between cards.</span>
+     </div>
+
+     <select id="setDensity">
+      <option value="compact">Compact</option>
+      <option value="comfortable">Comfortable</option>
+      <option value="large">Large</option>
+     </select>
+    </div>
+
+   </div>
+
+   <div class="custom-live-preview">
+    <div class="custom-preview-head">
+     <div>
+      <h3>👀 Live Preview</h3>
+      <p>See the selected style before saving.</p>
+     </div>
+     <span id="customPreviewLabel">Current</span>
+    </div>
+
+    <div class="custom-preview-window" id="customPreviewWindow">
+     <div class="custom-preview-top">
+      <span class="preview-brand">SKYLA</span>
+      <span class="preview-status">● ACTIVE</span>
+     </div>
+
+     <div class="custom-preview-body">
+      <div class="custom-preview-card">
+       <span>🔥</span>
+       <strong>Habits</strong>
+       <small>Build consistency</small>
+      </div>
+
+      <div class="custom-preview-card">
+       <span>🎯</span>
+       <strong>Goals</strong>
+       <small>Track progress</small>
+      </div>
+
+      <div class="custom-preview-card">
+       <span>⚡</span>
+       <strong>Focus</strong>
+       <small>Deep work</small>
+      </div>
+     </div>
+    </div>
+   </div>
+
+   <div class="custom-actions">
+    <button type="button" onclick="saveAppearance()">
+     ✓ Save Appearance
+    </button>
+
+    <button type="button" class="custom-reset-btn"
+            onclick="resetAppearance()">
+     ↺ Reset
+    </button>
+   </div>
+
+   <div class="status" id="status"></div>
+
+  </div>`;
+
+ $("setTheme").value=s.theme;
+ $("setAccent").value=s.accent;
+ $("setFont").value=s.font_size;
+ $("setDensity").value=s.card_density;
+
+ applyAppearance(
+  s.theme,
+  s.accent,
+  s.font_size,
+  s.card_density
+ );
+
+ bindCustomizationPreview();
+
+ setStats(4,0,100+"%",1);
+}
+
+function applyAppearance(theme, accent, fontSize, density){
+ const root=document.documentElement;
+
+ root.dataset.skylaTheme=theme;
+ root.dataset.skylaAccent=accent;
+ root.dataset.skylaFont=fontSize;
+ root.dataset.skylaDensity=density;
+
+ document.body.dataset.skylaTheme=theme;
+ document.body.dataset.skylaAccent=accent;
+ document.body.dataset.skylaFont=fontSize;
+ document.body.dataset.skylaDensity=density;
+
+ const preview=document.getElementById("customPreviewWindow");
+
+ if(preview){
+  preview.dataset.theme=theme;
+  preview.dataset.accent=accent;
+  preview.dataset.font=fontSize;
+  preview.dataset.density=density;
+ }
+
+ const label=document.getElementById("customPreviewLabel");
+
+ if(label){
+  label.textContent=
+   theme.charAt(0).toUpperCase()+theme.slice(1)
+   +" • "
+   +accent.charAt(0).toUpperCase()+accent.slice(1);
+ }
+}
+
+function bindCustomizationPreview(){
+ const ids=[
+  "setTheme",
+  "setAccent",
+  "setFont",
+  "setDensity"
+ ];
+
+ ids.forEach(id=>{
+  const el=$(id);
+
+  if(!el) return;
+
+  el.addEventListener("change",()=>{
+   applyAppearance(
+    $("setTheme").value,
+    $("setAccent").value,
+    $("setFont").value,
+    $("setDensity").value
+   );
+  });
+ });
+}
+
+async function saveAppearance(){
+ const settings={
+  theme:$("setTheme").value,
+  accent:$("setAccent").value,
+  font_size:$("setFont").value,
+  card_density:$("setDensity").value
+ };
+
+ await json("/api/settings",{
+  method:"PUT",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(settings)
+ });
+
+ applyAppearance(
+  settings.theme,
+  settings.accent,
+  settings.font_size,
+  settings.card_density
+ );
+
+ status("✓ Appearance saved locally.");
+}
+
+async function resetAppearance(){
+ $("setTheme").value="dark";
+ $("setAccent").value="green";
+ $("setFont").value="medium";
+ $("setDensity").value="comfortable";
+
+ await saveAppearance();
+
+ status("↺ Appearance reset.");
+}
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+async function loadSettings(){
+ const s=await json("/api/settings");
+
+ $("left").innerHTML=`
+  <h2>⚙️ Skyla Settings</h2>
+
+  <div class="setting">
+   <span>🔔 Notifications</span>
+   <label class="switch">
+    <input id="notifications" type="checkbox"
+     ${s.notifications==="on"?"checked":""}>
+    <span class="slider"></span>
+   </label>
+  </div>
+
+  <div class="setting">
+   <span>🎯 Focus Mode</span>
+   <label class="switch">
+    <input id="focusMode" type="checkbox"
+     ${s.focus_mode==="on"?"checked":""}>
+    <span class="slider"></span>
+   </label>
+  </div>
+
+  <button onclick="saveSettings()">Save Settings</button>
+  <div class="status" id="status"></div>`;
+
+ setStats(2,0,100+"%",1);
+ $("rightTitle").textContent="🛠️ System Preferences";
+
+ $("content").innerHTML=`
+  <div class="item">
+   <strong>🔒 Local-first</strong>
+   <div class="meta">Skyla stores application data in the local database.</div>
+  </div>
+  <div class="item">
+   <strong>🌐 Internet</strong>
+   <div class="meta">Core Life OS data does not require cloud storage.</div>
+  </div>
+  <div class="item">
+   <strong>💰 Finance Vault</strong>
+   <div class="meta">Finance remains protected by its separate vault security.</div>
+  </div>`;
+}
+
+async function saveSettings(){
+ await json("/api/settings",{
+  method:"PUT",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   notifications:$("notifications").checked?"on":"off",
+   focus_mode:$("focusMode").checked?"on":"off"
+  })
+ });
+ status("✓ Settings saved.");
+}
+
+/* =========================================================
+   CALENDAR
+   ========================================================= */
+
+async function loadCalendar(){
+ const monthNames=[
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December"
+ ];
+
+ let current=new Date();
+ current.setDate(1);
+
+ function esc(value){
+  return String(value ?? "")
+   .replace(/&/g,"&amp;")
+   .replace(/</g,"&lt;")
+   .replace(/>/g,"&gt;")
+   .replace(/"/g,"&quot;")
+   .replace(/'/g,"&#039;");
+ }
+
+ function dateKey(year,month,day){
+  return `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+ }
+
+ async function render(){
+  const year=current.getFullYear();
+  const month=current.getMonth();
+
+  const res=await fetch(
+   `/api/calendar?year=${year}&month=${month+1}`
+  );
+
+  if(!res.ok){
+   throw new Error("Calendar API failed");
+  }
+
+  const data=await res.json();
+  const events=data.events || [];
+
+  const grouped={};
+
+  events.forEach(event=>{
+   if(!grouped[event.date]) grouped[event.date]=[];
+   grouped[event.date].push(event);
+  });
+
+  const firstDay=new Date(year,month,1).getDay();
+  const mondayOffset=(firstDay+6)%7;
+  const days=data.days_in_month;
+
+  const today=data.today;
+
+  let cells="";
+
+  for(let i=0;i<mondayOffset;i++){
+   cells+=`<div class="calendar-cell empty-cell"></div>`;
+  }
+
+  for(let day=1;day<=days;day++){
+   const key=dateKey(year,month,day);
+   const dayEvents=grouped[key] || [];
+   const isToday=key===today;
+
+   const icons=[...new Set(dayEvents.map(e=>e.icon).filter(Boolean))];
+
+   cells+=`
+    <button
+      type="button"
+      class="calendar-cell ${isToday?"calendar-today":""}"
+      data-date="${key}"
+    >
+      <span class="calendar-day">${day}</span>
+      <span class="calendar-events">
+       ${icons.slice(0,4).map(icon=>`<span>${icon}</span>`).join("")}
+      </span>
+      ${dayEvents.length
+       ? `<span class="calendar-count">${dayEvents.length}</span>`
+       : ""}
+    </button>`;
+  }
+
+  $("left").innerHTML=`
+   <div class="calendar-sidebar">
+    <div class="calendar-side-title">📅 Calendar</div>
+
+    <div class="calendar-today-box">
+     <div class="calendar-side-label">TODAY</div>
+     <strong>${esc(today)}</strong>
+    </div>
+
+    <div class="calendar-legend">
+     <div>🕒 Routine</div>
+     <div>🔥 Habit</div>
+     <div>🎯 Goal</div>
+     <div>🔔 Reminder</div>
+    </div>
+
+    <button type="button" class="calendar-today-btn" id="calendarToday">
+     Today
+    </button>
+   </div>`;
+
+  $("rightTitle").textContent=
+   `📅 ${monthNames[month]} ${year}`;
+
+  setStats(
+   Object.keys(grouped).length,
+   events.length,
+   `${monthNames[month]}`,
+   days
+  );
+
+  $("content").innerHTML=`
+   <div class="calendar-toolbar">
+    <button type="button" class="calendar-nav" id="calendarPrev">
+     ←
+    </button>
+
+    <button type="button" class="calendar-month-title" id="calendarTodayTop">
+     ${monthNames[month]} ${year}
+    </button>
+
+    <button type="button" class="calendar-nav" id="calendarNext">
+     →
+    </button>
+   </div>
+
+   <div class="calendar-weekdays">
+    <div>Mon</div>
+    <div>Tue</div>
+    <div>Wed</div>
+    <div>Thu</div>
+    <div>Fri</div>
+    <div>Sat</div>
+    <div>Sun</div>
+   </div>
+
+   <div class="calendar-grid">
+    ${cells}
+   </div>
+
+   <div class="calendar-day-panel" id="calendarDayPanel">
+    <div class="calendar-panel-title">
+     Select a day
+    </div>
+    <div class="calendar-panel-muted">
+     Tap a calendar date to see its events.
+    </div>
+   </div>
+  `;
+
+  $("calendarPrev").onclick=()=>{
+   current.setMonth(current.getMonth()-1);
+   render();
+  };
+
+  $("calendarNext").onclick=()=>{
+   current.setMonth(current.getMonth()+1);
+   render();
+  };
+
+  $("calendarToday").onclick=()=>{
+   const now=new Date();
+   current=new Date(now.getFullYear(),now.getMonth(),1);
+   render();
+  };
+
+  $("calendarTodayTop").onclick=()=>{
+   const now=new Date();
+   current=new Date(now.getFullYear(),now.getMonth(),1);
+   render();
+  };
+
+  document.querySelectorAll(".calendar-cell[data-date]")
+   .forEach(cell=>{
+    cell.addEventListener("click",()=>{
+     const selected=cell.dataset.date;
+     const selectedEvents=grouped[selected] || [];
+
+     const panel=$("calendarDayPanel");
+
+     panel.innerHTML=`
+      <div class="calendar-panel-title">
+       📌 ${esc(selected)}
+      </div>
+
+      ${
+       selectedEvents.length
+       ? selectedEvents.map(event=>`
+        <div class="calendar-event-row">
+         <span class="calendar-event-icon">
+          ${esc(event.icon || "•")}
+         </span>
+
+         <div>
+          <strong>${esc(event.title)}</strong>
+          <div class="calendar-event-meta">
+           ${esc(event.type)}
+           ${event.time ? ` · ${esc(event.time)}` : ""}
+           ${event.repeat ? ` · ${esc(event.repeat)}` : ""}
+          </div>
+         </div>
+        </div>
+       `).join("")
+       : `
+        <div class="calendar-panel-muted">
+         No events recorded for this day.
+        </div>
+       `
+      }
+     `;
+    });
+   });
+ }
+
+ await render();
+}
+
+/* =========================================================
+   START
+   ========================================================= */
+
+async function start(){
+ try{
+  if(moduleName==="routine") await loadRoutine();
+  else if(moduleName==="reminders") await loadReminders();
+  else if(moduleName==="analytics") await loadAnalytics();
+  else if(moduleName==="customization") await loadCustomization();
+  else if(moduleName==="settings") await loadSettings();
+  else if(moduleName==="calendar") loadCalendar();
+  else loadCalendar();
+ }catch(e){
+  console.error(e);
+  $("content").innerHTML=
+   '<div class="empty">Could not load this module.</div>';
+ }
+}
+
+start();
+
+async function loadReminderHistory(){
+    const list = document.getElementById("reminder-history-list");
+    if(!list) return;
+
+    try{
+        const res = await fetch("/api/reminder-history");
+        if(!res.ok) throw new Error("History request failed");
+
+        const rows = await res.json();
+
+        if(!rows.length){
+            list.innerHTML = `
+                <div class="history-empty">
+                    No reminder history yet.
+                </div>
+            `;
+            return;
+        }
+
+        list.innerHTML = rows.map(row => {
+            const dt = row.triggered_at
+                ? new Date(row.triggered_at).toLocaleString()
+                : "Unknown time";
+
+            return `
+                <div class="history-row">
+                    <div class="history-main">
+                        <div class="history-icon">🔔</div>
+                        <div>
+                            <div class="history-title">
+                                ${escapeHtml(row.title || "Reminder")}
+                            </div>
+                            <div class="history-time">${escapeHtml(dt)}</div>
+                        </div>
+                    </div>
+
+                    <div class="history-status">
+                        ${escapeHtml(row.status || "triggered")}
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+    }catch(error){
+        console.error("Reminder history:", error);
+        list.innerHTML = `
+            <div class="history-empty">
+                Unable to load reminder history.
+            </div>
+        `;
+    }
+}
+
+function escapeHtml(value){
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+</script>
+
+<script src="/static/js/skyla-global.js"></script>
+<script src="/static/js/skyla-pages.js"></script>
 </body>
 </html>

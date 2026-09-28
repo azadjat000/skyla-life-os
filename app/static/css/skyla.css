@@ -258,3 +258,348 @@ button{
         grid-template-columns:1fr;
     }
 }
+
+/* =========================================================
+   SKYLA LIFE OS — HOME COMMAND CENTER
+   ========================================================= */
+
+.page-header{
+    position:relative;
+    overflow:hidden;
+    padding:28px;
+    margin-bottom:22px;
+    border:1px solid var(--border);
+    border-radius:24px;
+    background:
+        radial-gradient(circle at 85% 20%,#7657ff2b,transparent 32%),
+        radial-gradient(circle at 15% 100%,#16d6c51c,transparent 35%),
+        linear-gradient(145deg,#121a2a,#0c111d);
+}
+
+.page-header h1{
+    margin:0;
+    font-size:clamp(28px,4vw,44px);
+    letter-spacing:-1.5px;
+}
+
+.page-header p{
+    margin:8px 0 0;
+    color:var(--muted);
+    font-size:15px;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.stat-card{
+    position:relative;
+    overflow:hidden;
+    min-height:125px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    transition:transform .2s ease,border-color .2s ease;
+}
+
+.stat-card:hover{
+    transform:translateY(-3px);
+    border-color:#465273;
+}
+
+.stat-card span{
+    color:var(--muted);
+    font-size:13px;
+    font-weight:800;
+}
+
+.stat-card strong{
+    font-size:34px;
+    line-height:1;
+    letter-spacing:-1px;
+}
+
+.stat-card::after{
+    content:"";
+    position:absolute;
+    width:80px;
+    height:80px;
+    right:-30px;
+    bottom:-35px;
+    border-radius:50%;
+    background:#7657ff18;
+}
+
+.home-system-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+    margin-bottom:28px;
+}
+
+.home-system-card{
+    min-height:235px;
+    display:flex;
+    flex-direction:column;
+}
+
+.home-system-card h2{
+    margin:0 0 10px;
+    font-size:19px;
+}
+
+.home-system-card p{
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.home-system-card .primary-btn{
+    margin-top:auto;
+}
+
+.primary-btn{
+    border:0;
+    border-radius:12px;
+    padding:11px 15px;
+    color:white;
+    background:linear-gradient(135deg,var(--accent),#6042db);
+    font-weight:800;
+    transition:transform .15s ease,filter .15s ease;
+}
+
+.primary-btn:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.08);
+}
+
+.home-progress{
+    height:10px;
+    margin:16px 0 8px;
+}
+
+.home-progress-text{
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.life-os-heading{
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:12px;
+    margin:30px 0 14px;
+}
+
+.life-os-heading h2{
+    margin:0;
+}
+
+.life-os-heading span{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.life-module-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+}
+
+.life-module{
+    min-height:185px;
+    display:flex;
+    flex-direction:column;
+    transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+
+.life-module:hover{
+    transform:translateY(-3px);
+    border-color:#465273;
+    box-shadow:0 16px 40px #0004;
+}
+
+.life-module h3{
+    margin:0 0 8px;
+    font-size:17px;
+}
+
+.life-module p{
+    margin:0;
+    color:var(--muted);
+    line-height:1.5;
+    font-size:13px;
+}
+
+.life-module button{
+    margin-top:auto;
+    align-self:flex-start;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:9px 13px;
+    color:white;
+    background:#151c2c;
+    font-weight:750;
+}
+
+.life-module button:hover{
+    border-color:#596783;
+    background:#1b2438;
+}
+
+.finance-private{
+    border-color:#3b315c;
+    background:
+        radial-gradient(circle at 90% 10%,#7657ff18,transparent 35%),
+        linear-gradient(145deg,#121322,#0d101a);
+}
+
+.finance-private .private-label{
+    display:inline-flex;
+    width:max-content;
+    margin-bottom:12px;
+    padding:5px 9px;
+    border-radius:999px;
+    color:#cfc6ff;
+    background:#7657ff18;
+    border:1px solid #7657ff35;
+    font-size:11px;
+    font-weight:800;
+}
+
+@media(max-width:1100px){
+    .home-system-grid{
+        grid-template-columns:1fr;
+    }
+
+    .life-module-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:760px){
+    .page-header{
+        padding:22px;
+        border-radius:20px;
+    }
+
+    .stats-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .life-module-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:450px){
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stat-card{
+        min-height:105px;
+    }
+}
+
+
+
+/* =========================================================
+   SKYLA — FIX MAIN CONTENT / SIDEBAR OVERLAP
+   ========================================================= */
+
+.main-content{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    padding:28px;
+    max-width:none;
+}
+
+@media(max-width:760px){
+    .main-content{
+        margin-left:0;
+        width:100%;
+        padding:18px;
+    }
+}
+
+/* =========================================================
+   SKYLA — TODAY COMMAND CENTER
+   ========================================================= */
+
+.today-command-section{
+    margin-bottom:28px;
+}
+
+.today-command-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+}
+
+.today-command-heading h2{
+    margin:0;
+    font-size:24px;
+}
+
+.today-command-heading p{
+    margin:5px 0 0;
+    color:var(--muted);
+}
+
+.today-command-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+}
+
+.today-command-card{
+    min-height:145px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:8px;
+    transition:transform .2s ease, border-color .2s ease;
+}
+
+.today-command-card:hover{
+    transform:translateY(-3px);
+    border-color:#7657ff66;
+}
+
+.today-command-card span{
+    font-size:14px;
+    color:var(--muted);
+}
+
+.today-command-card strong{
+    font-size:30px;
+    line-height:1.1;
+}
+
+.today-command-card small{
+    color:var(--muted);
+    font-size:13px;
+}
+
+@media(max-width:1100px){
+    .today-command-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:450px){
+    .today-command-grid{
+        grid-template-columns:1fr;
+    }
+
+    .today-command-heading h2{
+        font-size:20px;
+    }
+}
+

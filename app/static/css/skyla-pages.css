@@ -1,0 +1,1875 @@
+/* =========================================================
+   SKYLA LIFE OS — COMMON DASHBOARD DESIGN
+   Home / Motivation / Obsession / Football / Fitness
+   ========================================================= */
+
+:root{
+  --sl-bg:#070914;
+  --sl-bg2:#08110d;
+  --sl-panel:#0c1512;
+  --sl-card:#0d1915;
+  --sl-border:rgba(74,222,128,.14);
+  --sl-text:#ecfdf5;
+  --sl-muted:#8fa39a;
+  --sl-green:#4ade80;
+}
+
+/* ---------- PAGE ---------- */
+
+html{
+  background:var(--sl-bg) !important;
+}
+
+body{
+  margin:0 !important;
+  min-height:100vh !important;
+
+  background:
+    radial-gradient(
+      circle at 78% 0%,
+      rgba(74,222,128,.065),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 5% 35%,
+      rgba(34,197,94,.035),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #070914 0%,
+      #08110d 52%,
+      #060b09 100%
+    ) !important;
+
+  color:var(--sl-text) !important;
+}
+
+/* ---------- COMMON CONTENT WIDTH ---------- */
+
+.skyla-page-content{
+  width:100%;
+  max-width:1500px;
+  margin:0 auto;
+  padding:18px 20px 28px;
+  box-sizing:border-box;
+}
+
+/* ---------- COMMON HERO ---------- */
+
+.skyla-page-hero{
+  min-height:92px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+
+  padding:20px 24px;
+  margin-bottom:14px;
+
+  border:1px solid var(--sl-border);
+  border-radius:20px;
+
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(74,222,128,.14),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0c1b13,
+      #07100c
+    );
+
+  box-sizing:border-box;
+}
+
+.skyla-page-hero h1{
+  margin:4px 0;
+  font-size:clamp(26px,3.2vw,40px);
+  line-height:1;
+}
+
+.skyla-page-hero p{
+  margin:6px 0 0;
+  color:var(--sl-muted);
+  font-size:13px;
+}
+
+/* ---------- STATS ---------- */
+
+.skyla-stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.skyla-stat,
+.stat-card{
+  min-width:0;
+  padding:15px 17px;
+
+  border:1px solid var(--sl-border);
+  border-radius:17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13,27,21,.98),
+      rgba(8,18,14,.98)
+    );
+
+  box-sizing:border-box;
+}
+
+.skyla-stat strong,
+.stat-card strong{
+  display:block;
+  margin-top:5px;
+  font-size:27px;
+  line-height:1;
+}
+
+.skyla-stat span,
+.stat-card span{
+  color:var(--sl-muted);
+  font-size:10px;
+}
+
+/* ---------- COMMON CARDS ---------- */
+
+.skyla-card,
+.card,
+.panel,
+.section-card{
+  border:1px solid var(--sl-border) !important;
+  border-radius:18px !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13,27,21,.98),
+      rgba(8,18,14,.98)
+    ) !important;
+
+  color:var(--sl-text) !important;
+  box-sizing:border-box;
+}
+
+.skyla-card{
+  padding:18px;
+}
+
+/* ---------- GRIDS ---------- */
+
+.skyla-grid-2{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.skyla-grid-3{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+/* ---------- INPUTS ---------- */
+
+.skyla-page-content input,
+.skyla-page-content select,
+.skyla-page-content textarea{
+  color-scheme:dark;
+
+  background:#07100c !important;
+  color:var(--sl-text) !important;
+
+  border:1px solid rgba(74,222,128,.15) !important;
+  border-radius:10px !important;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.skyla-page-content button{
+  border-radius:10px;
+}
+
+/* ---------- PROGRESS ---------- */
+
+.skyla-progress{
+  height:7px;
+  overflow:hidden;
+  border-radius:99px;
+  background:#07100c;
+}
+
+.skyla-progress > div{
+  height:100%;
+  border-radius:inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #22c55e,
+      #4ade80
+    );
+}
+
+/* ---------- EMPTY ---------- */
+
+.skyla-empty{
+  padding:22px 12px;
+  text-align:center;
+
+  color:var(--sl-muted);
+
+  border:1px dashed var(--sl-border);
+  border-radius:14px;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media(max-width:1000px){
+
+  .skyla-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .skyla-grid-3{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(max-width:700px){
+
+  .skyla-page-content{
+    padding:12px;
+  }
+
+  .skyla-page-hero{
+    min-height:auto;
+    padding:18px;
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .skyla-grid-2,
+  .skyla-grid-3{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:480px){
+
+  .skyla-stats{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .skyla-stat,
+  .stat-card{
+    padding:13px;
+  }
+
+  .skyla-stat strong,
+  .stat-card strong{
+    font-size:23px;
+  }
+}
+
+/* Existing Obsession-style shell */
+body.skyla-global-page .app-shell{
+  min-height:100vh;
+  width:100%;
+  box-sizing:border-box;
+}
+
+/* Existing main content */
+body.skyla-global-page .main-content{
+  min-width:0;
+  box-sizing:border-box;
+}
+
+/* Home / legacy dashboard */
+body.skyla-global-page .dashboard,
+body.skyla-global-page .home-dashboard,
+body.skyla-global-page .home-page{
+  max-width:1500px;
+  margin:0 auto;
+  box-sizing:border-box;
+}
+
+/* Motivation */
+body.skyla-global-page .motivation-dashboard{
+  max-width:1500px;
+  margin:0 auto;
+  box-sizing:border-box;
+}
+
+/* Football / Fitness */
+body.skyla-global-page .football-dashboard,
+body.skyla-global-page .fitness-dashboard{
+  max-width:1500px;
+  margin:0 auto;
+  box-sizing:border-box;
+}
+
+/* Common heading polish */
+body.skyla-global-page h1{
+  color:var(--sl-text);
+}
+
+body.skyla-global-page h2{
+  color:var(--sl-text);
+}
+
+body.skyla-global-page p,
+body.skyla-global-page small{
+  color:var(--sl-muted);
+}
+
+
+/* =========================================================
+   SKYLA LIFE OS — UNIVERSAL SIDEBAR
+   ========================================================= */
+
+.skyla-old-sidebar-hidden{
+  display:none !important;
+}
+
+
+/* ---------- GLOBAL PAGE ---------- */
+
+body.skyla-global-page{
+  padding-left:154px !important;
+  box-sizing:border-box;
+}
+
+
+/* ---------- SIDEBAR ---------- */
+
+.skyla-global-sidebar{
+
+  position:fixed;
+
+  left:0;
+  top:0;
+  bottom:0;
+
+  width:154px;
+
+  z-index:9999;
+
+  display:flex;
+  flex-direction:column;
+
+  box-sizing:border-box;
+
+  padding:16px 9px 10px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #080b16 0%,
+      #080d12 55%,
+      #060b09 100%
+    );
+
+  border-right:1px solid rgba(74,222,128,.13);
+
+  color:#ecfdf5;
+
+  overflow-y:auto;
+  overflow-x:hidden;
+
+  scrollbar-width:thin;
+  scrollbar-color:rgba(74,222,128,.25) transparent;
+}
+
+
+/* ---------- BRAND ---------- */
+
+.skyla-brand{
+
+  display:flex;
+  align-items:center;
+
+  gap:7px;
+
+  padding:3px 4px 13px;
+
+  border-bottom:1px solid rgba(74,222,128,.10);
+
+  flex-shrink:0;
+}
+
+.skyla-brand-mark{
+
+  width:29px;
+  height:29px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:18px;
+
+  border-radius:9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(74,222,128,.17),
+      rgba(34,197,94,.04)
+    );
+}
+
+.skyla-brand-text{
+  min-width:0;
+}
+
+.skyla-brand-name{
+
+  color:#f8fafc;
+
+  font-size:12px;
+  font-weight:800;
+
+  white-space:nowrap;
+}
+
+.skyla-brand-sub{
+
+  margin-top:2px;
+
+  color:#64748b;
+
+  font-size:7px;
+
+  white-space:nowrap;
+}
+
+
+/* ---------- LABEL ---------- */
+
+.skyla-nav-label{
+
+  padding:12px 5px 6px;
+
+  color:#64748b;
+
+  font-size:7px;
+
+  font-weight:800;
+
+  letter-spacing:1.5px;
+
+  flex-shrink:0;
+}
+
+
+/* ---------- NAV ---------- */
+
+.skyla-global-nav{
+
+  display:flex;
+  flex-direction:column;
+
+  gap:3px;
+
+  flex:1;
+
+  min-height:0;
+}
+
+.skyla-nav-item{
+
+  display:flex;
+  align-items:center;
+
+  min-height:31px;
+
+  padding:0 8px;
+
+  gap:7px;
+
+  box-sizing:border-box;
+
+  border:1px solid transparent;
+
+  border-radius:9px;
+
+  color:#9ca3af;
+
+  text-decoration:none;
+
+  font-size:10px;
+
+  transition:
+    background .16s ease,
+    color .16s ease,
+    border-color .16s ease,
+    transform .16s ease;
+}
+
+.skyla-nav-icon{
+
+  width:16px;
+
+  text-align:center;
+
+  flex-shrink:0;
+
+  font-size:12px;
+}
+
+.skyla-nav-text{
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+}
+
+.skyla-nav-item:hover{
+
+  color:#f8fafc;
+
+  background:rgba(74,222,128,.07);
+
+  border-color:rgba(74,222,128,.10);
+
+  transform:translateX(1px);
+}
+
+.skyla-nav-item.active{
+
+  color:#ffffff;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(74,222,128,.17),
+      rgba(74,222,128,.06)
+    );
+
+  border-color:rgba(74,222,128,.24);
+
+  box-shadow:
+    inset 3px 0 0 #4ade80;
+}
+
+
+/* ---------- PROFILE ---------- */
+
+.skyla-global-profile{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:7px;
+
+  padding:10px 4px 2px;
+
+  margin-top:7px;
+
+  border-top:1px solid rgba(74,222,128,.10);
+
+  flex-shrink:0;
+}
+
+.skyla-avatar{
+
+  width:27px;
+  height:27px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #22c55e,
+      #15803d
+    );
+
+  color:#04120a;
+
+  font-size:11px;
+  font-weight:900;
+
+  flex-shrink:0;
+}
+
+.skyla-profile-info{
+
+  min-width:0;
+
+  display:flex;
+  flex-direction:column;
+}
+
+.skyla-profile-info strong{
+
+  color:#f8fafc;
+
+  font-size:9px;
+}
+
+.skyla-profile-info span{
+
+  margin-top:1px;
+
+  color:#64748b;
+
+  font-size:7px;
+
+  white-space:nowrap;
+}
+
+.skyla-online{
+
+  width:6px;
+  height:6px;
+
+  margin-left:auto;
+
+  border-radius:50%;
+
+  background:#4ade80;
+
+  box-shadow:
+    0 0 8px rgba(74,222,128,.7);
+}
+
+
+/* =========================================================
+   CONTENT WIDTH / SPACING
+   ========================================================= */
+
+body.skyla-global-page > .skyla-global-sidebar + *{
+  min-width:0;
+}
+
+
+/* Existing dashboards */
+body.skyla-global-page .motivation-dashboard,
+body.skyla-global-page .football-dashboard,
+body.skyla-global-page .fitness-dashboard,
+body.skyla-global-page .home-dashboard,
+body.skyla-global-page .dashboard,
+body.skyla-global-page .main-content{
+
+  box-sizing:border-box;
+
+  min-width:0;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:850px){
+
+  body.skyla-global-page{
+    padding-left:0 !important;
+  }
+
+  .skyla-global-sidebar{
+
+    position:relative;
+
+    width:100%;
+
+    height:auto;
+
+    max-height:none;
+
+    padding:8px 10px;
+
+    border-right:0;
+
+    border-bottom:1px solid rgba(74,222,128,.13);
+
+  }
+
+  .skyla-brand{
+    padding-bottom:8px;
+  }
+
+  .skyla-global-nav{
+
+    display:grid;
+
+    grid-template-columns:
+      repeat(3,minmax(0,1fr));
+
+    gap:4px;
+
+    padding-top:5px;
+  }
+
+  .skyla-nav-item{
+    min-height:34px;
+    justify-content:center;
+  }
+
+  .skyla-nav-text{
+    font-size:9px;
+  }
+
+  .skyla-nav-label{
+    display:none;
+  }
+
+  .skyla-global-profile{
+    display:none;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media(max-width:480px){
+
+  .skyla-global-nav{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+  }
+
+}
+
+
+/* =========================================================
+   SKYLA MODULE PAGES
+   Calendar / Daily Routine / Habits / Goals
+   ========================================================= */
+
+
+/* Main module content */
+
+body.skyla-global-page .module-page,
+body.skyla-global-page .module-shell,
+body.skyla-global-page .module-container,
+body.skyla-global-page .core-page,
+body.skyla-global-page .core-container{
+
+  max-width:1500px;
+  margin:0 auto;
+  padding:18px 20px 30px;
+
+  box-sizing:border-box;
+}
+
+
+/* Generic page heading */
+
+body.skyla-global-page .module-header,
+body.skyla-global-page .page-header,
+body.skyla-global-page .core-header{
+
+  margin-bottom:14px;
+
+  padding:20px 22px;
+
+  border:1px solid rgba(74,222,128,.14);
+  border-radius:18px;
+
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(74,222,128,.11),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #0c1b13,
+      #07100c
+    );
+
+  box-sizing:border-box;
+}
+
+
+/* Core template */
+
+body.skyla-global-page #app{
+  min-width:0;
+}
+
+body.skyla-global-page .app{
+  min-width:0;
+}
+
+
+/* Existing module cards */
+
+body.skyla-global-page .item,
+body.skyla-global-page .card,
+body.skyla-global-page .panel,
+body.skyla-global-page .box,
+body.skyla-global-page .section{
+
+  border-color:rgba(74,222,128,.13) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13,27,21,.98),
+      rgba(8,18,14,.98)
+    ) !important;
+
+  border-radius:16px !important;
+}
+
+
+/* Habit dashboard */
+
+body.skyla-global-page .habit-dashboard{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  gap:12px;
+
+  margin-bottom:14px;
+}
+
+body.skyla-global-page .habit-stat{
+
+  padding:16px;
+
+  border:1px solid rgba(74,222,128,.13);
+
+  border-radius:15px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0d1b15,
+      #09120f
+    );
+}
+
+body.skyla-global-page .habit-stat .label{
+
+  color:#8fa39a;
+
+  font-size:10px;
+
+  letter-spacing:.5px;
+}
+
+body.skyla-global-page .habit-stat .value{
+
+  margin-top:6px;
+
+  color:#ecfdf5;
+
+  font-size:25px;
+
+  font-weight:800;
+}
+
+
+/* Routine / Goal cards */
+
+body.skyla-global-page .routine-card,
+body.skyla-global-page .goal-card,
+body.skyla-global-page .habit-card{
+
+  border:1px solid rgba(74,222,128,.13) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0d1b15,
+      #09120f
+    ) !important;
+
+  border-radius:15px !important;
+
+  padding:15px !important;
+}
+
+
+/* Buttons */
+
+body.skyla-global-page button{
+
+  transition:
+    transform .15s ease,
+    opacity .15s ease;
+}
+
+body.skyla-global-page button:hover{
+
+  transform:translateY(-1px);
+}
+
+
+/* Empty state */
+
+body.skyla-global-page .empty{
+
+  border:1px dashed rgba(74,222,128,.15) !important;
+
+  background:rgba(8,18,14,.55) !important;
+
+  color:#8fa39a !important;
+
+  border-radius:14px !important;
+
+  padding:25px 15px !important;
+}
+
+
+/* Progress */
+
+body.skyla-global-page .progress{
+
+  overflow:hidden;
+
+  height:7px;
+
+  border-radius:99px;
+
+  background:#07100c !important;
+}
+
+body.skyla-global-page .progress > div{
+
+  background:
+    linear-gradient(
+      90deg,
+      #22c55e,
+      #4ade80
+    ) !important;
+
+  border-radius:99px;
+}
+
+
+/* =========================================================
+   CALENDAR
+   ========================================================= */
+
+body.skyla-global-page .calendar,
+body.skyla-global-page .calendar-grid{
+
+  box-sizing:border-box;
+}
+
+body.skyla-global-page .calendar-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(7,minmax(0,1fr));
+
+  gap:7px;
+}
+
+body.skyla-global-page .calendar-day{
+
+  min-height:75px;
+
+  padding:9px;
+
+  border:1px solid rgba(74,222,128,.11);
+
+  border-radius:12px;
+
+  background:#0b1712;
+
+  box-sizing:border-box;
+}
+
+body.skyla-global-page .calendar-day.today{
+
+  border-color:#4ade80;
+
+  box-shadow:
+    0 0 0 1px rgba(74,222,128,.12);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:900px){
+
+  body.skyla-global-page .module-page,
+  body.skyla-global-page .module-shell,
+  body.skyla-global-page .module-container,
+  body.skyla-global-page .core-page,
+  body.skyla-global-page .core-container{
+
+    padding:14px;
+  }
+
+  body.skyla-global-page .habit-dashboard{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+  }
+
+}
+
+@media(max-width:600px){
+
+  body.skyla-global-page .habit-dashboard{
+
+    grid-template-columns:1fr;
+  }
+
+  body.skyla-global-page .calendar-grid{
+
+    gap:4px;
+  }
+
+  body.skyla-global-page .calendar-day{
+
+    min-height:55px;
+
+    padding:5px;
+
+    font-size:10px;
+  }
+
+}
+
+/* =========================================================
+   SKYLA REAL CALENDAR
+   ========================================================= */
+
+.calendar-toolbar{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ margin-bottom:18px;
+}
+
+.calendar-nav,
+.calendar-month-title,
+.calendar-today-btn{
+ border:1px solid rgba(80,220,150,.20);
+ background:rgba(10,35,28,.72);
+ color:#eafff3;
+ border-radius:12px;
+ min-height:42px;
+ padding:0 16px;
+ cursor:pointer;
+}
+
+.calendar-nav:hover,
+.calendar-month-title:hover,
+.calendar-today-btn:hover{
+ background:rgba(30,100,70,.55);
+}
+
+.calendar-month-title{
+ font-size:18px;
+ font-weight:800;
+ flex:1;
+}
+
+.calendar-weekdays,
+.calendar-grid{
+ display:grid;
+ grid-template-columns:repeat(7,minmax(0,1fr));
+ gap:7px;
+}
+
+.calendar-weekdays{
+ margin-bottom:7px;
+}
+
+.calendar-weekdays div{
+ text-align:center;
+ font-size:12px;
+ font-weight:800;
+ color:#82a997;
+ text-transform:uppercase;
+ padding:8px 2px;
+}
+
+.calendar-cell{
+ position:relative;
+ min-height:92px;
+ border:1px solid rgba(80,220,150,.10);
+ background:rgba(7,25,20,.70);
+ color:#ecfff4;
+ border-radius:13px;
+ padding:10px;
+ text-align:left;
+ cursor:pointer;
+ transition:.18s ease;
+}
+
+.calendar-cell:hover{
+ border-color:rgba(80,220,150,.42);
+ transform:translateY(-1px);
+}
+
+.calendar-cell.empty-cell{
+ visibility:hidden;
+ cursor:default;
+}
+
+.calendar-day{
+ display:block;
+ font-size:15px;
+ font-weight:800;
+}
+
+.calendar-events{
+ display:flex;
+ gap:4px;
+ flex-wrap:wrap;
+ margin-top:15px;
+ font-size:17px;
+}
+
+.calendar-count{
+ position:absolute;
+ right:8px;
+ bottom:7px;
+ min-width:20px;
+ height:20px;
+ border-radius:999px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:rgba(45,190,120,.18);
+ color:#75efad;
+ font-size:11px;
+ font-weight:800;
+}
+
+.calendar-today{
+ border-color:#55e99b;
+ box-shadow:inset 0 0 0 1px rgba(85,233,155,.22);
+ background:rgba(35,105,70,.22);
+}
+
+.calendar-day-panel{
+ margin-top:18px;
+ padding:18px;
+ border:1px solid rgba(80,220,150,.13);
+ border-radius:16px;
+ background:rgba(7,25,20,.72);
+}
+
+.calendar-panel-title{
+ font-size:16px;
+ font-weight:900;
+ margin-bottom:12px;
+}
+
+.calendar-panel-muted{
+ color:#78988a;
+ font-size:13px;
+}
+
+.calendar-event-row{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:11px 0;
+ border-top:1px solid rgba(255,255,255,.06);
+}
+
+.calendar-event-icon{
+ font-size:20px;
+ width:30px;
+}
+
+.calendar-event-meta{
+ color:#78988a;
+ font-size:12px;
+ margin-top:3px;
+ text-transform:capitalize;
+}
+
+.calendar-sidebar{
+ display:flex;
+ flex-direction:column;
+ gap:14px;
+}
+
+.calendar-side-title{
+ font-size:20px;
+ font-weight:900;
+}
+
+.calendar-today-box,
+.calendar-legend{
+ padding:14px;
+ border:1px solid rgba(80,220,150,.12);
+ border-radius:14px;
+ background:rgba(7,25,20,.55);
+}
+
+.calendar-side-label{
+ color:#69e6a1;
+ font-size:10px;
+ font-weight:900;
+ letter-spacing:.12em;
+ margin-bottom:5px;
+}
+
+.calendar-legend{
+ display:flex;
+ flex-direction:column;
+ gap:9px;
+ color:#a7c5b6;
+ font-size:13px;
+}
+
+@media(max-width:700px){
+ .calendar-grid{
+  gap:4px;
+ }
+
+ .calendar-cell{
+  min-height:66px;
+  padding:7px;
+  border-radius:9px;
+ }
+
+ .calendar-day{
+  font-size:13px;
+ }
+
+ .calendar-events{
+  margin-top:8px;
+  font-size:13px;
+  gap:2px;
+ }
+
+ .calendar-count{
+  right:4px;
+  bottom:4px;
+ }
+
+ .calendar-weekdays div{
+  font-size:9px;
+ }
+
+ .calendar-month-title{
+  font-size:14px;
+ }
+
+ .calendar-nav{
+  padding:0 11px;
+ }
+}
+
+/* =========================================================
+   ANALYTICS DASHBOARD
+   ========================================================= */
+
+.analytics-dashboard{
+    display:grid;
+    gap:18px;
+}
+
+.analytics-hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:24px;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.08);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(58,190,120,.10),
+            rgba(255,255,255,.025)
+        );
+}
+
+.analytics-eyebrow{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.14em;
+    opacity:.5;
+}
+
+.analytics-hero h2{
+    margin:7px 0 6px;
+    font-size:25px;
+}
+
+.analytics-hero p{
+    margin:0;
+    opacity:.6;
+    font-size:13px;
+}
+
+.analytics-hero-score{
+    width:92px;
+    height:92px;
+    border-radius:50%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    border:2px solid rgba(80,210,140,.35);
+    background:rgba(50,180,110,.08);
+    flex:none;
+}
+
+.analytics-hero-score span{
+    font-size:25px;
+    font-weight:900;
+}
+
+.analytics-hero-score small{
+    opacity:.5;
+    font-size:10px;
+}
+
+.analytics-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px;
+}
+
+.analytics-card{
+    padding:18px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.07);
+    background:rgba(255,255,255,.025);
+}
+
+.analytics-card-icon{
+    font-size:22px;
+    margin-bottom:10px;
+}
+
+.analytics-card-title{
+    font-size:13px;
+    opacity:.6;
+}
+
+.analytics-card-value{
+    margin-top:4px;
+    font-size:28px;
+    font-weight:900;
+}
+
+.analytics-card-value small{
+    font-size:12px;
+    opacity:.55;
+}
+
+.analytics-progress{
+    height:7px;
+    margin-top:12px;
+    overflow:hidden;
+    border-radius:99px;
+    background:rgba(255,255,255,.07);
+}
+
+.analytics-progress div{
+    height:100%;
+    border-radius:inherit;
+    background:linear-gradient(90deg,#42d98b,#72f0ad);
+}
+
+.analytics-card-meta{
+    margin-top:10px;
+    font-size:12px;
+    opacity:.65;
+}
+
+.analytics-card-sub{
+    margin-top:5px;
+    font-size:11px;
+    opacity:.4;
+}
+
+.analytics-section{
+    padding:20px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.07);
+    background:rgba(255,255,255,.02);
+}
+
+.analytics-section-head h3{
+    margin:0;
+    font-size:17px;
+}
+
+.analytics-section-head p{
+    margin:5px 0 18px;
+    font-size:12px;
+    opacity:.5;
+}
+
+.analytics-bars{
+    display:grid;
+    gap:14px;
+}
+
+.analytics-bar-row{
+    display:grid;
+    grid-template-columns:70px minmax(0,1fr) 45px;
+    align-items:center;
+    gap:10px;
+    font-size:12px;
+}
+
+.analytics-bar-row > span{
+    opacity:.65;
+}
+
+.analytics-bar-row > strong{
+    text-align:right;
+}
+
+.analytics-bar-track{
+    height:9px;
+    overflow:hidden;
+    border-radius:99px;
+    background:rgba(255,255,255,.07);
+}
+
+.analytics-bar-track div{
+    height:100%;
+    border-radius:inherit;
+    background:linear-gradient(90deg,#42d98b,#72f0ad);
+}
+
+.analytics-focus-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+}
+
+.analytics-focus-grid > div{
+    padding:16px;
+    border-radius:14px;
+    background:rgba(255,255,255,.035);
+}
+
+.analytics-focus-grid span{
+    display:block;
+    font-size:11px;
+    opacity:.5;
+}
+
+.analytics-focus-grid strong{
+    display:block;
+    margin-top:6px;
+    font-size:22px;
+}
+
+.analytics-side{
+    display:grid;
+    gap:12px;
+}
+
+.analytics-side h2{
+    margin:0;
+}
+
+.analytics-side-card{
+    padding:14px;
+    border-radius:15px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.analytics-side-label{
+    font-size:11px;
+    opacity:.5;
+    margin-bottom:5px;
+}
+
+.analytics-big-number{
+    font-size:25px;
+    font-weight:900;
+}
+
+.analytics-side-card .analytics-progress{
+    margin-top:9px;
+}
+
+.analytics-footer{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    font-size:11px;
+    opacity:.4;
+}
+
+@media(max-width:900px){
+    .analytics-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:600px){
+    .analytics-hero{
+        align-items:flex-start;
+    }
+
+    .analytics-hero-score{
+        width:72px;
+        height:72px;
+    }
+
+    .analytics-hero-score span{
+        font-size:20px;
+    }
+
+    .analytics-grid{
+        grid-template-columns:1fr;
+    }
+
+    .analytics-footer{
+        flex-direction:column;
+    }
+}
+
+
+/* =========================================================
+   CUSTOMIZATION DASHBOARD
+   ========================================================= */
+
+.customization-dashboard{
+    display:grid;
+    gap:18px;
+}
+
+.customization-hero{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:24px;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.08);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(90,120,255,.10),
+            rgba(255,255,255,.025)
+        );
+}
+
+.custom-eyebrow{
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.15em;
+    opacity:.45;
+}
+
+.customization-hero h2{
+    margin:7px 0 5px;
+    font-size:25px;
+}
+
+.customization-hero p{
+    margin:0;
+    font-size:13px;
+    opacity:.55;
+}
+
+.custom-hero-icon{
+    width:70px;
+    height:70px;
+    display:grid;
+    place-items:center;
+    border-radius:20px;
+    background:rgba(255,255,255,.05);
+    font-size:32px;
+}
+
+.custom-settings-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+}
+
+.custom-setting-card{
+    display:grid;
+    grid-template-columns:42px minmax(0,1fr) 130px;
+    align-items:center;
+    gap:13px;
+    padding:17px;
+    border-radius:17px;
+    border:1px solid rgba(255,255,255,.07);
+    background:rgba(255,255,255,.025);
+}
+
+.custom-setting-icon{
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    border-radius:13px;
+    background:rgba(255,255,255,.05);
+    font-size:20px;
+}
+
+.custom-setting-card strong{
+    display:block;
+    font-size:13px;
+}
+
+.custom-setting-card span{
+    display:block;
+    margin-top:3px;
+    font-size:11px;
+    opacity:.48;
+}
+
+.custom-setting-card select{
+    width:100%;
+    min-height:40px;
+    padding:8px 10px;
+    border-radius:11px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(0,0,0,.20);
+    color:inherit;
+}
+
+.custom-live-preview{
+    padding:20px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.07);
+    background:rgba(255,255,255,.02);
+}
+
+.custom-preview-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:15px;
+}
+
+.custom-preview-head h3{
+    margin:0;
+    font-size:17px;
+}
+
+.custom-preview-head p{
+    margin:4px 0 0;
+    font-size:12px;
+    opacity:.5;
+}
+
+.custom-preview-head > span{
+    padding:6px 9px;
+    border-radius:999px;
+    background:rgba(255,255,255,.05);
+    font-size:10px;
+    opacity:.65;
+}
+
+.custom-preview-window{
+    padding:17px;
+    border-radius:17px;
+    border:1px solid rgba(255,255,255,.08);
+    background:#101614;
+    transition:.2s ease;
+}
+
+.custom-preview-window[data-theme="light"]{
+    background:#f2f5f3;
+    color:#17201b;
+}
+
+.custom-preview-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:16px;
+    font-size:11px;
+}
+
+.preview-brand{
+    font-weight:900;
+    letter-spacing:.12em;
+}
+
+.preview-status{
+    opacity:.6;
+}
+
+.custom-preview-body{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+}
+
+.custom-preview-card{
+    padding:15px;
+    border-radius:13px;
+    background:rgba(255,255,255,.055);
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.custom-preview-window[data-theme="light"] .custom-preview-card{
+    background:rgba(0,0,0,.045);
+    border-color:rgba(0,0,0,.08);
+}
+
+.custom-preview-card span{
+    display:block;
+    font-size:19px;
+    margin-bottom:8px;
+}
+
+.custom-preview-card strong{
+    display:block;
+    font-size:12px;
+}
+
+.custom-preview-card small{
+    display:block;
+    margin-top:3px;
+    opacity:.5;
+    font-size:10px;
+}
+
+.custom-preview-window[data-accent="blue"] .custom-preview-card span{
+    filter:hue-rotate(70deg);
+}
+
+.custom-preview-window[data-accent="purple"] .custom-preview-card span{
+    filter:hue-rotate(220deg);
+}
+
+.custom-preview-window[data-accent="orange"] .custom-preview-card span{
+    filter:hue-rotate(-25deg);
+}
+
+.custom-preview-window[data-font="small"]{
+    font-size:12px;
+}
+
+.custom-preview-window[data-font="large"]{
+    font-size:16px;
+}
+
+.custom-preview-window[data-density="compact"] .custom-preview-card{
+    padding:10px;
+}
+
+.custom-preview-window[data-density="large"] .custom-preview-card{
+    padding:21px;
+}
+
+.custom-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.custom-actions button{
+    min-height:42px;
+    padding:10px 17px;
+    border:0;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.custom-actions button:first-child{
+    background:#45d98b;
+    color:#07130c;
+    font-weight:800;
+}
+
+.custom-reset-btn{
+    background:rgba(255,255,255,.06);
+    color:inherit;
+    border:1px solid rgba(255,255,255,.09) !important;
+}
+
+.custom-side{
+    display:grid;
+    gap:12px;
+}
+
+.custom-preview-mini{
+    display:grid;
+    grid-template-columns:12px 1fr;
+    align-items:center;
+    column-gap:9px;
+    padding:13px;
+    border-radius:14px;
+    background:rgba(255,255,255,.035);
+}
+
+.custom-preview-mini strong{
+    font-size:12px;
+}
+
+.custom-preview-mini span{
+    grid-column:2;
+    font-size:10px;
+    opacity:.45;
+}
+
+.custom-mini-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#45d98b;
+}
+
+.custom-side-note{
+    font-size:11px;
+    opacity:.42;
+}
+
+@media(max-width:900px){
+    .custom-settings-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+    .customization-hero{
+        padding:18px;
+    }
+
+    .customization-hero h2{
+        font-size:21px;
+    }
+
+    .custom-setting-card{
+        grid-template-columns:40px minmax(0,1fr);
+    }
+
+    .custom-setting-card select{
+        grid-column:1 / -1;
+    }
+
+    .custom-preview-body{
+        grid-template-columns:1fr;
+    }
+}
+

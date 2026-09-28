@@ -1,0 +1,311 @@
+/* =========================================================
+   SKYLA LIFE OS — GLOBAL DESIGN SYSTEM
+   ========================================================= */
+
+:root{
+  --skyla-bg:#070914;
+  --skyla-bg-2:#08110d;
+  --skyla-panel:#0c1712;
+  --skyla-card:#0d1b15;
+  --skyla-border:rgba(74,222,128,.14);
+  --skyla-border-soft:rgba(255,255,255,.06);
+  --skyla-text:#ecfdf5;
+  --skyla-muted:#8fa39a;
+  --skyla-green:#4ade80;
+  --skyla-green-dark:#166534;
+  --skyla-purple:#8b5cf6;
+}
+
+html{
+  background:var(--skyla-bg) !important;
+}
+
+body.skyla-global-page{
+  margin:0 !important;
+  min-height:100vh !important;
+  background:
+    radial-gradient(
+      circle at 75% 0%,
+      rgba(74,222,128,.055),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 5% 30%,
+      rgba(34,197,94,.035),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #070914 0%,
+      #08110d 50%,
+      #060b09 100%
+    ) !important;
+  color:var(--skyla-text) !important;
+}
+
+/* =========================================================
+   GLOBAL SIDEBAR
+   ========================================================= */
+
+.skyla-global-sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:154px;
+  z-index:9999;
+
+  display:flex;
+  flex-direction:column;
+
+  padding:18px 10px 14px;
+  box-sizing:border-box;
+
+  background:
+    linear-gradient(
+      180deg,
+      #090b18 0%,
+      #080d0b 100%
+    );
+
+  border-right:1px solid var(--skyla-border);
+  color:var(--skyla-text);
+}
+
+.skyla-brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:2px 5px 17px;
+}
+
+.skyla-brand-icon{
+  font-size:21px;
+  line-height:1;
+}
+
+.skyla-brand-name{
+  font-size:14px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.skyla-brand-sub{
+  margin-top:3px;
+  color:#65766d;
+  font-size:7px;
+  white-space:nowrap;
+}
+
+.skyla-nav-label{
+  padding:0 7px 7px;
+  color:#63736a;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1.5px;
+}
+
+.skyla-global-nav{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+
+  overflow-y:auto;
+  scrollbar-width:none;
+}
+
+.skyla-global-nav::-webkit-scrollbar{
+  display:none;
+}
+
+.skyla-global-nav a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  min-height:30px;
+  padding:6px 7px;
+
+  border:1px solid transparent;
+  border-radius:8px;
+
+  color:#aab9b0;
+  text-decoration:none;
+
+  font-size:11px;
+  transition:.18s ease;
+}
+
+.skyla-global-nav a:hover{
+  color:#ecfdf5;
+  background:rgba(74,222,128,.055);
+}
+
+.skyla-global-nav a.active{
+  color:#ecfdf5;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(74,222,128,.15),
+      rgba(74,222,128,.045)
+    );
+
+  border-color:rgba(74,222,128,.22);
+  box-shadow:inset 2px 0 0 var(--skyla-green);
+}
+
+.skyla-global-nav .nav-icon{
+  width:17px;
+  text-align:center;
+  flex:none;
+}
+
+.skyla-global-profile{
+  margin-top:auto;
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  padding:11px 6px 3px;
+
+  border-top:1px solid var(--skyla-border-soft);
+}
+
+.skyla-avatar{
+  width:28px;
+  height:28px;
+
+  display:grid;
+  place-items:center;
+
+  flex:none;
+
+  border-radius:50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #22c55e,
+      #4ade80
+    );
+
+  color:#031008;
+  font-size:12px;
+  font-weight:900;
+}
+
+.skyla-profile-name{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+}
+
+.skyla-profile-status{
+  display:block;
+  margin-top:2px;
+  color:#718278;
+  font-size:8px;
+}
+
+.skyla-online{
+  width:7px;
+  height:7px;
+  margin-left:auto;
+
+  border-radius:50%;
+
+  background:#4ade80;
+  box-shadow:0 0 8px rgba(74,222,128,.7);
+}
+
+/* =========================================================
+   CONTENT AREA FOR PAGES THAT GET GLOBAL SIDEBAR
+   ========================================================= */
+
+body.skyla-global-page.skyla-has-global-sidebar{
+  padding-left:154px !important;
+  box-sizing:border-box;
+}
+
+body.skyla-global-page.skyla-has-global-sidebar > main,
+body.skyla-global-page.skyla-has-global-sidebar > .page,
+body.skyla-global-page.skyla-has-global-sidebar > .container,
+body.skyla-global-page.skyla-has-global-sidebar > .module-page{
+  max-width:none;
+}
+
+/* Generic light backgrounds from old pages */
+body.skyla-global-page .container,
+body.skyla-global-page .page,
+body.skyla-global-page .module-page{
+  color:var(--skyla-text);
+}
+
+/* =========================================================
+   MOBILE / IPAD
+   ========================================================= */
+
+@media(max-width:850px){
+
+  .skyla-global-sidebar{
+    position:relative;
+    width:100%;
+    height:auto;
+    min-height:0;
+
+    padding:10px;
+
+    border-right:0;
+    border-bottom:1px solid var(--skyla-border);
+  }
+
+  .skyla-brand{
+    padding-bottom:8px;
+  }
+
+  .skyla-nav-label,
+  .skyla-global-profile{
+    display:none;
+  }
+
+  .skyla-global-nav{
+    flex-direction:row;
+
+    overflow-x:auto;
+    overflow-y:hidden;
+  }
+
+  .skyla-global-nav a{
+    flex:none;
+    min-height:34px;
+    padding:7px 9px;
+  }
+
+  body.skyla-global-page.skyla-has-global-sidebar{
+    padding-left:0 !important;
+  }
+}
+
+/* =========================================================
+   COMMON PAGE CONTENT OFFSET
+   ========================================================= */
+
+.skyla-global-page{
+  padding-left:154px !important;
+}
+
+.skyla-global-page > main,
+.skyla-global-page > .app-shell,
+.skyla-global-page > .main-content{
+  box-sizing:border-box;
+}
+
+@media(max-width:850px){
+
+  .skyla-global-page{
+    padding-left:0 !important;
+  }
+
+}

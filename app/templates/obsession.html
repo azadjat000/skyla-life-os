@@ -3,333 +3,1114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Skyla — Obsession</title>
-<link rel="stylesheet" href="/static/css/skyla.css">
+<title>Skyla Life OS — Obsession</title>
+
 <style>
-.timer{font-size:4rem;font-weight:900;text-align:center;margin:20px}
-.progress{height:12px;background:#222;border-radius:20px;overflow:hidden}
-.progress div{height:100%;background:linear-gradient(90deg,#8b5cf6,#ec4899)}
+*{box-sizing:border-box}
+
+:root{
+  --bg:#070a12;
+  --panel:#101522;
+  --panel2:#0c111d;
+  --border:#252e45;
+  --text:#f5f7ff;
+  --muted:#8995af;
+  --purple:#7c5cff;
+  --pink:#ff4fa3;
+  --cyan:#27d7ff;
+  --green:#20d69a;
+  --orange:#ffad42;
+  --red:#ff5278;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 80% 0%,rgba(124,92,255,.13),transparent 30%),
+    radial-gradient(circle at 10% 40%,rgba(255,79,163,.08),transparent 28%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button,input,textarea,select{font:inherit}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+.sidebar{
+  width:235px;
+  flex-shrink:0;
+  padding:20px 14px;
+  border-right:1px solid var(--border);
+  background:rgba(8,11,20,.92);
+}
+
+.brand{
+  font-size:22px;
+  font-weight:900;
+  padding:8px 12px 22px;
+}
+
+.nav-title{
+  color:#626d86;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  padding:12px;
+}
+
+.nav button{
+  display:block;
+  width:100%;
+  text-align:left;
+  color:#aab3c8;
+  background:transparent;
+  padding:11px 12px;
+  margin:3px 0;
+  border-radius:11px;
+  transition:.18s;
+}
+
+.nav button:hover{
+  background:#151b2a;
+  color:white;
+}
+
+.nav button.active{
+  background:linear-gradient(90deg,rgba(124,92,255,.24),rgba(255,79,163,.10));
+  color:white;
+  border:1px solid rgba(124,92,255,.35);
+}
+
+.main{
+  flex:1;
+  min-width:0;
+  padding:28px;
+  max-width:1450px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:22px;
+}
+
+.eyebrow{
+  color:#a98fff;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+}
+
+h1{
+  margin:5px 0;
+  font-size:36px;
+}
+
+.subtitle{
+  color:var(--muted);
+}
+
+.quote{
+  color:#b9c2d5;
+  font-size:13px;
+  text-align:right;
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(135deg,rgba(124,92,255,.20),rgba(255,79,163,.08)),
+    var(--panel);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:25px;
+  margin-bottom:20px;
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  right:-70px;
+  top:-80px;
+  border-radius:50%;
+  background:rgba(124,92,255,.16);
+  filter:blur(10px);
+}
+
+.hero h2{
+  margin:0 0 7px;
+  font-size:22px;
+}
+
+.hero p{
+  margin:0;
+  color:#9ca8c0;
+  max-width:720px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:14px;
+  margin-bottom:20px;
+}
+
+.stat{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:17px;
+}
+
+.stat-label{
+  color:#7f8aa4;
+  font-size:12px;
+  font-weight:800;
+}
+
+.stat-value{
+  font-size:28px;
+  font-weight:900;
+  margin-top:6px;
+}
+
+.stat:nth-child(1) .stat-value{color:var(--purple)}
+.stat:nth-child(2) .stat-value{color:var(--pink)}
+.stat:nth-child(3) .stat-value{color:var(--cyan)}
+.stat:nth-child(4) .stat-value{color:var(--green)}
+.stat:nth-child(5) .stat-value{color:var(--orange)}
+
+.grid{
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:18px;
+}
+
+.card{
+  background:rgba(16,21,34,.96);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.card h2{
+  margin:0 0 15px;
+  font-size:18px;
+}
+
+.card h3{
+  margin:0 0 6px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+input,textarea,select{
+  width:100%;
+  padding:12px 13px;
+  border-radius:11px;
+  border:1px solid #30394f;
+  background:#090d17;
+  color:white;
+  outline:none;
+}
+
+textarea{
+  min-height:82px;
+  resize:vertical;
+}
+
+input:focus,textarea:focus,select:focus{
+  border-color:var(--purple);
+  box-shadow:0 0 0 3px rgba(124,92,255,.10);
+}
+
+.btn{
+  padding:11px 15px;
+  border-radius:11px;
+  color:white;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--purple),#985cff);
+}
+
+.btn:hover{filter:brightness(1.1)}
+
+.btn.green{background:var(--green);color:#07130f}
+.btn.red{background:var(--red)}
+.btn.dark{background:#20283a}
+.btn.cyan{background:var(--cyan);color:#061118}
+
+.timer-wrap{
+  text-align:center;
+  padding:8px 0 4px;
+}
+
+.timer{
+  font-size:65px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-3px;
+  margin:15px 0 20px;
+  background:linear-gradient(90deg,var(--purple),var(--pink),var(--cyan));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.timer-actions{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.progress{
+  height:9px;
+  background:#252c3e;
+  border-radius:20px;
+  overflow:hidden;
+  margin:12px 0;
+}
+
+.progress > div{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--purple),var(--pink));
+  transition:.3s;
+}
+
+.goal-card{
+  background:var(--panel2);
+  border:1px solid #273149;
+  border-radius:16px;
+  padding:16px;
+  margin-top:10px;
+}
+
+.goal-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.badge{
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(124,92,255,.14);
+  color:#bdafff;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.badge.done{
+  color:#6ff1c4;
+  background:rgba(32,214,154,.12);
+}
+
+.meta{
+  color:#77839c;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+
+.actions button{
+  padding:8px 11px;
+  border-radius:9px;
+  background:#1a2233;
+  color:#dce2f0;
+  font-size:12px;
+  font-weight:800;
+}
+
+.actions button:hover{background:#252f45}
+
+.focus-item{
+  border-left:3px solid var(--cyan);
+  padding:12px 13px;
+  background:#0c121e;
+  border-radius:10px;
+  margin-top:9px;
+}
+
+.focus-time{
+  color:var(--cyan);
+  font-weight:900;
+}
+
+.empty{
+  text-align:center;
+  color:#68748e;
+  padding:28px 12px;
+}
+
+.switches{
+  display:grid;
+  gap:10px;
+}
+
+.switch-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:11px 13px;
+  border:1px solid #252e45;
+  background:#0c111c;
+  border-radius:12px;
+}
+
+.switch{
+  width:45px;
+  height:24px;
+  position:relative;
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#30394d;
+  border-radius:30px;
+  transition:.2s;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  left:3px;
+  top:3px;
+  background:white;
+  border-radius:50%;
+  transition:.2s;
+}
+
+.switch input:checked + .slider{
+  background:var(--purple);
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(21px);
+}
+
+.streak{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:11px 0;
+  border-bottom:1px solid #20283a;
+}
+
+.streak:last-child{border-bottom:0}
+
+.streak strong{font-size:18px}
+
+.mobile-nav{
+  display:none;
+}
+
+@media(max-width:1050px){
+  .sidebar{width:205px}
+  .stats{grid-template-columns:repeat(3,1fr)}
+}
+
+@media(max-width:800px){
+  .app{display:block}
+  .sidebar{
+    display:none;
+  }
+  .main{
+    padding:17px;
+  }
+  .mobile-nav{
+    display:flex;
+    overflow-x:auto;
+    gap:7px;
+    margin-bottom:16px;
+    padding-bottom:3px;
+  }
+  .mobile-nav button{
+    white-space:nowrap;
+    padding:9px 12px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:#111827;
+    color:#aab3c8;
+  }
+  .mobile-nav button.active{
+    background:#211b42;
+    color:white;
+    border-color:#5e4bc0;
+  }
+  .grid{
+    grid-template-columns:1fr;
+  }
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .topbar{
+    align-items:flex-start;
+  }
+  .quote{display:none}
+}
+
+@media(max-width:500px){
+  h1{font-size:29px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat-value{font-size:23px}
+  .form-grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .timer{font-size:52px}
+}
 </style>
+<link rel="stylesheet" href="/static/css/skyla-global.css">
+<link rel="stylesheet" href="/static/css/skyla-pages.css">
 </head>
 
 <body>
-<div class="app-shell">
+
+<div class="app">
 
 <aside class="sidebar">
-<div class="brand">⚡ SKYLA</div>
-<button onclick="Skyla.go('/')">🏠 Home</button>
-<button onclick="Skyla.go('/motivation')">🔥 Motivation</button>
-<button onclick="Skyla.go('/discipline')">🧱 Discipline</button>
-<button class="active">⚡ Obsession</button>
-<button onclick="Skyla.go('/daily-routine')">🕒 Routine</button>
-<button onclick="Skyla.go('/habits')">✅ Habits</button>
-<button onclick="Skyla.go('/goals')">🎯 Goals</button>
-<button onclick="Skyla.go('/football')">⚽ Football</button>
-<button onclick="Skyla.go('/fitness')">💪 Fitness</button>
-<button onclick="Skyla.go('/analytics')">📊 Analytics</button>
-<button onclick="Skyla.go('/finance')">💰 Finance</button>
+  <div class="brand">⚡ Skyla Life OS</div>
+
+  <div class="nav-title">Life OS</div>
+  <div class="nav">
+    <button onclick="go('/')">🏠 Home</button>
+    <button onclick="go('/motivation')">🔥 Motivation</button>
+    <button onclick="go('/discipline')">🧱 Discipline</button>
+    <button class="active">⚡ Obsession</button>
+    <button onclick="go('/daily-routine')">🕒 Routine</button>
+    <button onclick="go('/habits')">✅ Habits</button>
+    <button onclick="go('/goals')">🎯 Goals</button>
+    <button onclick="go('/football')">⚽ Football</button>
+    <button onclick="go('/fitness')">💪 Fitness</button>
+    <button onclick="go('/analytics')">📊 Analytics</button>
+    <button onclick="go('/finance')">💰 Finance</button>
+  </div>
 </aside>
 
-<main class="main-content">
+<main class="main">
 
-<header class="page-header">
+<div class="mobile-nav">
+  <button onclick="go('/')">🏠 Home</button>
+  <button onclick="go('/motivation')">🔥 Motivation</button>
+  <button onclick="go('/discipline')">🧱 Discipline</button>
+  <button class="active">⚡ Obsession</button>
+  <button onclick="go('/habits')">✅ Habits</button>
+  <button onclick="go('/goals')">🎯 Goals</button>
+</div>
+
+<div class="topbar">
+  <div>
+    <div class="eyebrow">FOCUS • COMMITMENT • EXECUTION</div>
+    <h1>⚡ Obsession Dashboard</h1>
+    <div class="subtitle">Turn your biggest target into focused daily action.</div>
+  </div>
+  <div class="quote">One target. Deep focus. Every day.</div>
+</div>
+
+<section class="hero">
+  <h2>⚡ Controlled Obsession</h2>
+  <p>
+    Keep your attention on what matters most. Track targets, focus sessions,
+    routines and streaks without losing recovery and balance.
+  </p>
+</section>
+
+<section class="stats">
+  <div class="stat">
+    <div class="stat-label">ACTIVE TARGETS</div>
+    <div class="stat-value" id="activeTargets">0</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">TARGET PROGRESS</div>
+    <div class="stat-value" id="avgProgress">0%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">FOCUS TODAY</div>
+    <div class="stat-value" id="focusToday">0m</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">FOCUS TOTAL</div>
+    <div class="stat-value" id="focusTotal">0m</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">ROUTINE PROGRESS</div>
+    <div class="stat-value" id="routineProgress">0%</div>
+  </div>
+</section>
+
+<div class="grid">
+
 <div>
-<h1>⚡ Obsession</h1>
-<p>Focused commitment toward your main target.</p>
-</div>
-</header>
 
-<section class="stats-grid">
-<div class="card stat-card">
-<span>🎯 Active Targets</span>
-<strong id="targetCount">0</strong>
-</div>
+<section class="card">
+  <h2>🎯 Create Main Target</h2>
 
-<div class="card stat-card">
-<span>⏱️ Focus Minutes</span>
-<strong id="focusMinutes">0</strong>
-</div>
+  <form id="goalForm" class="form-grid">
+    <input id="goalTitle" placeholder="Main target" required>
+    <input id="goalTarget" type="number" min="1" value="100" placeholder="Target value">
+    <input id="goalDeadline" type="date">
+    <input id="goalCategory" value="obsession" placeholder="Category">
+    <textarea id="goalDescription" class="full" placeholder="Why does this target matter? What does success look like?"></textarea>
 
-<div class="card stat-card">
-<span>📈 Average Progress</span>
-<strong id="averageProgress">0%</strong>
-</div>
+    <button class="btn full" type="submit">⚡ Create Target</button>
+  </form>
 </section>
 
 <section class="card">
-<h2>🎯 Add Main Target</h2>
-
-<form id="goalForm" class="form-grid">
-<input id="goalTitle" placeholder="Main target" required>
-<input id="goalTarget" type="number" min="1" value="100">
-<input id="goalDeadline" type="date">
-<textarea id="goalDescription" placeholder="Why does this target matter?"></textarea>
-<button class="primary-btn" type="submit">⚡ Create Target</button>
-</form>
+  <h2>🎯 Your Obsession Targets</h2>
+  <div id="goalList"></div>
 </section>
 
 <section class="card">
-<h2>⏱️ Focus Timer</h2>
+  <h2>🧱 Obsession Routines</h2>
 
-<div id="timer" class="timer">25:00</div>
+  <form id="routineForm" class="form-grid">
+    <input id="routineTitle" placeholder="Routine name" required>
+    <input id="routineTime" type="time">
+    <select id="routineRepeat">
+      <option value="daily">Daily</option>
+      <option value="weekly">Weekly</option>
+      <option value="monthly">Monthly</option>
+    </select>
+    <input id="routineDescription" placeholder="Routine description">
+    <button class="btn full" type="submit">➕ Add Routine</button>
+  </form>
 
-<div class="button-row">
-<button onclick="startTimer()">▶ Start</button>
-<button onclick="pauseTimer()">⏸ Pause</button>
-<button onclick="resetTimer()">↻ Reset</button>
+  <div id="routineList"></div>
+</section>
+
 </div>
 
-<div class="form-grid">
-<input id="focusMinutesInput" type="number" min="1" value="25">
-<input id="focusNotes" placeholder="Focus session notes">
+<div>
+
+<section class="card">
+  <h2>⏱️ Deep Focus Timer</h2>
+
+  <div class="timer-wrap">
+    <div id="timer" class="timer">25:00</div>
+
+    <div class="timer-actions">
+      <button class="btn green" id="startTimer">▶ Start</button>
+      <button class="btn dark" id="pauseTimer">⏸ Pause</button>
+      <button class="btn dark" id="resetTimer">↺ Reset</button>
+    </div>
+  </div>
+
+  <hr style="border:0;border-top:1px solid #252e45;margin:20px 0">
+
+  <form id="focusForm">
+    <input id="focusMinutesInput" type="number" min="1" value="25" placeholder="Minutes">
+    <input id="focusNotes" placeholder="What did you focus on?">
+    <button class="btn cyan" style="width:100%" type="submit">💾 Save Focus Session</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>🔥 Obsession Streaks</h2>
+  <div id="streakList"></div>
+</section>
+
+<section class="card">
+  <h2>⚙️ Obsession Settings</h2>
+
+  <div class="switches">
+    <div class="switch-row">
+      <span>🎯 Target Tracking</span>
+      <label class="switch">
+        <input id="swTargets" type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="switch-row">
+      <span>⏱️ Focus Timer</span>
+      <label class="switch">
+        <input id="swFocus" type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="switch-row">
+      <span>🧱 Obsession Routines</span>
+      <label class="switch">
+        <input id="swRoutines" type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="switch-row">
+      <span>🔥 Streak Tracking</span>
+      <label class="switch">
+        <input id="swStreaks" type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📜 Focus History</h2>
+  <div id="focusList"></div>
+</section>
+
 </div>
-</section>
 
-<section>
-<h2>🔥 Targets</h2>
-<div id="goalList" class="card-grid"></div>
-</section>
-
-<section>
-<h2>⏱️ Focus History</h2>
-<div id="focusList" class="card-grid"></div>
-</section>
+</div>
 
 </main>
 </div>
 
-<script src="/static/js/skyla.js"></script>
-
 <script>
-let seconds = 1500;
-let interval = null;
+const $ = id => document.getElementById(id);
+
+function esc(value){
+  const div=document.createElement("div");
+  div.textContent=value ?? "";
+  return div.innerHTML;
+}
+
+function go(path){
+  window.location.href=path;
+}
+
+async function api(url, options={}){
+  const res=await fetch(url,{
+    headers:{
+      "Content-Type":"application/json",
+      ...(options.headers || {})
+    },
+    ...options
+  });
+
+  let data={};
+  try{data=await res.json()}catch(e){}
+
+  if(!res.ok){
+    throw new Error(data.error || "Request failed");
+  }
+
+  return data;
+}
+
+let timerSeconds=25*60;
+let timerInterval=null;
 
 function renderTimer(){
-    const m = Math.floor(seconds / 60).toString().padStart(2,"0");
-    const s = (seconds % 60).toString().padStart(2,"0");
-    document.getElementById("timer").textContent = m + ":" + s;
+  const m=Math.floor(timerSeconds/60);
+  const s=timerSeconds%60;
+  $("timer").textContent=
+    String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
 }
 
-function startTimer(){
-    if(interval) return;
+$("startTimer").addEventListener("click",()=>{
+  if(timerInterval) return;
 
-    interval = setInterval(async function(){
-        if(seconds <= 0){
-            pauseTimer();
-            await saveFocus();
-            Skyla.toast("🔥 Focus session complete");
-            return;
-        }
+  timerInterval=setInterval(()=>{
+    if(timerSeconds<=0){
+      clearInterval(timerInterval);
+      timerInterval=null;
+      $("focusNotes").value="Completed focus timer";
+      alert("🔥 Focus session complete!");
+      return;
+    }
 
-        seconds--;
-        renderTimer();
-    },1000);
-}
-
-function pauseTimer(){
-    clearInterval(interval);
-    interval = null;
-}
-
-function resetTimer(){
-    pauseTimer();
-    const m = Number(document.getElementById("focusMinutesInput").value) || 25;
-    seconds = m * 60;
+    timerSeconds--;
     renderTimer();
-}
+  },1000);
+});
 
-async function saveFocus(){
-    const minutes = Number(document.getElementById("focusMinutesInput").value) || 25;
+$("pauseTimer").addEventListener("click",()=>{
+  clearInterval(timerInterval);
+  timerInterval=null;
+});
 
-    await Skyla.send("/api/obsession/focus","POST",{
-        duration: minutes,
-        notes: document.getElementById("focusNotes").value
-    });
+$("resetTimer").addEventListener("click",()=>{
+  clearInterval(timerInterval);
+  timerInterval=null;
+  timerSeconds=25*60;
+  renderTimer();
+});
 
-    await loadData();
-}
-
-async function loadData(){
-    const data = await Skyla.get("/api/obsession");
-    const goals = data.goals || [];
-    const sessions = data.sessions || [];
-
-    document.getElementById("targetCount").textContent =
-        goals.filter(x => x.active).length;
-
-    const total = sessions.reduce(
-        (sum,x) => sum + Number(x.duration || 0),0
-    );
-
-    document.getElementById("focusMinutes").textContent = total;
-
-    const avg = goals.length
-        ? Math.round(goals.reduce(
-            (sum,x) =>
-                sum + Math.min(
-                    100,
-                    Number(x.progress || 0) /
-                    Math.max(Number(x.target || 100),1) * 100
-                ),0
-        ) / goals.length)
-        : 0;
-
-    document.getElementById("averageProgress").textContent =
-        avg + "%";
-
-    renderGoals(goals);
-    renderSessions(sessions);
+function goalProgress(goal){
+  const target=Number(goal.target || 100);
+  const progress=Number(goal.progress || 0);
+  if(target<=0) return 0;
+  return Math.min(100,Math.round((progress/target)*100));
 }
 
 function renderGoals(goals){
-    const box = document.getElementById("goalList");
+  const box=$("goalList");
 
-    if(!goals.length){
-        box.innerHTML = `
-        <div class="card">
-            <h3>No target yet ⚡</h3>
-            <p>Create your first target above.</p>
-        </div>`;
-        return;
-    }
+  if(!goals.length){
+    box.innerHTML='<div class="empty">🎯 No obsession targets yet.<br>Create your main target above.</div>';
+    return;
+  }
 
-    box.innerHTML = goals.map(x => {
-        const target = Number(x.target || 100);
-        const progress = Math.min(
-            100,
-            Math.round(Number(x.progress || 0) / target * 100)
-        );
+  box.innerHTML=goals.map(goal=>{
+    const pct=goalProgress(goal);
+    const done=pct>=100 || !goal.active;
 
-        return `
-        <div class="card">
-            <div class="card-row">
-                <h3>${Skyla.esc(x.title)}</h3>
-                <span class="badge">${x.active ? "ACTIVE" : "OFF"}</span>
+    return `
+      <div class="goal-card">
+        <div class="goal-top">
+          <div>
+            <h3>${esc(goal.title)}</h3>
+            <div class="meta">
+              ${Number(goal.progress||0)} / ${Number(goal.target||100)}
+              ${goal.deadline ? " · Deadline: "+esc(goal.deadline) : ""}
             </div>
+          </div>
 
-            <p>${Skyla.esc(x.description || "")}</p>
-
-            <div class="progress">
-                <div style="width:${progress}%"></div>
-            </div>
-
-            <p>${Number(x.progress || 0)} / ${target} — ${progress}%</p>
-
-            <div class="button-row">
-                <button onclick="increaseProgress(${x.id})">+10 Progress</button>
-                <button onclick="toggleGoal(${x.id})">
-                    ${x.active ? "⏸ Disable" : "▶ Enable"}
-                </button>
-                <button class="danger-btn" onclick="deleteGoal(${x.id})">
-                    🗑 Delete
-                </button>
-            </div>
-        </div>`;
-    }).join("");
-}
-
-function renderSessions(sessions){
-    const box = document.getElementById("focusList");
-
-    if(!sessions.length){
-        box.innerHTML = `
-        <div class="card">
-            <h3>No focus sessions yet ⏱️</h3>
-        </div>`;
-        return;
-    }
-
-    box.innerHTML = sessions.map(x => `
-        <div class="card">
-            <h3>⏱️ ${Number(x.duration)} minutes</h3>
-            <p>${Skyla.esc(x.notes || "")}</p>
-            <button class="danger-btn"
-                onclick="deleteFocus(${x.id})">
-                🗑 Delete
-            </button>
+          <span class="badge ${done?"done":""}">
+            ${done ? "✓ Complete" : pct+"%"}
+          </span>
         </div>
-    `).join("");
+
+        ${goal.description ? `<p class="meta">${esc(goal.description)}</p>` : ""}
+
+        <div class="progress">
+          <div style="width:${pct}%"></div>
+        </div>
+
+        <div class="actions">
+          <button onclick="increaseGoal(${goal.id})">+10 Progress</button>
+          <button onclick="toggleGoal(${goal.id})">
+            ${goal.active ? "Disable" : "Enable"}
+          </button>
+          <button onclick="deleteGoal(${goal.id})">🗑 Delete</button>
+        </div>
+      </div>
+    `;
+  }).join("");
 }
 
-async function increaseProgress(id){
-    const data = await Skyla.get("/api/obsession");
-    const goal = data.goals.find(x => x.id === id);
+function renderRoutines(routines){
+  const box=$("routineList");
 
-    if(!goal) return;
+  if(!routines.length){
+    box.innerHTML='<div class="empty">🧱 No obsession routines yet.</div>';
+    return;
+  }
 
-    const progress = Math.min(
-        Number(goal.target || 100),
-        Number(goal.progress || 0) + 10
-    );
+  box.innerHTML=routines.map(r=>{
+    const done=!!r.completed_today;
 
-    await Skyla.send(
-        "/api/obsession/goals/" + id,
-        "PUT",
-        {progress:progress}
-    );
+    return `
+      <div class="goal-card">
+        <div class="goal-top">
+          <div>
+            <h3>${esc(r.title)}</h3>
+            <div class="meta">
+              ${r.time ? "⏰ "+esc(r.time)+" · " : ""}
+              ${esc(r.repeat || "daily")}
+            </div>
+          </div>
+          <span class="badge ${done?"done":""}">
+            ${done?"✓ Done":"Pending"}
+          </span>
+        </div>
 
-    await loadData();
-    Skyla.toast("⚡ Progress increased");
+        ${r.description ? `<div class="meta">${esc(r.description)}</div>` : ""}
+
+        <div class="actions">
+          <button onclick="${done ? "undoRoutine" : "completeRoutine"}(${r.id})">
+            ${done ? "↩ Undo" : "✓ Complete"}
+          </button>
+          <button onclick="toggleRoutine(${r.id})">
+            ${r.active ? "Disable" : "Enable"}
+          </button>
+          <button onclick="deleteRoutine(${r.id})">🗑 Delete</button>
+        </div>
+      </div>
+    `;
+  }).join("");
 }
 
-async function toggleGoal(id){
-    await Skyla.send(
-        "/api/obsession/goals/" + id + "/toggle"
-    );
+function renderFocus(sessions){
+  const box=$("focusList");
 
-    await loadData();
-    Skyla.toast("Target updated");
+  if(!sessions.length){
+    box.innerHTML='<div class="empty">⏱️ No focus sessions recorded yet.</div>';
+    return;
+  }
+
+  box.innerHTML=sessions.slice().reverse().map(x=>`
+    <div class="focus-item">
+      <div class="focus-time">⏱️ ${Number(x.duration||0)} minutes</div>
+      <div class="meta">${esc(x.session_date || "")}</div>
+      ${x.notes ? `<div style="margin-top:6px">${esc(x.notes)}</div>` : ""}
+      <div class="actions">
+        <button onclick="deleteFocus(${x.id})">🗑 Delete</button>
+      </div>
+    </div>
+  `).join("");
 }
 
-async function deleteGoal(id){
-    if(!confirm("Delete this target?")) return;
+function renderStreaks(routines){
+  const box=$("streakList");
 
-    await Skyla.send(
-        "/api/obsession/goals/" + id,
-        "DELETE"
-    );
+  if(!routines.length){
+    box.innerHTML='<div class="empty">🔥 Complete routines to build streaks.</div>';
+    return;
+  }
 
-    await loadData();
-    Skyla.toast("Target deleted");
+  box.innerHTML=routines.map(x=>`
+    <div class="streak">
+      <span>${esc(x.title)}</span>
+      <strong>${Number(x.streak||0)} 🔥</strong>
+    </div>
+  `).join("");
 }
 
-async function deleteFocus(id){
-    if(!confirm("Delete this focus session?")) return;
+async function loadDashboard(){
+  try{
+    const data=await api("/api/obsession");
 
-    await Skyla.send(
-        "/api/obsession/focus/" + id,
-        "DELETE"
-    );
+    const stats=data.stats || {};
 
-    await loadData();
-    Skyla.toast("Focus session deleted");
+    $("activeTargets").textContent=stats.active_targets || 0;
+    $("avgProgress").textContent=(stats.average_progress || 0)+"%";
+    $("focusToday").textContent=(stats.focus_minutes_today || 0)+"m";
+    $("focusTotal").textContent=(stats.focus_minutes_total || 0)+"m";
+    $("routineProgress").textContent=(stats.routine_progress || 0)+"%";
+
+    renderGoals(data.goals || []);
+    renderRoutines(data.routines || []);
+    renderFocus(data.sessions || []);
+
+    const streak=await api("/api/obsession/streaks");
+    renderStreaks(streak.routines || []);
+
+  }catch(error){
+    console.error(error);
+    alert("Could not load Obsession dashboard: "+error.message);
+  }
 }
 
-document.getElementById("goalForm").addEventListener("submit",async function(e){
-    e.preventDefault();
+$("goalForm").addEventListener("submit",async e=>{
+  e.preventDefault();
 
-    await Skyla.send("/api/obsession/goals","POST",{
-        title:document.getElementById("goalTitle").value,
-        target:Number(document.getElementById("goalTarget").value) || 100,
-        deadline:document.getElementById("goalDeadline").value,
-        description:document.getElementById("goalDescription").value
+  try{
+    await api("/api/obsession/goals",{
+      method:"POST",
+      body:JSON.stringify({
+        title:$("goalTitle").value.trim(),
+        target:Number($("goalTarget").value)||100,
+        deadline:$("goalDeadline").value,
+        category:$("goalCategory").value.trim() || "obsession",
+        description:$("goalDescription").value.trim()
+      })
     });
 
     e.target.reset();
-    document.getElementById("goalTarget").value = 100;
+    $("goalTarget").value=100;
+    $("goalCategory").value="obsession";
 
-    await loadData();
-    Skyla.toast("⚡ Main target created");
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
 });
 
-document.getElementById("focusMinutesInput").addEventListener(
-    "change",
-    resetTimer
-);
+$("routineForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  try{
+    await api("/api/obsession/routines",{
+      method:"POST",
+      body:JSON.stringify({
+        title:$("routineTitle").value.trim(),
+        time:$("routineTime").value,
+        repeat:$("routineRepeat").value,
+        description:$("routineDescription").value.trim()
+      })
+    });
+
+    e.target.reset();
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+});
+
+$("focusForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  try{
+    await api("/api/obsession/focus",{
+      method:"POST",
+      body:JSON.stringify({
+        duration:Number($("focusMinutesInput").value)||25,
+        notes:$("focusNotes").value.trim()
+      })
+    });
+
+    $("focusNotes").value="";
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+});
+
+async function increaseGoal(id){
+  try{
+    const data=await api("/api/obsession");
+    const goal=(data.goals||[]).find(x=>x.id===id);
+    if(!goal) return;
+
+    const next=Math.min(
+      Number(goal.target||100),
+      Number(goal.progress||0)+10
+    );
+
+    await api("/api/obsession/goals/"+id,{
+      method:"PUT",
+      body:JSON.stringify({progress:next})
+    });
+
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+async function toggleGoal(id){
+  try{
+    await api("/api/obsession/goals/"+id+"/toggle",{method:"POST"});
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+async function deleteGoal(id){
+  if(!confirm("Delete this obsession target?")) return;
+
+  try{
+    await api("/api/obsession/goals/"+id,{method:"DELETE"});
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+async function completeRoutine(id){
+  try{
+    await api("/api/obsession/routines/"+id+"/complete",{method:"POST"});
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+async function undoRoutine(id){
+  try{
+    await api("/api/obsession/routines/"+id+"/undo",{method:"POST"});
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+async function toggleRoutine(id){
+  try{
+    await api("/api/obsession/routines/"+id+"/toggle",{method:"POST"});
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+async function deleteRoutine(id){
+  if(!confirm("Delete this obsession routine?")) return;
+
+  try{
+    await api("/api/obsession/routines/"+id,{method:"DELETE"});
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+async function deleteFocus(id){
+  if(!confirm("Delete this focus session?")) return;
+
+  try{
+    await api("/api/obsession/focus/"+id,{method:"DELETE"});
+    await loadDashboard();
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+function setupSwitch(id,section){
+  $(id).addEventListener("change",e=>{
+    const cards={
+      targets:document.querySelectorAll(".goal-card"),
+      focus:document.querySelectorAll(".timer-wrap, #focusForm, #focusList"),
+      routines:document.querySelectorAll("#routineForm,#routineList"),
+      streaks:document.querySelectorAll("#streakList")
+    };
+
+    const nodes=cards[section];
+    if(nodes){
+      nodes.forEach(node=>{
+        node.style.opacity=e.target.checked?"1":".38";
+      });
+    }
+  });
+}
+
+setupSwitch("swTargets","targets");
+setupSwitch("swFocus","focus");
+setupSwitch("swRoutines","routines");
+setupSwitch("swStreaks","streaks");
 
 renderTimer();
-loadData();
+loadDashboard();
 </script>
 
+<script src="/static/js/skyla-global.js"></script>
+<script src="/static/js/skyla-pages.js"></script>
 </body>
 </html>

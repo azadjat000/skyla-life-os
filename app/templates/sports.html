@@ -1,0 +1,2759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skyla Sports Hub</title>
+
+<link rel="stylesheet" href="/static/css/skyla-pages.css">
+
+<style>
+.sports-page{
+    max-width:1200px;
+    margin:auto;
+    padding:24px;
+}
+
+.hero{
+    padding:26px;
+    border-radius:24px;
+    border:1px solid rgba(255,255,255,.08);
+    background:linear-gradient(135deg,rgba(40,220,130,.12),rgba(70,120,255,.08),rgba(255,255,255,.02));
+    margin-bottom:18px;
+}
+
+.hero-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.eyebrow{
+    font-size:10px;
+    letter-spacing:.15em;
+    opacity:.45;
+    font-weight:800;
+}
+
+.hero h1{
+    margin:7px 0;
+    font-size:30px;
+}
+
+.hero p{
+    margin:0;
+    opacity:.55;
+    font-size:13px;
+}
+
+.hero-icon{
+    width:72px;
+    height:72px;
+    border-radius:20px;
+    display:grid;
+    place-items:center;
+    font-size:36px;
+    background:rgba(255,255,255,.06);
+}
+
+.sport-picker{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.sport-chip{
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.035);
+    color:inherit;
+    padding:9px 13px;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.sport-chip.active{
+    background:rgba(69,217,139,.15);
+    border-color:rgba(69,217,139,.4);
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.stat{
+    padding:15px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.07);
+    background:rgba(255,255,255,.025);
+}
+
+.stat span{
+    display:block;
+    font-size:9px;
+    opacity:.45;
+    text-transform:uppercase;
+}
+
+.stat strong{
+    display:block;
+    margin-top:6px;
+    font-size:21px;
+}
+
+.tabs{
+    display:flex;
+    gap:8px;
+    overflow:auto;
+    margin-bottom:14px;
+}
+
+.tab{
+    flex:0 0 auto;
+    border:0;
+    background:rgba(255,255,255,.04);
+    color:inherit;
+    padding:10px 15px;
+    border-radius:11px;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:rgba(69,217,139,.16);
+}
+
+.panel{
+    display:none;
+    padding:20px;
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:19px;
+    background:rgba(255,255,255,.02);
+}
+
+.panel.active{
+    display:block;
+}
+
+.panel h2{
+    margin-top:0;
+    font-size:18px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+.field label{
+    font-size:10px;
+    opacity:.5;
+}
+
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.035);
+    color:inherit;
+}
+
+.field textarea{
+    min-height:80px;
+    resize:vertical;
+}
+
+.primary{
+    margin-top:12px;
+    padding:10px 15px;
+    border:0;
+    border-radius:10px;
+    cursor:pointer;
+    background:#45d98b;
+    color:#06140c;
+    font-weight:800;
+}
+
+.items{
+    display:grid;
+    gap:9px;
+    margin-top:18px;
+}
+
+.item{
+    padding:14px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.06);
+    background:rgba(255,255,255,.025);
+}
+
+.item-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.item-title{
+    font-weight:800;
+}
+
+.meta{
+    margin-top:5px;
+    font-size:11px;
+    opacity:.5;
+}
+
+.badge{
+    padding:4px 8px;
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+    font-size:9px;
+}
+
+.delete{
+    margin-top:8px;
+    border:0;
+    background:rgba(255,80,80,.1);
+    color:#ff8d8d;
+    padding:6px 9px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.progress{
+    height:7px;
+    border-radius:99px;
+    overflow:hidden;
+    background:rgba(255,255,255,.08);
+    margin-top:9px;
+}
+
+.progress div{
+    height:100%;
+    background:#45d98b;
+}
+
+.empty{
+    padding:20px;
+    text-align:center;
+    opacity:.45;
+    font-size:12px;
+}
+
+@media(max-width:900px){
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media(max-width:650px){
+    .sports-page{
+        padding:14px;
+    }
+
+    .hero h1{
+        font-size:24px;
+    }
+
+    .hero-icon{
+        width:55px;
+        height:55px;
+        font-size:27px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .field.full{
+        grid-column:auto;
+    }
+}
+
+.analytics-summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.analytics-box{
+    padding:14px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.06);
+    background:rgba(255,255,255,.025);
+}
+
+.analytics-box span{
+    display:block;
+    font-size:9px;
+    opacity:.45;
+    text-transform:uppercase;
+}
+
+.analytics-box strong{
+    display:block;
+    margin-top:6px;
+    font-size:20px;
+}
+
+.analytics-card{
+    padding:18px;
+    margin-top:12px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.06);
+    background:rgba(255,255,255,.02);
+}
+
+.analytics-card-head{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:14px;
+}
+
+.analytics-card-head span{
+    font-size:10px;
+    opacity:.45;
+}
+
+.training-chart{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+    align-items:end;
+    height:190px;
+    padding-top:10px;
+}
+
+.chart-day{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+    gap:6px;
+}
+
+.chart-value{
+    font-size:9px;
+    opacity:.55;
+}
+
+.chart-bar{
+    width:min(34px,70%);
+    min-height:3px;
+    border-radius:8px 8px 3px 3px;
+    background:#45d98b;
+}
+
+.chart-label{
+    font-size:9px;
+    opacity:.45;
+}
+
+.skill-chart{
+    display:grid;
+    gap:12px;
+}
+
+.skill-row{
+    display:grid;
+    grid-template-columns:110px 1fr 70px;
+    align-items:center;
+    gap:10px;
+}
+
+.skill-name{
+    font-size:11px;
+}
+
+.skill-track{
+    height:8px;
+    border-radius:99px;
+    overflow:hidden;
+    background:rgba(255,255,255,.08);
+}
+
+.skill-fill{
+    height:100%;
+    border-radius:99px;
+    background:#45d98b;
+}
+
+.skill-value{
+    text-align:right;
+    font-size:10px;
+    opacity:.55;
+}
+
+@media(max-width:700px){
+    .analytics-summary{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .skill-row{
+        grid-template-columns:80px 1fr 60px;
+    }
+
+    .training-chart{
+        gap:4px;
+    }
+}
+
+
+.metric-trend-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:14px;
+}
+
+.metric-trend-label{
+    padding:6px 10px;
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.10);
+    font-size:.8rem;
+    font-weight:700;
+}
+
+.metric-trend-chart{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    min-height:190px;
+    overflow-x:auto;
+    padding:10px 2px 4px;
+}
+
+.metric-trend-day{
+    min-width:58px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    gap:6px;
+}
+
+.metric-trend-bars{
+    width:100%;
+    min-height:145px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:3px;
+}
+
+.metric-trend-bar{
+    width:9px;
+    min-height:3px;
+    border-radius:6px 6px 2px 2px;
+    background:rgba(255,255,255,.45);
+}
+
+.metric-trend-value{
+    font-size:.7rem;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.metric-trend-date{
+    font-size:.72rem;
+    opacity:.7;
+}
+
+.sport-kpi-panel{
+    margin-bottom:18px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.sport-kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px;
+    margin-top:14px;
+}
+
+.sport-kpi-card{
+    padding:16px;
+    border-radius:16px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.10);
+}
+
+.sport-kpi-label{
+    font-size:.78rem;
+    opacity:.7;
+    margin-bottom:6px;
+}
+
+.sport-kpi-value{
+    font-size:1.45rem;
+    font-weight:800;
+}
+
+.sport-kpi-unit{
+    font-size:.72rem;
+    opacity:.65;
+    margin-left:3px;
+}
+
+@media (max-width:900px){
+    .sport-kpi-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media (max-width:520px){
+    .sport-kpi-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+.analytics-metrics-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:16px;
+    margin-top:4px;
+}
+
+.analytics-metrics-section{
+    padding:14px;
+    border-radius:16px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.analytics-metrics-title{
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.analytics-metrics-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.analytics-metric-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:8px 11px;
+    border-radius:999px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.10);
+    font-size:.85rem;
+}
+
+.analytics-metric-pill strong{
+    font-weight:800;
+}
+
+@media (max-width:700px){
+    .analytics-metrics-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+.sport-session-metrics{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:10px 0;
+}
+
+.metric-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.10);
+    font-size:.82rem;
+    line-height:1.2;
+}
+
+.metric-pill strong{
+    font-weight:700;
+}
+
+</style>
+</head>
+
+<body class="skyla-global-page">
+
+<div class="sports-page">
+
+<section class="hero">
+
+    <div class="hero-top">
+
+        <div>
+            <div class="eyebrow">LIFE OS • PERFORMANCE</div>
+            <h1>🏆 Sports Hub</h1>
+            <p>Train. Track. Improve. Repeat.</p>
+        </div>
+
+        <div id="heroIcon" class="hero-icon">🏆</div>
+
+    </div>
+
+    <div id="sportPicker" class="sport-picker"></div>
+
+    <div class="sports-actions">
+        <div class="sports-streak">
+            🔥 Training Streak:
+            <strong id="sportStreak">0 days</strong>
+        </div>
+
+        <button
+            type="button"
+            class="secondary sports-init-btn"
+            id="initializeSkillsBtn">
+            ⚡ Initialize Skills
+        </button>
+    </div>
+
+</section>
+
+<section class="stats">
+
+    <div class="stat">
+        <span>Today</span>
+        <strong id="todaySessions">0</strong>
+    </div>
+
+    <div class="stat">
+        <span>This Week</span>
+        <strong id="weekSessions">0</strong>
+    </div>
+
+    <div class="stat">
+        <span>Week Minutes</span>
+        <strong id="weekMinutes">0</strong>
+    </div>
+
+    <div class="stat">
+        <span>Month Minutes</span>
+        <strong id="monthMinutes">0</strong>
+    </div>
+
+    <div class="stat">
+        <span>Rating</span>
+        <strong id="rating">—</strong>
+    </div>
+
+</section>
+
+<div class="tabs">
+
+    <button class="tab active" data-tab="training">
+        🏋️ Training
+    </button>
+
+    <button class="tab" data-tab="skills">
+        📈 Skills
+    </button>
+
+    <button class="tab" data-tab="targets">
+        🎯 Targets
+    </button>
+
+    <button class="tab" data-tab="pbs">
+        🏅 Personal Bests
+    </button>
+
+    <button class="tab" data-tab="analytics">
+        📊 Analytics
+    </button>
+
+</div>
+
+<section id="training" class="panel active">
+
+    <h2>🏋️ Training Session</h2>
+
+    <form id="trainingForm">
+
+        <div class="form-grid">
+
+            <div class="field">
+                <label>Training Date</label>
+                <input id="sessionDate" type="date">
+            </div>
+
+            <div class="field">
+                <label>Session Type</label>
+                <input id="sessionType" placeholder="Training / Match / Run">
+            </div>
+
+            <div class="field">
+                <label>Duration (minutes)</label>
+                <input id="duration" type="number" min="1" value="60">
+            </div>
+
+            <div class="field">
+                <label>Intensity</label>
+                <select id="intensity">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="extreme">Extreme</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Rating</label>
+                <select id="sessionRating">
+                    <option value="0">No rating</option>
+                    <option value="1">1 / 5</option>
+                    <option value="2">2 / 5</option>
+                    <option value="3">3 / 5</option>
+                    <option value="4">4 / 5</option>
+                    <option value="5">5 / 5</option>
+                </select>
+            </div>
+
+            <div class="field full">
+                <label>Drills</label>
+                <textarea id="drills"
+                    placeholder="What did you train?"></textarea>
+            </div>
+
+            <div class="field full">
+                <div class="sport-metrics-header">
+                    <label>Sport-Specific Performance</label>
+                    <span id="metricsHint" class="meta">
+                        Select a sport to see its metrics.
+                    </span>
+                </div>
+
+                <div id="sportMetrics"
+                    class="sport-metrics-grid"></div>
+            </div>
+
+            <div class="field full">
+                <label>Notes</label>
+                <textarea id="notes"
+                    placeholder="Performance, problems, improvements..."></textarea>
+            </div>
+
+        </div>
+
+        <button class="primary" type="submit">
+            + Save Training Session
+        </button>
+
+    </form>
+
+    <div id="trainingList" class="items"></div>
+
+</section>
+
+<section id="skills" class="panel">
+
+    <h2>📈 Skills</h2>
+
+    <form id="skillForm">
+
+        <div class="form-grid">
+
+            <div class="field">
+                <label>Skill</label>
+                <input id="skillName" placeholder="e.g. Speed">
+            </div>
+
+            <div class="field">
+                <label>Unit</label>
+                <input id="skillUnit" value="%">
+            </div>
+
+            <div class="field">
+                <label>Current</label>
+                <input id="skillCurrent" type="number" min="0" value="0">
+            </div>
+
+            <div class="field">
+                <label>Target</label>
+                <input id="skillTarget" type="number" min="1" value="100">
+            </div>
+
+        </div>
+
+        <button class="primary" type="submit">
+            + Add Skill
+        </button>
+
+    </form>
+
+    <div id="skillsList" class="items"></div>
+
+</section>
+
+<section id="targets" class="panel">
+
+    <h2>🎯 Targets</h2>
+
+    <form id="targetForm">
+
+        <div class="form-grid">
+
+            <div class="field full">
+                <label>Target</label>
+                <input id="targetTitle"
+                    placeholder="e.g. Run 50 km this month">
+            </div>
+
+            <div class="field">
+                <label>Target Value</label>
+                <input id="targetValue" type="number" min="0" value="100">
+            </div>
+
+            <div class="field">
+                <label>Actual</label>
+                <input id="actualValue" type="number" min="0" value="0">
+            </div>
+
+            <div class="field">
+                <label>Unit</label>
+                <input id="targetUnit" placeholder="km / reps / minutes">
+            </div>
+
+            <div class="field">
+                <label>Deadline</label>
+                <input id="targetDeadline" type="date">
+            </div>
+
+        </div>
+
+        <button class="primary" type="submit">
+            + Add Target
+        </button>
+
+    </form>
+
+    <div id="targetsList" class="items"></div>
+
+</section>
+
+<section id="pbs" class="panel">
+
+    <h2>🏅 Personal Bests</h2>
+
+    <form id="pbForm">
+
+        <div class="form-grid">
+
+            <div class="field">
+                <label>Metric</label>
+                <input id="pbMetric"
+                    placeholder="e.g. 5K Run">
+            </div>
+
+            <div class="field">
+                <label>Value</label>
+                <input id="pbValue" type="number" min="0">
+            </div>
+
+            <div class="field">
+                <label>Unit</label>
+                <input id="pbUnit"
+                    placeholder="minutes / kg / km">
+            </div>
+
+            <div class="field">
+                <label>Date</label>
+                <input id="pbDate" type="date">
+            </div>
+
+            <div class="field full">
+                <label>Notes</label>
+                <textarea id="pbNotes"></textarea>
+            </div>
+
+        </div>
+
+        <button class="primary" type="submit">
+            + Save Personal Best
+        </button>
+
+    </form>
+
+    <div id="pbsList" class="items"></div>
+
+
+</section>
+
+<section id="analytics" class="panel">
+
+    <h2>📊 Performance Analytics</h2>
+
+    <div class="sport-kpi-panel">
+        <div class="analytics-card-head">
+            <strong>⚡ Sport Performance</strong>
+            <span id="sportKpiSubtitle">Selected sport</span>
+        </div>
+
+        <div id="sportKpiGrid" class="sport-kpi-grid">
+            <div class="empty">Select a sport to view performance.</div>
+        </div>
+    </div>
+
+    <div class="analytics-summary">
+
+        <div class="analytics-box">
+            <span>🔥 Training Streak</span>
+            <strong id="analyticsStreak">0 days</strong>
+        </div>
+
+        <div class="analytics-box">
+            <span>📅 Weekly Sessions</span>
+            <strong id="analyticsWeekSessions">0</strong>
+        </div>
+
+        <div class="analytics-box">
+            <span>⏱️ Weekly Minutes</span>
+            <strong id="analyticsWeekMinutes">0</strong>
+        </div>
+
+        <div class="analytics-box">
+            <span>📆 Monthly Minutes</span>
+            <strong id="analyticsMonthMinutes">0</strong>
+        </div>
+
+    </div>
+
+    <div class="analytics-card">
+
+        <div class="analytics-card-head">
+            <strong>🏆 Sport Performance</strong>
+            <span>Weekly / Monthly</span>
+        </div>
+
+        <div class="analytics-metrics-grid">
+
+            <div class="analytics-metrics-section">
+                <div class="analytics-metrics-title">
+                    This Week
+                </div>
+
+                <div id="weeklyMetrics" class="analytics-metrics-list">
+                    <div class="empty">
+                        No metric data this week.
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-metrics-section">
+                <div class="analytics-metrics-title">
+                    This Month
+                </div>
+
+                <div id="monthlyMetrics" class="analytics-metrics-list">
+                    <div class="empty">
+                        No metric data this month.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="analytics-card">
+
+        <div class="analytics-card-head">
+            <strong>7-Day Training</strong>
+            <span>Minutes</span>
+        </div>
+
+        <div id="trainingChart" class="training-chart"></div>
+
+    </div>
+
+    <div class="analytics-card">
+
+        <div class="analytics-card-head">
+            <strong>📈 Sport Metrics Trend</strong>
+            <span>7 Days</span>
+        </div>
+
+        <div id="metricTrendLegend" class="metric-trend-legend"></div>
+
+        <div id="metricTrendChart" class="metric-trend-chart">
+            <div class="empty">
+                No sport metric data yet.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="analytics-card">
+
+        <div class="analytics-card-head">
+            <strong>Skill Progress</strong>
+            <span>Current / Target</span>
+        </div>
+
+        <div id="skillChart" class="skill-chart"></div>
+
+    </div>
+
+    <div class="analytics-card">
+
+        <div class="analytics-card-head">
+            <strong>Targets</strong>
+            <span>Actual / Target</span>
+        </div>
+
+        <div id="targetChart" class="skill-chart"></div>
+
+    </div>
+
+</section>
+
+</div>
+
+<script src="/static/js/skyla-pages.js"></script>
+
+<script>
+let sports = [];
+let selectedSport = null;
+
+const $ = id => document.getElementById(id);
+
+function esc(value){
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+async function request(url, options={}){
+    const response = await fetch(url,{
+        headers:{
+            "Content-Type":"application/json",
+            ...(options.headers || {})
+        },
+        ...options
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if(!response.ok){
+        throw new Error(data.error || "Request failed");
+    }
+
+    return data;
+}
+
+async function loadSports(){
+
+    sports = await request("/api/sports");
+
+    if(!selectedSport){
+        selectedSport = sports.find(x => x.name === "Football")
+            || sports[0];
+    }
+
+    renderSportPicker();
+    await loadDashboard();
+
+}
+
+function renderSportPicker(){
+
+    $("sportPicker").innerHTML = sports
+        .filter(x => x.active)
+        .map(x => `
+            <button
+                type="button"
+                class="sport-chip ${x.id === selectedSport.id ? "active" : ""}"
+                data-id="${x.id}">
+                ${x.icon} ${esc(x.name)}
+            </button>
+        `)
+        .join("");
+
+    renderSportMetrics();
+
+    document
+        .querySelectorAll(".sport-chip")
+        .forEach(button => {
+
+            button.addEventListener("click", async () => {
+
+                selectedSport =
+                    sports.find(
+                        x => x.id === Number(button.dataset.id)
+                    );
+
+                renderSportPicker();
+                renderSportMetrics();
+
+                await loadDashboard();
+
+            });
+
+        });
+
+}
+
+
+function renderSportKpis(analytics){
+
+    const grid = $("sportKpiGrid");
+    const subtitle = $("sportKpiSubtitle");
+
+    if(!grid || !selectedSport){
+        return;
+    }
+
+    const metricConfig = SPORT_METRICS[selectedSport.name] || [];
+
+    if(subtitle){
+        subtitle.textContent =
+            `${selectedSport.icon || ""} ${selectedSport.name}`;
+    }
+
+    if(!metricConfig.length){
+
+        grid.innerHTML =
+            `<div class="empty">No sport-specific KPIs available.</div>`;
+
+        return;
+    }
+
+    const monthlyMetrics =
+        analytics?.month?.metrics || {};
+
+    const cards = metricConfig.map(
+        ([key, label]) => {
+
+            const value =
+                monthlyMetrics[key] ?? 0;
+
+            let unit = "";
+
+            if(label.includes("(km)")){
+                unit = "km";
+            }else if(label.includes("(m)")){
+                unit = "m";
+            }else if(label.includes("(kg)")){
+                unit = "kg";
+            }else if(label.includes("(km/h)")){
+                unit = "km/h";
+            }else if(label.includes("(min/km)")){
+                unit = "min/km";
+            }
+
+            return `
+                <div class="sport-kpi-card">
+
+                    <div class="sport-kpi-label">
+                        ${esc(label.replace(/\s*\([^)]*\)/, ""))}
+                    </div>
+
+                    <div class="sport-kpi-value">
+                        ${esc(String(value))}
+                        ${unit
+                            ? `<span class="sport-kpi-unit">${esc(unit)}</span>`
+                            : ""}
+                    </div>
+
+                </div>
+            `;
+
+        }
+    ).join("");
+
+    grid.innerHTML = cards;
+}
+
+function renderAnalyticsMetrics(metrics, elementId){
+
+    const container = $(elementId);
+
+    if(!container){
+        return;
+    }
+
+    if(!metrics || typeof metrics !== "object"){
+        container.innerHTML =
+            `<div class="empty">No metric data.</div>`;
+        return;
+    }
+
+    const entries = Object.entries(metrics);
+
+    if(!entries.length){
+        container.innerHTML =
+            `<div class="empty">No metric data.</div>`;
+        return;
+    }
+
+    const labels = {
+        goals: "Goals",
+        assists: "Assists",
+        shots: "Shots",
+        passes: "Passes",
+        runs: "Runs",
+        wickets: "Wickets",
+        balls: "Balls",
+        overs: "Overs",
+        points: "Points",
+        rebounds: "Rebounds",
+        games: "Games",
+        smashes: "Smashes",
+        sets: "Sets",
+        aces: "Aces",
+        double_faults: "Double Faults",
+        serves: "Serves",
+        blocks: "Blocks",
+        spikes: "Spikes",
+        distance: "Distance",
+        pace: "Pace",
+        elevation: "Elevation",
+        stroke: "Stroke",
+        rounds: "Rounds",
+        punches: "Punches",
+        combinations: "Combinations",
+        strikes: "Strikes",
+        takedowns: "Takedowns",
+        speed: "Average Speed",
+        reps: "Reps",
+        weight: "Weight",
+        holes: "Holes",
+        strokes: "Strokes",
+        putts: "Putts",
+        metric_1: "Metric 1",
+        metric_2: "Metric 2",
+        metric_3: "Metric 3"
+    };
+
+    container.innerHTML = entries.map(
+        ([key, value]) => `
+            <span class="analytics-metric-pill">
+                ${esc(labels[key] || key)}:
+                <strong>${esc(String(value))}</strong>
+            </span>
+        `
+    ).join("");
+}
+
+async function loadPerformanceAnalytics(){
+
+    if(!selectedSport) return;
+
+    try{
+
+        const [analytics, streak] = await Promise.all([
+            request(`/api/sports/${selectedSport.id}/analytics`),
+            request(`/api/sports/${selectedSport.id}/streak`)
+        ]);
+
+        $("analyticsStreak").textContent =
+            streak.streak + " days";
+
+        $("analyticsWeekSessions").textContent =
+            analytics.week.sessions;
+
+        $("analyticsWeekMinutes").textContent =
+            analytics.week.minutes;
+
+        $("analyticsMonthMinutes").textContent =
+            analytics.month.minutes;
+
+        renderSportKpis(analytics);
+
+        renderAnalyticsMetrics(
+            analytics.week.metrics,
+            "weeklyMetrics"
+        );
+
+        renderAnalyticsMetrics(
+            analytics.month.metrics,
+            "monthlyMetrics"
+        );
+
+        renderTrainingChart(analytics.daily);
+
+        renderMetricTrend(analytics.daily);
+
+        renderSkillChart();
+
+        renderTargetChart();
+
+    }catch(error){
+
+        console.error("Analytics:", error);
+
+    }
+
+}
+
+function renderMetricTrend(daily){
+
+    const chart = $("metricTrendChart");
+    const legend = $("metricTrendLegend");
+
+    if(!chart || !legend){
+        return;
+    }
+
+    const rows = Object.entries(daily || {});
+
+    const metricKeys = [];
+
+    rows.forEach(([, data]) => {
+
+        if(!data || typeof data.metrics !== "object"){
+            return;
+        }
+
+        Object.keys(data.metrics).forEach(key => {
+
+            if(!metricKeys.includes(key)){
+                metricKeys.push(key);
+            }
+
+        });
+
+    });
+
+    if(!metricKeys.length){
+
+        legend.innerHTML = "";
+
+        chart.innerHTML =
+            `<div class="empty">No sport metric data in the last 7 days.</div>`;
+
+        return;
+    }
+
+    const labels = {
+        goals:"Goals",
+        assists:"Assists",
+        shots:"Shots",
+        passes:"Passes",
+        runs:"Runs",
+        wickets:"Wickets",
+        balls:"Balls",
+        overs:"Overs",
+        points:"Points",
+        rebounds:"Rebounds",
+        games:"Games",
+        smashes:"Smashes",
+        sets:"Sets",
+        aces:"Aces",
+        double_faults:"Double Faults",
+        serves:"Serves",
+        blocks:"Blocks",
+        spikes:"Spikes",
+        distance:"Distance",
+        pace:"Pace",
+        elevation:"Elevation",
+        stroke:"Stroke",
+        rounds:"Rounds",
+        punches:"Punches",
+        combinations:"Combinations",
+        strikes:"Strikes",
+        takedowns:"Takedowns",
+        speed:"Average Speed",
+        reps:"Reps",
+        weight:"Weight",
+        holes:"Holes",
+        strokes:"Strokes",
+        putts:"Putts",
+        metric_1:"Metric 1",
+        metric_2:"Metric 2",
+        metric_3:"Metric 3"
+    };
+
+    legend.innerHTML = metricKeys.map(
+        key => `
+            <span class="metric-trend-label">
+                ${esc(labels[key] || key)}
+            </span>
+        `
+    ).join("");
+
+    const max = Math.max(
+        ...rows.flatMap(([, data]) =>
+            metricKeys.map(key =>
+                Number(data?.metrics?.[key] || 0)
+            )
+        ),
+        1
+    );
+
+    chart.innerHTML = rows.map(
+        ([day, data]) => {
+
+            const metrics = data?.metrics || {};
+
+            const bars = metricKeys.map(key => {
+
+                const value =
+                    Number(metrics[key] || 0);
+
+                const height = Math.max(
+                    value
+                        ? (value / max) * 135
+                        : 3,
+                    3
+                );
+
+                return `
+                    <div
+                        class="metric-trend-bar"
+                        style="height:${height}px"
+                        title="${esc(labels[key] || key)}: ${esc(String(value))}">
+                    </div>
+                `;
+
+            }).join("");
+
+            const label = new Date(
+                day + "T00:00:00"
+            ).toLocaleDateString(
+                undefined,
+                {weekday:"short"}
+            );
+
+            return `
+                <div class="metric-trend-day">
+
+                    <div class="metric-trend-value">
+                        ${metricKeys.map(
+                            key => Number(metrics[key] || 0)
+                        ).join(" / ")}
+                    </div>
+
+                    <div class="metric-trend-bars">
+                        ${bars}
+                    </div>
+
+                    <div class="metric-trend-date">
+                        ${label}
+                    </div>
+
+                </div>
+            `;
+
+        }
+    ).join("");
+}
+
+function renderTrainingChart(daily){
+
+    const rows = Object.entries(daily);
+
+    const values = rows.map(
+        ([,data]) => Number(data.minutes || 0)
+    );
+
+    const max = Math.max(...values,1);
+
+    $("trainingChart").innerHTML = rows.map(
+        ([day,data]) => {
+
+            const value = Number(data.minutes || 0);
+            const height = Math.max(
+                value ? (value / max) * 135 : 3,
+                3
+            );
+
+            const label = new Date(
+                day + "T00:00:00"
+            ).toLocaleDateString(
+                undefined,
+                {weekday:"short"}
+            );
+
+            return `
+                <div class="chart-day">
+
+                    <div class="chart-value">
+                        ${value}
+                    </div>
+
+                    <div
+                        class="chart-bar"
+                        style="height:${height}px">
+                    </div>
+
+                    <div class="chart-label">
+                        ${label}
+                    </div>
+
+                </div>
+            `;
+
+        }
+    ).join("");
+
+}
+
+function renderSkillChart(){
+
+    const skills = window.currentDashboardSkills || [];
+
+    if(!skills.length){
+
+        $("skillChart").innerHTML =
+            `<div class="empty">No skills yet.</div>`;
+
+        return;
+    }
+
+    $("skillChart").innerHTML = skills.map(skill => {
+
+        const current = Number(skill.current || 0);
+        const target = Number(skill.target || 1);
+
+        const percent = Math.max(
+            0,
+            Math.min(100,(current / target) * 100)
+        );
+
+        return `
+            <div class="skill-row">
+
+                <div class="skill-name">
+                    ${esc(skill.name)}
+                </div>
+
+                <div class="skill-track">
+                    <div
+                        class="skill-fill"
+                        style="width:${percent}%">
+                    </div>
+                </div>
+
+                <div class="skill-value">
+                    ${Math.round(percent)}%
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+
+}
+
+function renderTargetChart(){
+
+    const targets = window.currentDashboardTargets || [];
+
+    if(!targets.length){
+
+        $("targetChart").innerHTML =
+            `<div class="empty">No targets yet.</div>`;
+
+        return;
+    }
+
+    $("targetChart").innerHTML = targets.map(target => {
+
+        const actual = Number(target.actual || 0);
+        const goal = Number(target.target || 1);
+
+        const percent = Math.max(
+            0,
+            Math.min(100,(actual / goal) * 100)
+        );
+
+        return `
+            <div class="skill-row">
+
+                <div class="skill-name">
+                    ${esc(target.title)}
+                </div>
+
+                <div class="skill-track">
+                    <div
+                        class="skill-fill"
+                        style="width:${percent}%">
+                    </div>
+                </div>
+
+                <div class="skill-value">
+                    ${Math.round(percent)}%
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+
+}
+
+
+async function loadSportStreak(){
+
+    if(!selectedSport) return;
+
+    try{
+
+        const data = await request(
+            `/api/sports/${selectedSport.id}/streak`
+        );
+
+        $("sportStreak").textContent =
+            `${Number(data.streak || 0)} day${Number(data.streak || 0) === 1 ? "" : "s"}`;
+
+    }catch(error){
+
+        console.error("Sport streak:", error);
+        $("sportStreak").textContent = "0 days";
+
+    }
+
+}
+
+
+async function initializeSportSkills(){
+
+    if(!selectedSport) return;
+
+    const button = $("initializeSkillsBtn");
+
+    if(button){
+        button.disabled = true;
+        button.textContent = "⏳ Initializing...";
+    }
+
+    try{
+
+        const data = await request(
+            `/api/sports/${selectedSport.id}/initialize-skills`,
+            {
+                method:"POST"
+            }
+        );
+
+        if(button){
+            button.textContent =
+                data.count > 0
+                    ? `✓ Added ${data.count} Skills`
+                    : "✓ Skills Ready";
+        }
+
+        await loadDashboard();
+
+        setTimeout(() => {
+
+            if(button){
+                button.disabled = false;
+                button.textContent = "⚡ Initialize Skills";
+            }
+
+        }, 1400);
+
+    }catch(error){
+
+        console.error("Initialize skills:", error);
+
+        if(button){
+            button.disabled = false;
+            button.textContent = "⚠️ Try Again";
+        }
+
+    }
+
+}
+
+
+async function saveTrainingSession(event){
+
+    event.preventDefault();
+
+    if(!selectedSport){
+        alert("Please select a sport first.");
+        return;
+    }
+
+    const sessionDate =
+        $("sessionDate")?.value ||
+        new Date().toISOString().slice(0,10);
+
+    const sessionType =
+        $("sessionType").value.trim() || "Training";
+
+    const duration =
+        Number($("duration").value || 0);
+
+    const intensity =
+        $("intensity").value || "medium";
+
+    const rating =
+        Number($("sessionRating").value || 0);
+
+    const drills =
+        $("drills").value.trim();
+
+    const notes =
+        $("notes").value.trim();
+
+    const metrics =
+        collectSportMetrics();
+
+    if(!sessionDate){
+        alert("Please select a training date.");
+        return;
+    }
+
+    if(!Number.isFinite(duration) || duration < 0){
+        alert("Duration must be a valid number.");
+        return;
+    }
+
+    try{
+
+        await request(
+            `/api/sports/${selectedSport.id}/sessions`,
+            {
+                method:"POST",
+                body:JSON.stringify({
+                    session_date:sessionDate,
+                    type:sessionType,
+                    duration:duration,
+                    intensity:intensity,
+                    rating:rating,
+                    drills:drills,
+                    notes:notes,
+                    metrics:metrics
+                })
+            }
+        );
+
+        $("trainingForm").reset();
+
+        const dateInput = $("sessionDate");
+
+        if(dateInput){
+            dateInput.value =
+                new Date().toISOString().slice(0,10);
+        }
+
+        $("duration").value = 60;
+        $("intensity").value = "medium";
+        $("sessionRating").value = "0";
+
+        resetSportMetrics();
+
+        await loadDashboard();
+
+    }catch(error){
+
+        console.error("Training session:", error);
+
+        alert(
+            error.message ||
+            "Could not save training session."
+        );
+    }
+}
+
+
+const trainingForm = $("trainingForm");
+
+if(trainingForm){
+
+    trainingForm.addEventListener(
+        "submit",
+        saveTrainingSession
+    );
+
+}
+
+async function loadDashboard(){
+
+    if(!selectedSport) return;
+
+    const data = await request(
+        `/api/sports/${selectedSport.id}/dashboard`
+    );
+
+    $("heroIcon").textContent =
+        data.sport.icon;
+
+    $("todaySessions").textContent =
+        data.stats.sessions_today;
+
+    $("weekSessions").textContent =
+        data.stats.week_sessions;
+
+    $("weekMinutes").textContent =
+        data.stats.week_minutes + "m";
+
+    $("monthMinutes").textContent =
+        data.stats.month_minutes + "m";
+
+    $("rating").textContent =
+        data.stats.average_rating || "—";
+
+    window.currentDashboardSkills = data.skills || [];
+    window.currentDashboardTargets = data.targets || [];
+
+    renderTraining(data.sessions);
+    renderSkills(data.skills);
+    renderTargets(data.targets);
+    renderPBs(data.personal_bests);
+
+    await Promise.all([
+        loadPerformanceAnalytics(),
+        loadSportStreak()
+    ]);
+
+}
+
+
+const SPORT_METRICS = {
+    "Football": [
+        ["goals", "Goals", "number"],
+        ["assists", "Assists", "number"],
+        ["shots", "Shots", "number"],
+        ["passes", "Passes", "number"]
+    ],
+    "Cricket": [
+        ["runs", "Runs", "number"],
+        ["wickets", "Wickets", "number"],
+        ["balls", "Balls", "number"],
+        ["overs", "Overs", "number"]
+    ],
+    "Basketball": [
+        ["points", "Points", "number"],
+        ["rebounds", "Rebounds", "number"],
+        ["assists", "Assists", "number"]
+    ],
+    "Badminton": [
+        ["games", "Games", "number"],
+        ["points", "Points", "number"],
+        ["smashes", "Smash Count", "number"]
+    ],
+    "Tennis": [
+        ["sets", "Sets", "number"],
+        ["aces", "Aces", "number"],
+        ["double_faults", "Double Faults", "number"]
+    ],
+    "Volleyball": [
+        ["points", "Points", "number"],
+        ["serves", "Serves", "number"],
+        ["blocks", "Blocks", "number"],
+        ["spikes", "Spikes", "number"]
+    ],
+    "Swimming": [
+        ["distance", "Distance (m)", "number"],
+        ["laps", "Laps", "number"],
+        ["stroke", "Stroke", "text"]
+    ],
+    "Running": [
+        ["distance", "Distance (km)", "number"],
+        ["pace", "Pace (min/km)", "number"],
+        ["elevation", "Elevation (m)", "number"]
+    ],
+    "Boxing": [
+        ["rounds", "Rounds", "number"],
+        ["punches", "Punches", "number"],
+        ["combinations", "Combinations", "number"]
+    ],
+    "MMA": [
+        ["rounds", "Rounds", "number"],
+        ["strikes", "Strikes", "number"],
+        ["takedowns", "Takedowns", "number"]
+    ],
+    "Cycling": [
+        ["distance", "Distance (km)", "number"],
+        ["speed", "Average Speed (km/h)", "number"],
+        ["elevation", "Elevation (m)", "number"]
+    ],
+    "Weightlifting": [
+        ["sets", "Sets", "number"],
+        ["reps", "Reps", "number"],
+        ["weight", "Weight (kg)", "number"]
+    ],
+    "Table Tennis": [
+        ["games", "Games", "number"],
+        ["points", "Points", "number"],
+        ["aces", "Aces", "number"]
+    ],
+    "Hockey": [
+        ["goals", "Goals", "number"],
+        ["assists", "Assists", "number"],
+        ["shots", "Shots", "number"]
+    ],
+    "Golf": [
+        ["holes", "Holes", "number"],
+        ["strokes", "Strokes", "number"],
+        ["putts", "Putts", "number"]
+    ],
+    "Custom Sport": [
+        ["metric_1", "Metric 1", "number"],
+        ["metric_2", "Metric 2", "number"],
+        ["metric_3", "Metric 3", "number"]
+    ]
+};
+
+function renderSportMetrics(){
+    const container = $("sportMetrics");
+    const hint = $("metricsHint");
+
+    if(!container || !selectedSport) return;
+
+    const metrics = SPORT_METRICS[selectedSport.name] || [];
+
+    if(!metrics.length){
+        container.innerHTML = "";
+        if(hint) hint.textContent = "No sport-specific metrics.";
+        return;
+    }
+
+    if(hint){
+        hint.textContent =
+            `${selectedSport.name} performance metrics`;
+    }
+
+    container.innerHTML = metrics.map(
+        ([key, label, type]) => `
+            <div class="field">
+                <label for="metric_${esc(key)}">
+                    ${esc(label)}
+                </label>
+                <input
+                    id="metric_${esc(key)}"
+                    class="sport-metric-input"
+                    data-metric="${esc(key)}"
+                    type="${type}"
+                    ${type === "number" ? 'min="0" step="any"' : ""}
+                    placeholder="${esc(label)}"
+                >
+            </div>
+        `
+    ).join("");
+}
+
+function collectSportMetrics(){
+    const metrics = {};
+
+    document.querySelectorAll(
+        "#sportMetrics .sport-metric-input"
+    ).forEach(input => {
+        const key = input.dataset.metric;
+        const value = input.value.trim();
+
+        if(!key || value === "") return;
+
+        if(input.type === "number"){
+            const number = Number(value);
+
+            if(Number.isFinite(number)){
+                metrics[key] = number;
+            }
+        }else{
+            metrics[key] = value;
+        }
+    });
+
+    return metrics;
+}
+
+function resetSportMetrics(){
+    document.querySelectorAll(
+        "#sportMetrics .sport-metric-input"
+    ).forEach(input => {
+        input.value = "";
+    });
+}
+
+function formatTrainingMetrics(metrics){
+
+    if(!metrics || typeof metrics !== "object"){
+        return "";
+    }
+
+    const labels = {
+        goals: "Goals",
+        assists: "Assists",
+        shots: "Shots",
+        passes: "Passes",
+        runs: "Runs",
+        wickets: "Wickets",
+        balls: "Balls",
+        overs: "Overs",
+        points: "Points",
+        rebounds: "Rebounds",
+        games: "Games",
+        smashes: "Smashes",
+        sets: "Sets",
+        aces: "Aces",
+        double_faults: "Double Faults",
+        serves: "Serves",
+        blocks: "Blocks",
+        spikes: "Spikes",
+        distance: "Distance",
+        pace: "Pace",
+        elevation: "Elevation",
+        stroke: "Stroke",
+        rounds: "Rounds",
+        punches: "Punches",
+        combinations: "Combinations",
+        strikes: "Strikes",
+        takedowns: "Takedowns",
+        speed: "Average Speed",
+        reps: "Reps",
+        weight: "Weight",
+        holes: "Holes",
+        strokes: "Strokes",
+        putts: "Putts",
+        metric_1: "Metric 1",
+        metric_2: "Metric 2",
+        metric_3: "Metric 3"
+    };
+
+    const entries = Object.entries(metrics);
+
+    if(!entries.length){
+        return "";
+    }
+
+    return `
+        <div class="sport-session-metrics">
+            ${entries.map(([key, value]) => `
+                <span class="metric-pill">
+                    ${esc(labels[key] || key)}:
+                    <strong>${esc(String(value))}</strong>
+                </span>
+            `).join("")}
+        </div>
+    `;
+}
+
+function renderTraining(items){
+
+    if(!items.length){
+
+        $("trainingList").innerHTML =
+            `<div class="empty">No training sessions yet.</div>`;
+
+        return;
+    }
+
+    $("trainingList").innerHTML =
+        items.map(x => `
+            <div class="item">
+
+                <div class="item-head">
+                    <div class="item-title">
+                        🏋️ ${esc(x.session_type)}
+                    </div>
+
+                    <span class="badge">
+                        ${esc(x.intensity)}
+                    </span>
+                </div>
+
+                <div class="meta">
+                    ${x.session_date}
+                    • ${x.duration} min
+                    • Rating ${x.rating || "—"}
+                </div>
+
+                ${formatTrainingMetrics(x.metrics)}
+
+                ${x.drills ? `
+                    <div class="meta">
+                        🥅 ${esc(x.drills)}
+                    </div>
+                ` : ""}
+
+                ${x.notes ? `
+                    <div class="meta">
+                        📝 ${esc(x.notes)}
+                    </div>
+                ` : ""}
+
+                <button
+                    type="button"
+                    class="delete"
+                    onclick="deleteSession(${x.id})">
+                    Delete
+                </button>
+
+            </div>
+        `).join("");
+
+}
+
+function renderSkills(items){
+
+    if(!items.length){
+
+        $("skillsList").innerHTML =
+            `<div class="empty">No skills added yet.</div>`;
+
+        return;
+    }
+
+    $("skillsList").innerHTML =
+        items.map(x => {
+
+            const target = Number(x.target) || 1;
+            const current = Number(x.current) || 0;
+
+            const percent =
+                Math.max(
+                    0,
+                    Math.min(100,(current / target) * 100)
+                );
+
+            return `
+                <div class="item skill-card">
+
+                    <div class="item-head">
+
+                        <div class="item-title">
+                            📈 ${esc(x.name)}
+                        </div>
+
+                        <span class="badge">
+                            ${current} / ${target} ${esc(x.unit)}
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+                        <div style="width:${percent}%"></div>
+                    </div>
+
+                    <div class="meta">
+                        ${Math.round(percent)}% of target
+                    </div>
+
+                    <div class="skill-actions">
+
+                        <button
+                            type="button"
+                            class="secondary"
+                            onclick="editSkill(${x.id})">
+                            ✏️ Edit
+                        </button>
+
+                        <button
+                            type="button"
+                            class="secondary"
+                            onclick="logSkill(${x.id})">
+                            📈 Log
+                        </button>
+
+                        <button
+                            type="button"
+                            class="secondary"
+                            onclick="showSkillHistory(${x.id})">
+                            🕘 History
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="skill-history-${x.id}"
+                        class="skill-history"
+                        hidden>
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
+async function editSkill(skillId){
+
+    const skill =
+        (window.currentDashboardSkills || [])
+        .find(x => x.id === skillId);
+
+    if(!skill) return;
+
+    const current = prompt(
+        `Current ${skill.name} (${skill.unit})`,
+        skill.current
+    );
+
+    if(current === null) return;
+
+    const target = prompt(
+        `Target ${skill.name} (${skill.unit})`,
+        skill.target
+    );
+
+    if(target === null) return;
+
+    try{
+
+        await request(
+            `/api/sports/skills/${skillId}`,
+            {
+                method:"PUT",
+                body:JSON.stringify({
+                    current:Number(current),
+                    target:Number(target),
+                    unit:skill.unit
+                })
+            }
+        );
+
+        await loadDashboard();
+
+    }catch(error){
+
+        alert(error.message);
+
+    }
+
+}
+
+
+async function logSkill(skillId){
+
+    const skill =
+        (window.currentDashboardSkills || [])
+        .find(x => x.id === skillId);
+
+    if(!skill) return;
+
+    const value = prompt(
+        `Today's ${skill.name} (${skill.unit})`,
+        skill.current
+    );
+
+    if(value === null) return;
+
+    const notes = prompt(
+        `Notes for ${skill.name}`,
+        ""
+    );
+
+    if(notes === null) return;
+
+    try{
+
+        await request(
+            `/api/sports/skills/${skillId}/log`,
+            {
+                method:"POST",
+                body:JSON.stringify({
+                    value:Number(value),
+                    notes:notes
+                })
+            }
+        );
+
+        await loadDashboard();
+
+    }catch(error){
+
+        alert(error.message);
+
+    }
+
+}
+
+
+async function showSkillHistory(skillId){
+
+    const box = $(`skill-history-${skillId}`);
+
+    if(!box) return;
+
+    if(!box.hidden){
+
+        box.hidden = true;
+        box.innerHTML = "";
+        return;
+
+    }
+
+    try{
+
+        const data = await request(
+            `/api/sports/${selectedSport.id}/skill-history/${skillId}`
+        );
+
+        const history = data.history || [];
+
+        if(!history.length){
+
+            box.innerHTML =
+                `<div class="history-empty">
+                    No performance history yet.
+                </div>`;
+
+            box.hidden = false;
+            return;
+        }
+
+        const rows = history.slice().reverse();
+
+        const values = history.map(
+            row => Number(row.value) || 0
+        );
+
+        const maxValue =
+            Math.max(
+                Number(data.skill.target) || 100,
+                ...values
+            );
+
+        const chartWidth = 520;
+        const chartHeight = 150;
+        const padding = 28;
+
+        const points = history.map((row,index) => {
+
+            const x =
+                history.length === 1
+                    ? chartWidth / 2
+                    : padding +
+                      (index / (history.length - 1)) *
+                      (chartWidth - padding * 2);
+
+            const value = Number(row.value) || 0;
+
+            const y =
+                chartHeight -
+                padding -
+                (value / maxValue) *
+                (chartHeight - padding * 2);
+
+            return {
+                x,
+                y,
+                value,
+                date: row.date
+            };
+
+        });
+
+        const polyline =
+            points.map(p => `${p.x},${p.y}`).join(" ");
+
+        box.innerHTML = `
+            <div class="history-title">
+                📈 ${esc(data.skill.name)} Progress
+            </div>
+
+            <div class="skill-history-chart-wrap">
+
+                <svg
+                    class="skill-history-chart"
+                    viewBox="0 0 ${chartWidth} ${chartHeight}"
+                    role="img"
+                    aria-label="${esc(data.skill.name)} progress history">
+
+                    <line
+                        x1="${padding}"
+                        y1="${chartHeight-padding}"
+                        x2="${chartWidth-padding}"
+                        y2="${chartHeight-padding}"
+                        class="history-axis">
+                    </line>
+
+                    <polyline
+                        points="${polyline}"
+                        class="history-line"
+                        fill="none">
+                    </polyline>
+
+                    ${points.map(p => `
+                        <circle
+                            cx="${p.x}"
+                            cy="${p.y}"
+                            r="4"
+                            class="history-point">
+                        </circle>
+                    `).join("")}
+
+                </svg>
+
+            </div>
+
+            <div class="history-current">
+                Current:
+                <strong>
+                    ${data.skill.current} ${esc(data.skill.unit)}
+                </strong>
+
+                / ${data.skill.target} ${esc(data.skill.unit)}
+            </div>
+
+            <div class="history-list">
+
+                ${rows.map(row => `
+                    <div class="history-row">
+
+                        <span>
+                            ${esc(row.date)}
+                        </span>
+
+                        <strong>
+                            ${row.value} ${esc(data.skill.unit)}
+                        </strong>
+
+                        ${row.notes ? `
+                            <small>
+                                ${esc(row.notes)}
+                            </small>
+                        ` : ""}
+
+                    </div>
+                `).join("")}
+
+            </div>
+        `;
+
+        box.hidden = false;
+
+    }catch(error){
+
+        box.innerHTML =
+            `<div class="history-empty">
+                ${esc(error.message)}
+            </div>`;
+
+        box.hidden = false;
+
+    }
+
+}
+
+
+async function deleteSession(id){
+
+    if(!confirm("Delete this training session?")) return;
+
+    try{
+
+        await request(
+            `/api/sports/sessions/${id}`,
+            {method:"DELETE"}
+        );
+
+        await loadDashboard();
+
+    }catch(error){
+
+        alert(error.message);
+
+    }
+
+}
+
+async function deleteTarget(id){
+
+    if(!confirm("Delete this target?")) return;
+
+    try{
+
+        await request(
+            `/api/sports/targets/${id}`,
+            {method:"DELETE"}
+        );
+
+        await loadDashboard();
+
+    }catch(error){
+
+        alert(error.message);
+
+    }
+
+}
+
+document.querySelectorAll(".tab").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        document
+            .querySelectorAll(".tab")
+            .forEach(x => x.classList.remove("active"));
+
+        document
+            .querySelectorAll(".panel")
+            .forEach(x => x.classList.remove("active"));
+
+        button.classList.add("active");
+
+        $(button.dataset.tab)
+            .classList.add("active");
+
+    });
+
+});
+
+const initializeSkillsButton = $("initializeSkillsBtn");
+
+if(initializeSkillsButton){
+    initializeSkillsButton.addEventListener(
+        "click",
+        initializeSportSkills
+    );
+}
+
+
+const sessionDateInput = $("sessionDate");
+
+if(sessionDateInput){
+    sessionDateInput.value =
+        new Date().toISOString().slice(0,10);
+}
+
+loadSports().catch(error => {
+
+    console.error(error);
+
+    $("trainingList").innerHTML =
+        `<div class="empty">⚠️ Sports Hub failed to load.</div>`;
+
+});
+</script>
+
+</body>
+</html>
+
+<style>
+/* =========================================================
+   SPORTS HUB — PERFORMANCE ACTION BAR
+   ========================================================= */
+
+.sports-actions{
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.sports-streak{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 14px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;
+    background:rgba(255,255,255,.045);
+    color:rgba(255,255,255,.72);
+    font-size:.9rem;
+}
+
+.sports-streak strong{
+    color:#fff;
+    font-size:1rem;
+}
+
+.sports-init-btn{
+    min-height:42px;
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    border:1px solid rgba(120,255,180,.25);
+    background:rgba(80,220,140,.10);
+    color:#8dffb7;
+    font-weight:700;
+}
+
+.sports-init-btn:hover{
+    background:rgba(80,220,140,.18);
+}
+
+.sports-init-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+@media(max-width:700px){
+    .sports-actions{
+        align-items:stretch;
+    }
+
+    .sports-streak,
+    .sports-init-btn{
+        width:100%;
+        justify-content:center;
+    }
+}
+</style>
+
+<style>
+/* =========================================================
+   INTERACTIVE SKILLS
+   ========================================================= */
+
+.skill-card{
+    transition:transform .18s ease, border-color .18s ease;
+}
+
+.skill-card:hover{
+    transform:translateY(-1px);
+}
+
+.skill-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:12px;
+}
+
+.skill-actions button{
+    min-height:36px;
+    padding:7px 11px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:.82rem;
+}
+
+.skill-history{
+    margin-top:14px;
+    padding:12px;
+    border-radius:12px;
+    background:rgba(0,0,0,.16);
+    border:1px solid rgba(255,255,255,.07);
+}
+
+.history-title{
+    font-weight:700;
+    margin-bottom:9px;
+}
+
+.history-row{
+    display:grid;
+    grid-template-columns:100px 1fr;
+    gap:5px 12px;
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    font-size:.82rem;
+}
+
+.history-row:last-child{
+    border-bottom:0;
+}
+
+.history-row strong{
+    text-align:right;
+}
+
+.history-row small{
+    grid-column:1 / -1;
+    color:rgba(255,255,255,.58);
+}
+
+.history-empty{
+    color:rgba(255,255,255,.55);
+    font-size:.85rem;
+}
+
+@media(max-width:600px){
+
+    .skill-actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .skill-actions button:last-child{
+        grid-column:1 / -1;
+    }
+
+    .history-row{
+        grid-template-columns:1fr auto;
+    }
+
+}
+</style>
+
+<style>
+/* =========================================================
+   SKILL HISTORY GRAPH
+   ========================================================= */
+
+.skill-history-chart-wrap{
+    width:100%;
+    overflow-x:auto;
+    margin:10px 0;
+}
+
+.skill-history-chart{
+    width:100%;
+    min-width:320px;
+    max-height:180px;
+    display:block;
+}
+
+.history-axis{
+    stroke:rgba(255,255,255,.15);
+    stroke-width:1;
+}
+
+.history-line{
+    stroke:var(--viz-accent, #22c55e);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.history-point{
+    fill:var(--viz-accent, #22c55e);
+    stroke:rgba(255,255,255,.9);
+    stroke-width:1.5;
+}
+
+.history-current{
+    font-size:.84rem;
+    margin:5px 0 10px;
+    color:rgba(255,255,255,.68);
+}
+
+.history-current strong{
+    color:#fff;
+}
+
+.history-list{
+    max-height:220px;
+    overflow-y:auto;
+}
+
+</style>
