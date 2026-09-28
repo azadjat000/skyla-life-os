@@ -548,8 +548,8 @@ button.green-btn{
 
   <button class="danger" onclick="lockFinance()">🔒 Lock Vault Now</button>
 
-  <button class="secondary" onclick="changeFinancePin()">
-    🔑 Change PIN
+  <button id="financePinButton" class="secondary" onclick="changeFinancePin()">
+    🔐 Set Finance PIN
   </button>
 
   <div class="notice" style="margin-top:10px">
@@ -750,6 +750,16 @@ async function checkStatus(){
   try{
 
     const data = await api("/api/finance/status");
+
+    const pinButton = $("financePinButton");
+
+    if(pinButton){
+      if(data.configured){
+        pinButton.textContent = "🔑 Change PIN";
+      }else{
+        pinButton.textContent = "🔐 Set Finance PIN";
+      }
+    }
 
     if(data.unlocked || data.finance_unlocked){
       showApp();
@@ -1309,38 +1319,79 @@ async function deleteGoal(id){
 
 async function changeFinancePin(){
 
-  const oldPin = prompt("Current Finance PIN:");
+  let status;
 
-  if(oldPin === null)
+  try{
+    status = await api("/api/finance/status");
+  }catch(error){
+    toast(error.message);
     return;
+  }
 
   const newPin = prompt(
-    "New Finance PIN (4-8 digits):"
+    status.configured
+      ? "New Finance PIN (4-8 digits):"
+      : "Set Finance PIN (4-8 digits):"
   );
 
   if(newPin === null)
     return;
 
+  if(!/^\d{4,8}$/.test(newPin)){
+    toast("PIN must contain 4-8 digits.");
+    return;
+  }
+
   const confirmPin = prompt(
-    "Confirm new Finance PIN:"
+    status.configured
+      ? "Confirm new Finance PIN:"
+      : "Confirm Finance PIN:"
   );
 
+  if(confirmPin === null)
+    return;
+
   if(confirmPin !== newPin){
-    toast("New PINs do not match.");
+    toast("PINs do not match.");
     return;
   }
 
   try{
 
-    await api("/api/finance/change-pin",{
-      method:"POST",
-      body:JSON.stringify({
-        old_pin:oldPin,
-        new_pin:newPin
-      })
-    });
+    if(status.configured){
 
-    toast("Finance PIN changed 🔐");
+      const oldPin = prompt("Current Finance PIN:");
+
+      if(oldPin === null)
+        return;
+
+      await api("/api/finance/change-pin",{
+        method:"POST",
+        body:JSON.stringify({
+          old_pin:oldPin,
+          new_pin:newPin
+        })
+      });
+
+      toast("Finance PIN changed 🔐");
+
+    }else{
+
+      await api("/api/finance/setup",{
+        method:"POST",
+        body:JSON.stringify({
+          pin:newPin
+        })
+      });
+
+      toast("Finance PIN created 🔐");
+
+      const pinButton = $("financePinButton");
+      if(pinButton){
+        pinButton.textContent = "🔑 Change PIN";
+      }
+
+    }
 
   }catch(error){
 
