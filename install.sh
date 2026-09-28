@@ -66,6 +66,27 @@ LAUNCH
 chmod +x launch.sh
 
 echo
+echo "🖥️ Installing desktop launcher..."
+
+mkdir -p "$HOME/.local/share/applications"
+
+cat > "$HOME/.local/share/applications/skyla-life-os.desktop" <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Skyla Life OS
+Comment=Personal Life Management OS
+Exec=$APP_DIR/skyla-desktop.sh
+Terminal=false
+Categories=Utility;Office;
+StartupNotify=true
+EOF
+
+chmod +x "$HOME/.local/share/applications/skyla-life-os.desktop"
+
+echo "🟢 Desktop launcher installed."
+
+echo
 echo "======================================"
 echo "🟢 Skyla Life OS installation complete"
 echo "======================================"
