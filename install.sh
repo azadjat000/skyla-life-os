@@ -17,6 +17,16 @@ fi
 
 echo "🟢 Python found: $(python3 --version)"
 
+if [ ! -f ".env" ]; then
+    echo "🔐 Creating secure Skyla environment..."
+    SECRET_KEY="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
+    printf 'SKYLA_SECRET_KEY=%s\n' "$SECRET_KEY" > .env
+    chmod 600 .env
+    echo "🟢 Secure .env created."
+else
+    echo "🟢 Existing .env found — keeping it unchanged."
+fi
+
 if [ ! -d ".venv" ]; then
     echo "📦 Creating Python virtual environment..."
     python3 -m venv .venv
