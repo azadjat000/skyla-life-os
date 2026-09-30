@@ -248,6 +248,144 @@
             color: var(--green);
         }
 
+        .motivation-routines {
+            margin-top: 18px;
+        }
+
+        .routine-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .routine-stat {
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .routine-stat strong {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .routine-stat span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .motivation-routine-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .motivation-routine-form input,
+        .motivation-routine-form select,
+        .motivation-routine-form textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 12px;
+            background: var(--panel-2);
+            color: var(--text);
+        }
+
+        .motivation-routine-form textarea {
+            min-height: 42px;
+            resize: vertical;
+        }
+
+        .routine-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .motivation-routine-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .motivation-routine-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .motivation-routine-item {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .motivation-routine-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .motivation-routine-title {
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .motivation-routine-meta {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .routine-streak {
+            color: var(--yellow);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .motivation-routine-description {
+            color: var(--muted);
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .routine-edit-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .routine-edit-form .full {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 760px) {
+            .routine-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .motivation-routine-form,
+            .routine-edit-form {
+                grid-template-columns: 1fr;
+            }
+
+            .routine-field.full,
+            .routine-edit-form .full {
+                grid-column: auto;
+            }
+
+            .motivation-routine-top {
+                flex-direction: column;
+            }
+        }
+
+
         .motivation-list {
             display: grid;
             gap: 12px;
@@ -681,6 +819,77 @@
 
         </div>
 
+        <section class="card motivation-routines">
+            <h2>🔥 Motivation Routines</h2>
+            <div class="card-subtitle">
+                Build repeatable actions that keep your motivation system active.
+            </div>
+
+            <div class="routine-stats">
+                <div class="routine-stat">
+                    <strong id="motRoutineTotal">0</strong>
+                    <span>Total routines</span>
+                </div>
+
+                <div class="routine-stat">
+                    <strong id="motRoutineActive">0</strong>
+                    <span>Active routines</span>
+                </div>
+
+                <div class="routine-stat">
+                    <strong id="motRoutineCompleted">0</strong>
+                    <span>Completed today</span>
+                </div>
+
+                <div class="routine-stat">
+                    <strong id="motRoutineProgress">0%</strong>
+                    <span>Today's progress</span>
+                </div>
+            </div>
+
+            <form id="motivationRoutineForm" class="motivation-routine-form">
+                <div class="routine-field">
+                    <input id="motRoutineTitle"
+                           placeholder="Routine title"
+                           required>
+                </div>
+
+                <div class="routine-field">
+                    <input id="motRoutineTime"
+                           type="time">
+                </div>
+
+                <div class="routine-field">
+                    <select id="motRoutineRepeat">
+                        <option value="daily">Daily</option>
+                        <option value="weekdays">Weekdays</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+
+                <div class="routine-field full">
+                    <textarea id="motRoutineDescription"
+                              placeholder="What motivation action will you repeat?"></textarea>
+                </div>
+
+                <div class="motivation-routine-actions routine-field full">
+                    <button class="btn primary" type="submit">
+                        + Add Motivation Routine
+                    </button>
+
+                    <button class="btn" type="button" id="motRoutineClear">
+                        Clear
+                    </button>
+                </div>
+            </form>
+
+            <div id="motivationRoutineList" class="motivation-routine-list">
+                <div class="empty">Loading motivation routines...</div>
+            </div>
+        </section>
+
+
         <section class="card" style="margin-top:18px;">
             <h2>🔥 Motivation Library</h2>
             <div class="card-subtitle">
@@ -1001,6 +1210,386 @@
             toast(error.message);
         }
     });
+
+    // =====================================================
+    // MOTIVATION ROUTINES
+    // =====================================================
+
+    const motivationRoutineState = {
+        items: []
+    };
+
+    async function motivationRoutineRequest(url, options = {}) {
+        const response = await fetch(url, {
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            },
+            ...options
+        });
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch (_) {}
+
+        if (!response.ok) {
+            throw new Error(data.error || "Routine request failed");
+        }
+
+        return data;
+    }
+
+    function renderMotivationRoutineStats(stats) {
+        $("motRoutineTotal").textContent =
+            stats?.total_routines ?? 0;
+
+        $("motRoutineActive").textContent =
+            stats?.active_routines ?? 0;
+
+        $("motRoutineCompleted").textContent =
+            stats?.completed_routines ?? 0;
+
+        $("motRoutineProgress").textContent =
+            `${Math.round(Number(stats?.routine_progress) || 0)}%`;
+    }
+
+    function renderMotivationRoutines() {
+        const list = $("motivationRoutineList");
+        const items = motivationRoutineState.items;
+
+        if (!items.length) {
+            list.innerHTML = `
+                <div class="empty">
+                    No motivation routines yet.<br>
+                    Add your first routine above.
+                </div>
+            `;
+            return;
+        }
+
+        list.innerHTML = items.map(item => `
+            <article class="motivation-routine-item">
+
+                <div class="motivation-routine-top">
+                    <div>
+                        <div class="motivation-routine-title">
+                            ${escapeHtml(item.title)}
+                        </div>
+
+                        <div class="motivation-routine-meta">
+                            ${item.time
+                                ? `⏰ ${escapeHtml(item.time)} · `
+                                : ""}
+                            🔁 ${escapeHtml(item.repeat || "daily")}
+                            · ${item.active ? "🟢 Active" : "⚪ Inactive"}
+                        </div>
+                    </div>
+
+                    <div class="routine-streak">
+                        🔥 ${Number(item.streak) || 0} day streak
+                    </div>
+                </div>
+
+                ${item.description ? `
+                    <div class="motivation-routine-description">
+                        ${escapeHtml(item.description)}
+                    </div>
+                ` : ""}
+
+                <div class="motivation-routine-actions">
+
+                    <button
+                        class="btn ${item.completed_today ? "success" : ""}"
+                        data-mot-routine-action="complete"
+                        data-id="${item.id}">
+                        ${item.completed_today
+                            ? "✓ Completed — Undo"
+                            : "☑ Mark Complete"}
+                    </button>
+
+                    <button
+                        class="btn"
+                        data-mot-routine-action="toggle"
+                        data-id="${item.id}">
+                        ${item.active
+                            ? "Disable"
+                            : "Enable"}
+                    </button>
+
+                    <button
+                        class="btn"
+                        data-mot-routine-action="edit"
+                        data-id="${item.id}">
+                        ✏️ Edit
+                    </button>
+
+                    <button
+                        class="btn danger"
+                        data-mot-routine-action="delete"
+                        data-id="${item.id}">
+                        🗑️ Delete
+                    </button>
+
+                </div>
+
+                <div id="motRoutineEdit-${item.id}"></div>
+
+            </article>
+        `).join("");
+    }
+
+    async function loadMotivationRoutines() {
+        try {
+            const data = await motivationRoutineRequest(
+                "/api/motivation/routines"
+            );
+
+            motivationRoutineState.items = data.routines || [];
+
+            renderMotivationRoutineStats(data.stats);
+            renderMotivationRoutines();
+
+        } catch (error) {
+            $("motivationRoutineList").innerHTML = `
+                <div class="empty">
+                    Failed to load routines:
+                    ${escapeHtml(error.message)}
+                </div>
+            `;
+        }
+    }
+
+    function clearMotivationRoutineForm() {
+        $("motivationRoutineForm").reset();
+    }
+
+    $("motivationRoutineForm").addEventListener(
+        "submit",
+        async (event) => {
+            event.preventDefault();
+
+            const payload = {
+                title: $("motRoutineTitle").value.trim(),
+                time: $("motRoutineTime").value,
+                repeat: $("motRoutineRepeat").value,
+                description: $("motRoutineDescription").value.trim(),
+                active: true
+            };
+
+            if (!payload.title) {
+                toast("Routine title is required.");
+                return;
+            }
+
+            try {
+                await motivationRoutineRequest(
+                    "/api/motivation/routines",
+                    {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                toast("🔥 Motivation routine added.");
+                clearMotivationRoutineForm();
+                await loadMotivationRoutines();
+
+            } catch (error) {
+                toast(error.message);
+            }
+        }
+    );
+
+    $("motRoutineClear").addEventListener(
+        "click",
+        clearMotivationRoutineForm
+    );
+
+    $("motivationRoutineList").addEventListener(
+        "click",
+        async (event) => {
+            const button = event.target.closest(
+                "[data-mot-routine-action]"
+            );
+
+            if (!button) {
+                return;
+            }
+
+            const id = button.dataset.id;
+            const action = button.dataset.motRoutineAction;
+            const item = motivationRoutineState.items.find(
+                row => String(row.id) === String(id)
+            );
+
+            if (!item) {
+                return;
+            }
+
+            try {
+                if (action === "complete") {
+                    await motivationRoutineRequest(
+                        item.completed_today
+                            ? `/api/motivation/routines/${id}/undo`
+                            : `/api/motivation/routines/${id}/complete`,
+                        { method: "POST" }
+                    );
+
+                    toast(
+                        item.completed_today
+                            ? "Routine completion undone."
+                            : "🔥 Motivation routine completed."
+                    );
+
+                } else if (action === "toggle") {
+                    await motivationRoutineRequest(
+                        `/api/motivation/routines/${id}/toggle`,
+                        { method: "POST" }
+                    );
+
+                    toast("Routine status updated.");
+
+                } else if (action === "delete") {
+                    if (!confirm(
+                        "Delete this motivation routine?"
+                    )) {
+                        return;
+                    }
+
+                    await motivationRoutineRequest(
+                        `/api/motivation/routines/${id}`,
+                        { method: "DELETE" }
+                    );
+
+                    toast("Motivation routine deleted.");
+
+                } else if (action === "edit") {
+                    const target =
+                        $(`motRoutineEdit-${id}`);
+
+                    target.innerHTML = `
+                        <div class="routine-edit-form">
+
+                            <input
+                                id="motEditTitle-${id}"
+                                value="${escapeHtml(item.title)}"
+                                placeholder="Routine title">
+
+                            <input
+                                id="motEditTime-${id}"
+                                type="time"
+                                value="${escapeHtml(item.time || "")}">
+
+                            <select id="motEditRepeat-${id}">
+                                <option value="daily"
+                                    ${item.repeat === "daily" ? "selected" : ""}>
+                                    Daily
+                                </option>
+                                <option value="weekdays"
+                                    ${item.repeat === "weekdays" ? "selected" : ""}>
+                                    Weekdays
+                                </option>
+                                <option value="weekly"
+                                    ${item.repeat === "weekly" ? "selected" : ""}>
+                                    Weekly
+                                </option>
+                                <option value="monthly"
+                                    ${item.repeat === "monthly" ? "selected" : ""}>
+                                    Monthly
+                                </option>
+                            </select>
+
+                            <textarea
+                                id="motEditDescription-${id}"
+                                class="full"
+                                placeholder="Description">${escapeHtml(item.description || "")}</textarea>
+
+                            <div class="motivation-routine-actions full">
+                                <button
+                                    class="btn primary"
+                                    type="button"
+                                    data-mot-save-edit="${id}">
+                                    Save Changes
+                                </button>
+
+                                <button
+                                    class="btn"
+                                    type="button"
+                                    data-mot-cancel-edit="${id}">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+                await loadMotivationRoutines();
+
+            } catch (error) {
+                toast(error.message);
+            }
+        }
+    );
+
+    $("motivationRoutineList").addEventListener(
+        "click",
+        async (event) => {
+            const save = event.target.closest(
+                "[data-mot-save-edit]"
+            );
+
+            const cancel = event.target.closest(
+                "[data-mot-cancel-edit]"
+            );
+
+            if (cancel) {
+                await loadMotivationRoutines();
+                return;
+            }
+
+            if (!save) {
+                return;
+            }
+
+            const id = save.dataset.motSaveEdit;
+
+            const payload = {
+                title: $(`motEditTitle-${id}`).value.trim(),
+                time: $(`motEditTime-${id}`).value,
+                repeat: $(`motEditRepeat-${id}`).value,
+                description:
+                    $(`motEditDescription-${id}`).value.trim()
+            };
+
+            if (!payload.title) {
+                toast("Routine title is required.");
+                return;
+            }
+
+            try {
+                await motivationRoutineRequest(
+                    `/api/motivation/routines/${id}`,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                toast("Motivation routine updated.");
+                await loadMotivationRoutines();
+
+            } catch (error) {
+                toast(error.message);
+            }
+        }
+    );
+
+    loadMotivationRoutines();
+
 
     load();
 })();
