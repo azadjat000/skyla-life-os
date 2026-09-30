@@ -330,3 +330,13 @@ class FinanceSavingsGoal(db.Model):
 
     active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class CalendarEvent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    event_date = db.Column(db.Date, nullable=False)
+    event_time = db.Column(db.String(10))
+    description = db.Column(db.Text)
+    repeat = db.Column(db.String(50), default="none")
+    enabled = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

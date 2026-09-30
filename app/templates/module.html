@@ -1238,6 +1238,10 @@ async function loadCalendar(){
     <button type="button" class="calendar-today-btn" id="calendarToday">
      Today
     </button>
+
+    <button type="button" class="calendar-today-btn" id="calendarAddEvent">
+     ➕ Add Event
+    </button>
    </div>`;
 
   $("rightTitle").textContent=
@@ -1287,6 +1291,118 @@ async function loadCalendar(){
      Tap a calendar date to see its events.
     </div>
    </div>
+
+   <div
+    id="calendarEventModal"
+    style="
+     display:none;
+     position:fixed;
+     inset:0;
+     z-index:9999;
+     background:rgba(0,0,0,.55);
+     align-items:center;
+     justify-content:center;
+     padding:20px;
+    "
+   >
+    <div
+     style="
+      width:min(520px,100%);
+      max-height:90vh;
+      overflow:auto;
+      border-radius:18px;
+      padding:22px;
+      background:var(--card-bg,#161b22);
+      color:var(--text,#fff);
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+     "
+    >
+     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;">
+      <strong id="calendarEventModalTitle" style="font-size:20px;">
+       ➕ Add Calendar Event
+      </strong>
+
+      <button
+       type="button"
+       id="calendarEventClose"
+       style="border:0;background:transparent;color:inherit;font-size:22px;cursor:pointer;"
+      >✕</button>
+     </div>
+
+     <form id="calendarEventForm">
+      <input type="hidden" id="calendarEventId">
+
+      <label style="display:block;margin-bottom:12px;">
+       <span style="display:block;margin-bottom:5px;">Title</span>
+       <input
+        id="calendarEventTitle"
+        required
+        maxlength="200"
+        placeholder="Event title"
+        style="width:100%;box-sizing:border-box;"
+       >
+      </label>
+
+      <label style="display:block;margin-bottom:12px;">
+       <span style="display:block;margin-bottom:5px;">Date</span>
+       <input
+        id="calendarEventDate"
+        type="date"
+        required
+        style="width:100%;box-sizing:border-box;"
+       >
+      </label>
+
+      <label style="display:block;margin-bottom:12px;">
+       <span style="display:block;margin-bottom:5px;">Time</span>
+       <input
+        id="calendarEventTime"
+        type="time"
+        style="width:100%;box-sizing:border-box;"
+       >
+      </label>
+
+      <label style="display:block;margin-bottom:12px;">
+       <span style="display:block;margin-bottom:5px;">Repeat</span>
+       <select
+        id="calendarEventRepeat"
+        style="width:100%;box-sizing:border-box;"
+       >
+        <option value="none">Does not repeat</option>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+       </select>
+      </label>
+
+      <label style="display:block;margin-bottom:16px;">
+       <span style="display:block;margin-bottom:5px;">Description</span>
+       <textarea
+        id="calendarEventDescription"
+        rows="4"
+        maxlength="5000"
+        placeholder="Optional description"
+        style="width:100%;box-sizing:border-box;resize:vertical;"
+       ></textarea>
+      </label>
+
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:18px;">
+       <input id="calendarEventEnabled" type="checkbox" checked>
+       <span>Show this event on calendar</span>
+      </label>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+       <button type="button" id="calendarEventCancel">
+        Cancel
+       </button>
+
+       <button type="submit" id="calendarEventSave">
+        Save Event
+       </button>
+      </div>
+     </form>
+    </div>
+   </div>
   `;
 
   $("calendarPrev").onclick=()=>{
@@ -1311,6 +1427,110 @@ async function loadCalendar(){
    render();
   };
 
+  const modal=$("calendarEventModal");
+  const form=$("calendarEventForm");
+  const eventId=$("calendarEventId");
+  const eventTitle=$("calendarEventTitle");
+  const eventDate=$("calendarEventDate");
+  const eventTime=$("calendarEventTime");
+  const eventRepeat=$("calendarEventRepeat");
+  const eventDescription=$("calendarEventDescription");
+  const eventEnabled=$("calendarEventEnabled");
+  const modalTitle=$("calendarEventModalTitle");
+
+  function closeEventModal(){
+   modal.style.display="none";
+   form.reset();
+   eventId.value="";
+   eventEnabled.checked=true;
+  }
+
+  function openEventModal(event=null, selectedDate=null){
+   modal.style.display="flex";
+
+   if(event){
+    modalTitle.textContent="✏️ Edit Calendar Event";
+    eventId.value=event.id || "";
+    eventTitle.value=event.title || "";
+    eventDate.value=event.date || selectedDate || "";
+    eventTime.value=event.time || "";
+    eventRepeat.value=event.repeat || "none";
+    eventDescription.value=event.description || "";
+    eventEnabled.checked=event.enabled !== false;
+   }else{
+    modalTitle.textContent="➕ Add Calendar Event";
+    eventId.value="";
+    eventTitle.value="";
+    eventDate.value=selectedDate || dateKey(year,month,new Date().getDate());
+    eventTime.value="";
+    eventRepeat.value="none";
+    eventDescription.value="";
+    eventEnabled.checked=true;
+   }
+
+   setTimeout(()=>eventTitle.focus(),50);
+  }
+
+  $("calendarAddEvent").onclick=()=>{
+   openEventModal();
+  };
+
+  $("calendarEventClose").onclick=closeEventModal;
+  $("calendarEventCancel").onclick=closeEventModal;
+
+  modal.addEventListener("click",(event)=>{
+   if(event.target===modal) closeEventModal();
+  });
+
+  form.onsubmit=async(event)=>{
+   event.preventDefault();
+
+   const payload={
+    title:eventTitle.value.trim(),
+    date:eventDate.value,
+    time:eventTime.value,
+    repeat:eventRepeat.value,
+    description:eventDescription.value.trim(),
+    enabled:eventEnabled.checked
+   };
+
+   if(!payload.title || !payload.date){
+    alert("Title and date are required.");
+    return;
+   }
+
+   const id=eventId.value.trim();
+   const url=id
+    ? `/api/calendar/events/${encodeURIComponent(id)}`
+    : "/api/calendar/events";
+
+   const method=id ? "PUT" : "POST";
+
+   const saveButton=$("calendarEventSave");
+   saveButton.disabled=true;
+
+   try{
+    const response=await fetch(url,{
+     method,
+     headers:{"Content-Type":"application/json"},
+     body:JSON.stringify(payload)
+    });
+
+    const result=await response.json().catch(()=>({}));
+
+    if(!response.ok){
+     throw new Error(result.error || "Could not save calendar event");
+    }
+
+    closeEventModal();
+    await render();
+   }catch(error){
+    alert(error.message);
+   }finally{
+    saveButton.disabled=false;
+   }
+  };
+
   document.querySelectorAll(".calendar-cell[data-date]")
    .forEach(cell=>{
     cell.addEventListener("click",()=>{
@@ -1332,13 +1552,44 @@ async function loadCalendar(){
           ${esc(event.icon || "•")}
          </span>
 
-         <div>
+         <div style="flex:1;min-width:0;">
           <strong>${esc(event.title)}</strong>
+
           <div class="calendar-event-meta">
            ${esc(event.type)}
            ${event.time ? ` · ${esc(event.time)}` : ""}
            ${event.repeat ? ` · ${esc(event.repeat)}` : ""}
           </div>
+
+          ${event.description
+           ? `<div class="calendar-event-meta">${esc(event.description)}</div>`
+           : ""}
+
+          ${
+           event.type==="event"
+           ? `
+            <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;">
+             <button
+              type="button"
+              class="calendar-edit-event"
+              data-event-id="${esc(event.event_id)}"
+             >✏️ Edit</button>
+
+             <button
+              type="button"
+              class="calendar-toggle-event"
+              data-event-id="${esc(event.event_id)}"
+             >${event.enabled===false ? "▶️ Enable" : "⏸️ Hide"}</button>
+
+             <button
+              type="button"
+              class="calendar-delete-event"
+              data-event-id="${esc(event.event_id)}"
+             >🗑️ Delete</button>
+            </div>
+           `
+           : ""
+          }
          </div>
         </div>
        `).join("")
@@ -1349,6 +1600,103 @@ async function loadCalendar(){
        `
       }
      `;
+
+     panel.querySelectorAll(".calendar-edit-event")
+      .forEach(button=>{
+       button.addEventListener("click",async()=>{
+        const id=button.dataset.eventId;
+
+        try{
+         const response=await fetch("/api/calendar/events");
+         const result=await response.json();
+
+         if(!response.ok){
+          throw new Error("Could not load calendar events");
+         }
+
+         const event=result.events.find(item=>String(item.id)===String(id));
+
+         if(!event){
+          throw new Error("Calendar event not found");
+         }
+
+         openEventModal(event,selected);
+        }catch(error){
+         alert(error.message);
+        }
+       });
+      });
+
+     panel.querySelectorAll(".calendar-toggle-event")
+      .forEach(button=>{
+       button.addEventListener("click",async()=>{
+        const id=button.dataset.eventId;
+
+        try{
+         const response=await fetch("/api/calendar/events");
+         const result=await response.json();
+
+         if(!response.ok){
+          throw new Error("Could not load calendar events");
+         }
+
+         const event=result.events.find(item=>String(item.id)===String(id));
+
+         if(!event){
+          throw new Error("Calendar event not found");
+         }
+
+         const update=await fetch(
+          `/api/calendar/events/${encodeURIComponent(id)}`,
+          {
+           method:"PUT",
+           headers:{"Content-Type":"application/json"},
+           body:JSON.stringify({
+            enabled:!Boolean(event.enabled)
+           })
+          }
+         );
+
+         const updateResult=await update.json().catch(()=>({}));
+
+         if(!update.ok){
+          throw new Error(updateResult.error || "Could not update event");
+         }
+
+         await render();
+        }catch(error){
+         alert(error.message);
+        }
+       });
+      });
+
+     panel.querySelectorAll(".calendar-delete-event")
+      .forEach(button=>{
+       button.addEventListener("click",async()=>{
+        const id=button.dataset.eventId;
+
+        if(!confirm("Delete this personal calendar event?")){
+         return;
+        }
+
+        try{
+         const response=await fetch(
+          `/api/calendar/events/${encodeURIComponent(id)}`,
+          {method:"DELETE"}
+         );
+
+         const result=await response.json().catch(()=>({}));
+
+         if(!response.ok){
+          throw new Error(result.error || "Could not delete event");
+         }
+
+         await render();
+        }catch(error){
+         alert(error.message);
+        }
+       });
+      });
     });
    });
  }

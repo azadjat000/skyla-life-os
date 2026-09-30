@@ -14,6 +14,7 @@ from app.models import (
     FocusSession,
     FootballSession,
     FitnessWorkout,
+    CalendarEvent,
 )
 
 pages = Blueprint("pages", __name__)
@@ -601,6 +602,48 @@ def calendar_data():
                     "repeat": reminder.repeat,
                 })
 
+    # Personal calendar events
+    # Expand enabled personal events across the requested month.
+    personal_events = CalendarEvent.query.filter_by(enabled=True).all()
+
+    for personal_event in personal_events:
+        repeat = (personal_event.repeat or "none").strip().lower()
+        source_date = personal_event.event_date
+
+        for day_number in range(1, days_in_month + 1):
+            event_date = date(year, month, day_number)
+            should_show = False
+
+            if repeat == "none":
+                should_show = event_date == source_date
+
+            elif repeat == "daily":
+                should_show = event_date >= source_date
+
+            elif repeat == "weekly":
+                should_show = (
+                    event_date >= source_date
+                    and event_date.weekday() == source_date.weekday()
+                )
+
+            elif repeat == "monthly":
+                should_show = (
+                    event_date >= source_date
+                    and event_date.day == source_date.day
+                )
+
+            if should_show:
+                events.append({
+                    "date": event_date.isoformat(),
+                    "type": "event",
+                    "title": personal_event.title,
+                    "icon": "📌",
+                    "time": personal_event.event_time or "",
+                    "repeat": personal_event.repeat or "none",
+                    "description": personal_event.description or "",
+                    "event_id": personal_event.id,
+                })
+
     return jsonify({
         "year": year,
         "month": month,
@@ -650,3 +693,138 @@ def update_settings():
     db.session.commit()
 
     return jsonify(get_app_settings())
+
+# =========================================================
+# PERSONAL CALENDAR EVENTS
+# =========================================================
+
+def calendar_event_payload(event):
+    return {
+        "id": event.id,
+        "title": event.title,
+        "date": event.event_date.isoformat(),
+        "time": event.event_time or "",
+        "description": event.description or "",
+        "repeat": event.repeat or "none",
+        "enabled": bool(event.enabled),
+    }
+
+
+@pages.get("/api/calendar/events")
+def calendar_events():
+    events = (
+        CalendarEvent.query
+        .order_by(CalendarEvent.event_date.asc(), CalendarEvent.event_time.asc())
+        .all()
+    )
+
+    return jsonify({
+        "events": [calendar_event_payload(event) for event in events]
+    })
+
+
+@pages.post("/api/calendar/events")
+def create_calendar_event():
+    data = request.get_json(silent=True) or {}
+
+    title = str(data.get("title", "")).strip()
+    event_date = str(data.get("date", "")).strip()
+    event_time = str(data.get("time", "")).strip()
+    description = str(data.get("description", "")).strip()
+    repeat = str(data.get("repeat", "none")).strip().lower()
+    enabled = bool(data.get("enabled", True))
+
+    if not title:
+        return jsonify({"error": "Title is required"}), 400
+
+    if not event_date:
+        return jsonify({"error": "Date is required"}), 400
+
+    try:
+        parsed_date = date.fromisoformat(event_date)
+    except ValueError:
+        return jsonify({"error": "Invalid date"}), 400
+
+    allowed_repeat = {"none", "daily", "weekly", "monthly"}
+    if repeat not in allowed_repeat:
+        return jsonify({"error": "Invalid repeat value"}), 400
+
+    event = CalendarEvent(
+        title=title,
+        event_date=parsed_date,
+        event_time=event_time or None,
+        description=description or None,
+        repeat=repeat,
+        enabled=enabled,
+    )
+
+    db.session.add(event)
+    db.session.commit()
+
+    return jsonify({
+        "ok": True,
+        "event": calendar_event_payload(event),
+    }), 201
+
+
+@pages.put("/api/calendar/events/<int:event_id>")
+def update_calendar_event(event_id):
+    event = db.session.get(CalendarEvent, event_id)
+
+    if event is None:
+        return jsonify({"error": "Calendar event not found"}), 404
+
+    data = request.get_json(silent=True) or {}
+
+    if "title" in data:
+        title = str(data.get("title", "")).strip()
+        if not title:
+            return jsonify({"error": "Title is required"}), 400
+        event.title = title
+
+    if "date" in data:
+        try:
+            event.event_date = date.fromisoformat(
+                str(data.get("date", "")).strip()
+            )
+        except ValueError:
+            return jsonify({"error": "Invalid date"}), 400
+
+    if "time" in data:
+        event.event_time = str(data.get("time", "")).strip() or None
+
+    if "description" in data:
+        event.description = str(data.get("description", "")).strip() or None
+
+    if "repeat" in data:
+        repeat = str(data.get("repeat", "none")).strip().lower()
+        if repeat not in {"none", "daily", "weekly", "monthly"}:
+            return jsonify({"error": "Invalid repeat value"}), 400
+        event.repeat = repeat
+
+    if "enabled" in data:
+        event.enabled = bool(data.get("enabled"))
+
+    db.session.commit()
+
+    return jsonify({
+        "ok": True,
+        "event": calendar_event_payload(event),
+    })
+
+
+@pages.delete("/api/calendar/events/<int:event_id>")
+def delete_calendar_event(event_id):
+    event = db.session.get(CalendarEvent, event_id)
+
+    if event is None:
+        return jsonify({"error": "Calendar event not found"}), 404
+
+    db.session.delete(event)
+    db.session.commit()
+
+    return jsonify({
+        "ok": True,
+        "message": "Calendar event deleted",
+    })
+
