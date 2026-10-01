@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Skyla Life OS</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 50% 35%, #172b63 0%, #081638 45%, #030817 100%);
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+.container {
+    text-align: center;
+    animation: appear .7s ease;
+}
+
+.logo {
+    width: 210px;
+    height: 210px;
+    object-fit: cover;
+    border-radius: 42px;
+    box-shadow:
+        0 0 30px rgba(34,211,238,.35),
+        0 0 70px rgba(139,92,246,.25);
+}
+
+.title {
+    margin-top: 22px;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    margin-top: 7px;
+    font-size: 14px;
+    letter-spacing: 5px;
+    color: #67e8f9;
+}
+
+.loading {
+    width: 220px;
+    height: 5px;
+    margin: 30px auto 0;
+    border-radius: 20px;
+    background: rgba(255,255,255,.12);
+    overflow: hidden;
+}
+
+.loading::after {
+    content: "";
+    display: block;
+    width: 0%;
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(
+        90deg,
+        #22d3ee,
+        #6366f1,
+        #a855f7,
+        #ec4899
+    );
+    animation: progress 3s linear forwards;
+}
+
+.status {
+    margin-top: 13px;
+    color: rgba(255,255,255,.55);
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+@keyframes progress {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: scale(.92);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <img class="logo" src="file:///home/azadaddu/skyla-life-os/app/static/skyla-icon.png">
+    <div class="title">Skyla</div>
+    <div class="subtitle">LIFE OS</div>
+    <div class="loading"></div>
+    <div class="status">Initializing your Life OS...</div>
+</div>
+</body>
+</html>

@@ -1,6 +1,8 @@
+import shutil
 import subprocess
 import threading
 import time
+from pathlib import Path
 from datetime import date, datetime
 
 from app.extensions import db
@@ -14,6 +16,21 @@ _thread = None
 _lock = threading.Lock()
 
 _last_notified = {}
+
+SOUND_FILES = {
+    "bell": "bell.wav",
+    "siren": "siren.wav",
+    "alarm": "alarm.wav",
+    "chime": "chime.wav",
+}
+
+PRIORITY_MAP = {
+    "low": "low",
+    "normal": "normal",
+    "high": "critical",
+    "urgent": "critical",
+}
+
 
 
 def _is_due_today(reminder, now):
@@ -36,11 +53,94 @@ def _is_due_today(reminder, now):
     return False
 
 
+def _sound_path(sound_type):
+    filename = SOUND_FILES.get(
+        (sound_type or "bell").strip().lower()
+    )
+
+    if not filename:
+        filename = SOUND_FILES["bell"]
+
+    return (
+        Path(__file__).resolve().parent.parent
+        / "static"
+        / "sounds"
+        / filename
+    )
+
+
+def _play_sound(sound_type="bell", volume=80):
+    try:
+        sound_type = (sound_type or "bell").strip().lower()
+
+        try:
+            volume = int(volume)
+        except (TypeError, ValueError):
+            volume = 80
+
+        volume = max(0, min(100, volume))
+
+        player = shutil.which("pw-play") or shutil.which("paplay")
+        sound_path = _sound_path(sound_type)
+
+        if not player:
+            print("[Skyla Notifications] No audio player found.")
+            return False
+
+        if not sound_path.exists():
+            print(
+                f"[Skyla Notifications] Sound file missing: {sound_path}"
+            )
+            return False
+
+        if player.endswith("pw-play"):
+            subprocess.Popen(
+                [
+                    player,
+                    "--volume",
+                    str(volume / 100.0),
+                    str(sound_path),
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        else:
+            pulse_volume = int(65536 * volume / 100)
+
+            subprocess.Popen(
+                [
+                    player,
+                    "--volume",
+                    str(pulse_volume),
+                    str(sound_path),
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+        return True
+
+    except Exception as exc:
+        print(
+            f"[Skyla Notifications] sound playback failed: {exc}"
+        )
+        return False
+
+
 def _send_notification(reminder):
     title = f"Skyla Reminder: {reminder.title}"
+
+    priority = (
+        getattr(reminder, "priority", "normal")
+        or "normal"
+    ).strip().lower()
+
+    urgency = PRIORITY_MAP.get(priority, "normal")
+
     body = (
         f"⏰ {reminder.reminder_time or 'Now'}"
         f"  •  {reminder.repeat or 'daily'}"
+        f"  •  {priority.title()}"
     )
 
     try:
@@ -50,18 +150,33 @@ def _send_notification(reminder):
                 "-a",
                 "Skyla Life OS",
                 "-u",
-                "normal",
+                urgency,
                 title,
                 body,
             ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-        return True
-    except Exception as exc:
-        print(f"[Skyla Notifications] notify-send failed: {exc}")
-        return False
 
+        sound_enabled = getattr(
+            reminder,
+            "sound_enabled",
+            True,
+        )
+
+        if sound_enabled:
+            _play_sound(
+                getattr(reminder, "sound_type", "bell"),
+                getattr(reminder, "sound_volume", 80),
+            )
+
+        return True
+
+    except Exception as exc:
+        print(
+            f"[Skyla Notifications] notify-send failed: {exc}"
+        )
+        return False
 
 def _reminder_key(reminder, now):
     return f"{reminder.id}:{now.date().isoformat()}"
@@ -80,7 +195,55 @@ def check_reminders():
             if not reminder_time:
                 continue
 
-            if reminder_time != current_time:
+            # Snooze handling
+            snooze_until = getattr(reminder, "snooze_until", None)
+
+            if snooze_until:
+                if now < snooze_until:
+                    continue
+
+                snooze_key = (
+                    f"{reminder.id}:snooze:{snooze_until.isoformat()}"
+                )
+
+                with _lock:
+                    if snooze_key in _last_notified:
+                        continue
+
+                if _send_notification(reminder):
+                    log = ReminderLog(
+                        reminder_id=reminder.id,
+                        triggered_at=datetime.utcnow(),
+                        status="snoozed",
+                    )
+
+                    db.session.add(log)
+                    reminder.snooze_until = None
+                    db.session.commit()
+
+                    with _lock:
+                        _last_notified[snooze_key] = time.time()
+
+                continue
+
+            # Normal scheduled reminder.
+            # Treat a reminder as due once its scheduled minute has arrived.
+            # _last_notified prevents duplicate notifications for the same day.
+            try:
+                scheduled_hour, scheduled_minute = map(
+                    int,
+                    reminder_time.split(":", 1),
+                )
+                scheduled_total_minutes = (
+                    scheduled_hour * 60 + scheduled_minute
+                )
+                current_total_minutes = (
+                    now.hour * 60 + now.minute
+                )
+            except (TypeError, ValueError):
+                continue
+
+            if scheduled_total_minutes > current_total_minutes:
                 continue
 
             if not _is_due_today(reminder, now):
@@ -107,11 +270,13 @@ def check_reminders():
 
         # Keep memory bounded.
         today_prefix = f":{date.today().isoformat()}"
+
         with _lock:
             stale = [
                 key
                 for key in _last_notified
-                if not key.endswith(today_prefix)
+                if ":snooze:" not in key
+                and not key.endswith(today_prefix)
             ]
 
             for key in stale:
@@ -120,7 +285,6 @@ def check_reminders():
     except Exception as exc:
         db.session.rollback()
         print(f"[Skyla Notifications] check failed: {exc}")
-
 
 def _notification_loop(app):
     with app.app_context():

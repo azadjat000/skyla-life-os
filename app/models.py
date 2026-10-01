@@ -212,6 +212,37 @@ class Reminder(db.Model):
     enabled = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Reminder notification preferences
+    sound_enabled = db.Column(
+        db.Boolean,
+        default=True,
+        nullable=False,
+    )
+    sound_type = db.Column(
+        db.String(30),
+        default="bell",
+        nullable=False,
+    )
+    sound_volume = db.Column(
+        db.Integer,
+        default=80,
+        nullable=False,
+    )
+    priority = db.Column(
+        db.String(20),
+        default="normal",
+        nullable=False,
+    )
+    snooze_minutes = db.Column(
+        db.Integer,
+        default=5,
+        nullable=False,
+    )
+    snooze_until = db.Column(
+        db.DateTime,
+        nullable=True,
+    )
+
 
 class ReminderLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -95,6 +95,27 @@ REMINDER_REPEAT_OPTIONS = {
     "monthly",
 }
 
+REMINDER_SOUND_TYPES = {
+    "bell",
+    "siren",
+    "alarm",
+    "chime",
+}
+
+REMINDER_PRIORITY_OPTIONS = {
+    "low",
+    "normal",
+    "high",
+    "urgent",
+}
+
+REMINDER_SNOOZE_OPTIONS = {
+    5,
+    10,
+    15,
+    30,
+}
+
 
 def reminder_payload(reminder):
     return {
@@ -103,6 +124,25 @@ def reminder_payload(reminder):
         "reminder_time": reminder.reminder_time or "",
         "repeat": reminder.repeat or "daily",
         "enabled": bool(reminder.enabled),
+        "sound_enabled": bool(
+            reminder.sound_enabled
+        ),
+        "sound_type": (
+            reminder.sound_type or "bell"
+        ),
+        "sound_volume": int(
+            reminder.sound_volume
+            if reminder.sound_volume is not None
+            else 80
+        ),
+        "priority": (
+            reminder.priority or "normal"
+        ),
+        "snooze_minutes": int(
+            reminder.snooze_minutes
+            if reminder.snooze_minutes is not None
+            else 5
+        ),
         "created_at": (
             reminder.created_at.isoformat()
             if reminder.created_at else None
@@ -114,7 +154,7 @@ def validate_reminder_time(value):
     value = str(value or "").strip()
 
     if not value:
-        return ""    
+        return ""
 
     try:
         hour, minute = value.split(":")
@@ -127,6 +167,48 @@ def validate_reminder_time(value):
         return None
 
     return f"{hour:02d}:{minute:02d}"
+
+
+def validate_reminder_sound_type(value):
+    value = str(value or "bell").strip().lower()
+
+    if value not in REMINDER_SOUND_TYPES:
+        return None
+
+    return value
+
+
+def validate_reminder_volume(value):
+    try:
+        volume = int(value)
+    except (TypeError, ValueError):
+        return None
+
+    if not 0 <= volume <= 100:
+        return None
+
+    return volume
+
+
+def validate_reminder_priority(value):
+    value = str(value or "normal").strip().lower()
+
+    if value not in REMINDER_PRIORITY_OPTIONS:
+        return None
+
+    return value
+
+
+def validate_reminder_snooze(value):
+    try:
+        minutes = int(value)
+    except (TypeError, ValueError):
+        return None
+
+    if minutes <= 0 or minutes > 180:
+        return None
+
+    return minutes
 
 
 @pages.get("/api/reminders")
@@ -171,11 +253,63 @@ def create_reminder():
             "error": "Invalid repeat option"
         }), 400
 
+    sound_type = validate_reminder_sound_type(
+        data.get("sound_type", "bell")
+    )
+
+    if sound_type is None:
+        return jsonify({
+            "error": (
+                "Invalid sound type. "
+                "Use bell, siren, alarm or chime."
+            )
+        }), 400
+
+    sound_volume = validate_reminder_volume(
+        data.get("sound_volume", 80)
+    )
+
+    if sound_volume is None:
+        return jsonify({
+            "error": "Sound volume must be between 0 and 100"
+        }), 400
+
+    priority = validate_reminder_priority(
+        data.get("priority", "normal")
+    )
+
+    if priority is None:
+        return jsonify({
+            "error": (
+                "Invalid priority. "
+                "Use low, normal, high or urgent."
+            )
+        }), 400
+
+    snooze_minutes = validate_reminder_snooze(
+        data.get("snooze_minutes", 5)
+    )
+
+    if snooze_minutes is None:
+        return jsonify({
+            "error": (
+                "Snooze must be between "
+                "1 and 180 minutes."
+            )
+        }), 400
+
     reminder = Reminder(
         title=title,
         reminder_time=reminder_time,
         repeat=repeat,
         enabled=bool(data.get("enabled", True)),
+        sound_enabled=bool(
+            data.get("sound_enabled", True)
+        ),
+        sound_type=sound_type,
+        sound_volume=sound_volume,
+        priority=priority,
+        snooze_minutes=snooze_minutes,
     )
 
     db.session.add(reminder)
@@ -241,6 +375,70 @@ def update_reminder(reminder_id):
             data.get("enabled")
         )
 
+    if "sound_enabled" in data:
+        reminder.sound_enabled = bool(
+            data.get("sound_enabled")
+        )
+
+    if "sound_type" in data:
+        sound_type = validate_reminder_sound_type(
+            data.get("sound_type")
+        )
+
+        if sound_type is None:
+            return jsonify({
+                "error": (
+                    "Invalid sound type. "
+                    "Use bell, siren, alarm or chime."
+                )
+            }), 400
+
+        reminder.sound_type = sound_type
+
+    if "sound_volume" in data:
+        sound_volume = validate_reminder_volume(
+            data.get("sound_volume")
+        )
+
+        if sound_volume is None:
+            return jsonify({
+                "error": (
+                    "Sound volume must be between 0 and 100"
+                )
+            }), 400
+
+        reminder.sound_volume = sound_volume
+
+    if "priority" in data:
+        priority = validate_reminder_priority(
+            data.get("priority")
+        )
+
+        if priority is None:
+            return jsonify({
+                "error": (
+                    "Invalid priority. "
+                    "Use low, normal, high or urgent."
+                )
+            }), 400
+
+        reminder.priority = priority
+
+    if "snooze_minutes" in data:
+        snooze_minutes = validate_reminder_snooze(
+            data.get("snooze_minutes")
+        )
+
+        if snooze_minutes is None:
+            return jsonify({
+                "error": (
+                    "Snooze must be between "
+                    "1 and 180 minutes."
+                )
+            }), 400
+
+        reminder.snooze_minutes = snooze_minutes
+
     db.session.commit()
 
     return jsonify(
@@ -267,6 +465,56 @@ def toggle_reminder(reminder_id):
     return jsonify(
         reminder_payload(reminder)
     )
+
+
+@pages.post("/api/reminders/<int:reminder_id>/snooze")
+def snooze_reminder(reminder_id):
+    reminder = db.session.get(
+        Reminder,
+        reminder_id,
+    )
+
+    if not reminder:
+        return jsonify({
+            "error": "Reminder not found"
+        }), 404
+
+    data = request.get_json(silent=True) or {}
+
+    raw_minutes = data.get(
+        "minutes",
+        getattr(reminder, "snooze_minutes", 5),
+    )
+
+    try:
+        minutes = int(raw_minutes)
+    except (TypeError, ValueError):
+        return jsonify({
+            "error": "Invalid snooze minutes"
+        }), 400
+
+    if minutes < 1 or minutes > 180:
+        return jsonify({
+            "error": "Snooze must be between 1 and 180 minutes"
+        }), 400
+
+    reminder.snooze_minutes = minutes
+    reminder.snooze_until = datetime.now() + timedelta(
+        minutes=minutes
+    )
+
+    db.session.commit()
+
+    return jsonify({
+        "ok": True,
+        "id": reminder.id,
+        "snooze_minutes": minutes,
+        "snooze_until": (
+            reminder.snooze_until.isoformat()
+            if reminder.snooze_until
+            else None
+        ),
+    })
 
 
 @pages.delete("/api/reminders/<int:reminder_id>")

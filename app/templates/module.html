@@ -365,6 +365,246 @@ async function deleteRoutine(id){
    REMINDERS
    ========================================================= */
 
+function getReminderTimeFormat(){
+ try{
+  return localStorage.getItem("skylaReminderTimeFormat")||"12h";
+ }catch(error){
+  console.warn("Skyla reminder localStorage unavailable:",error);
+  return "12h";
+ }
+}
+
+function setReminderTimeFormatStorage(mode){
+ try{
+  localStorage.setItem(
+   "skylaReminderTimeFormat",
+   mode==="24h"?"24h":"12h"
+  );
+ }catch(error){
+  console.warn("Skyla reminder localStorage unavailable:",error);
+ }
+}
+
+function reminderTimeLabel(value){
+ const raw=String(value||"").trim();
+ if(!raw)return "No time";
+
+ const parts=raw.split(":");
+ if(parts.length!==2)return raw;
+
+ const h=Number(parts[0]);
+ const m=Number(parts[1]);
+
+ if(!Number.isFinite(h)||!Number.isFinite(m))return raw;
+
+ const mode=getReminderTimeFormat();
+
+ if(mode==="24h"){
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+ }
+
+ const suffix=h>=12?"PM":"AM";
+ const hh=h%12||12;
+
+ return `${hh}:${String(m).padStart(2,"0")} ${suffix}`;
+}
+
+
+function reminderSoundLabel(value){
+ const labels={
+  bell:"🔔 Classic Bell",
+  siren:"🚨 Siren",
+  alarm:"⏰ Alarm",
+  chime:"✨ Soft Chime"
+ };
+
+ return labels[value]||"🔔 Classic Bell";
+}
+
+
+function reminderPriorityLabel(value){
+ const labels={
+  low:"Low",
+  normal:"Normal",
+  high:"High",
+  urgent:"Urgent"
+ };
+
+ return labels[value]||"Normal";
+}
+
+
+function reminderSnoozeLabel(value){
+ const minutes=Number(value)||5;
+
+ if(minutes===5)return "5 min";
+ if(minutes===10)return "10 min";
+ if(minutes===15)return "15 min";
+ if(minutes===30)return "30 min";
+
+ return `${minutes} min`;
+}
+
+
+function reminderFormatToggle(){
+ const mode=getReminderTimeFormat();
+
+ return `
+  <div style="
+   margin:10px 0 16px;
+   padding:10px;
+   border:1px solid rgba(255,255,255,.10);
+   border-radius:12px;
+  ">
+   <div style="font-weight:700;margin-bottom:7px">
+    🕐 Time Format
+   </div>
+
+   <select id="rmTimeFormat" onchange="setReminderTimeFormat(this.value)">
+    <option value="12h" ${mode==="12h"?"selected":""}>
+     12-hour · AM/PM
+    </option>
+    <option value="24h" ${mode==="24h"?"selected":""}>
+     24-hour
+    </option>
+   </select>
+
+   <div class="meta" style="margin-top:6px">
+    12:00 AM = midnight · 12:00 PM = noon
+   </div>
+  </div>
+ `;
+}
+
+
+function setReminderTimeFormat(mode){
+ setReminderTimeFormatStorage(mode);
+ loadReminders();
+}
+
+
+function reminderSoundOptions(selected){
+ return `
+  <option value="bell" ${selected==="bell"?"selected":""}>
+   🔔 Classic Bell
+  </option>
+  <option value="siren" ${selected==="siren"?"selected":""}>
+   🚨 Siren
+  </option>
+  <option value="alarm" ${selected==="alarm"?"selected":""}>
+   ⏰ Alarm
+  </option>
+  <option value="chime" ${selected==="chime"?"selected":""}>
+   ✨ Soft Chime
+  </option>
+ `;
+}
+
+
+function reminderPriorityOptions(selected){
+ return `
+  <option value="low" ${selected==="low"?"selected":""}>Low</option>
+  <option value="normal" ${selected==="normal"?"selected":""}>Normal</option>
+  <option value="high" ${selected==="high"?"selected":""}>High</option>
+  <option value="urgent" ${selected==="urgent"?"selected":""}>Urgent</option>
+ `;
+}
+
+
+function reminderSnoozeOptions(selected){
+ const value=Number(selected)||5;
+
+ return `
+  <option value="5" ${value===5?"selected":""}>5 minutes</option>
+  <option value="10" ${value===10?"selected":""}>10 minutes</option>
+  <option value="15" ${value===15?"selected":""}>15 minutes</option>
+  <option value="30" ${value===30?"selected":""}>30 minutes</option>
+  <option value="custom" ${![5,10,15,30].includes(value)?"selected":""}>
+   Custom
+  </option>
+ `;
+}
+
+
+async function testReminderSound(type,volume){
+ const soundFiles={
+  bell:"/static/sounds/bell.wav",
+  siren:"/static/sounds/siren.wav",
+  alarm:"/static/sounds/alarm.wav",
+  chime:"/static/sounds/chime.wav"
+ };
+
+ const file=soundFiles[type]||soundFiles.bell;
+ const audio=new Audio(file);
+
+ audio.volume=Math.max(
+  0,
+  Math.min(1,(Number(volume)||80)/100)
+ );
+
+ try{
+  await audio.play();
+ }catch(error){
+  console.error("Reminder sound test:",error);
+  status("Browser audio permission blocked the test sound.");
+ }
+}
+
+
+async function addReminder(){
+
+ const title=$("rmTitle").value.trim();
+
+ if(!title){
+  status("Enter a reminder title.");
+  return;
+ }
+
+ const snoozeValue=$("rmSnooze").value;
+ let snoozeMinutes=Number(snoozeValue);
+
+ if(snoozeValue==="custom"){
+  snoozeMinutes=Number(
+   prompt("Custom snooze minutes (1-180):","5")
+  );
+
+  if(
+   !Number.isFinite(snoozeMinutes) ||
+   snoozeMinutes<1 ||
+   snoozeMinutes>180
+  ){
+   status("Custom snooze must be between 1 and 180 minutes.");
+   return;
+  }
+ }
+
+ const result=await json("/api/reminders",{
+  method:"POST",
+  headers:{
+   "Content-Type":"application/json"
+  },
+  body:JSON.stringify({
+   title,
+   reminder_time:$("rmTime").value,
+   repeat:$("rmRepeat").value,
+   enabled:true,
+   sound_enabled:$("rmSoundEnabled").checked,
+   sound_type:$("rmSoundType").value,
+   sound_volume:Number($("rmVolume").value),
+   priority:$("rmPriority").value,
+   snooze_minutes:snoozeMinutes
+  })
+ });
+
+ if(result?.error){
+  status(result.error);
+  return;
+ }
+
+ await loadReminders();
+}
+
+
 async function loadReminders(){
  const data=await json("/api/reminders");
 
@@ -394,6 +634,57 @@ async function loadReminders(){
    <option value="monthly">Every month</option>
   </select>
 
+  ${reminderFormatToggle()}
+
+  <div style="
+   margin:10px 0;
+   padding:12px;
+   border:1px solid rgba(255,255,255,.10);
+   border-radius:12px;
+  ">
+   <label style="display:flex;align-items:center;gap:9px;font-weight:700">
+    <input
+     id="rmSoundEnabled"
+     type="checkbox"
+     checked>
+    🔊 Sound ON
+   </label>
+
+   <select id="rmSoundType" style="margin-top:9px">
+    ${reminderSoundOptions("bell")}
+   </select>
+
+   <div style="margin-top:9px">
+    <div style="display:flex;justify-content:space-between">
+     <span>🔊 Volume</span>
+     <strong id="rmVolumeValue">80%</strong>
+    </div>
+
+    <input
+     id="rmVolume"
+     type="range"
+     min="0"
+     max="100"
+     value="80"
+     oninput="$('rmVolumeValue').textContent=this.value+'%'">
+   </div>
+
+   <button
+    class="secondary"
+    style="margin-top:9px"
+    onclick="testReminderSound($('rmSoundType').value,$('rmVolume').value)">
+    🔊 Test Sound
+   </button>
+  </div>
+
+  <select id="rmPriority">
+   ${reminderPriorityOptions("normal")}
+  </select>
+
+  <select id="rmSnooze">
+   ${reminderSnoozeOptions(5)}
+  </select>
+
   <button onclick="addReminder()">
    ➕ Add Reminder
   </button>
@@ -407,15 +698,31 @@ async function loadReminders(){
   ? data.map(x=>`
    <div class="item reminder-card">
 
-    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+    <div style="
+     display:flex;
+     justify-content:space-between;
+     gap:12px;
+     align-items:flex-start;
+     flex-wrap:wrap
+    ">
 
      <div>
       <strong>🔔 ${esc(x.title)}</strong>
 
       <div class="meta">
-       ⏰ ${esc(x.reminder_time || "No time")}
+       ⏰ ${esc(reminderTimeLabel(x.reminder_time))}
        · ${reminderRepeatLabel(x.repeat)}
       </div>
+
+      <div class="meta" style="margin-top:5px">
+       ${x.sound_enabled
+        ? "🔊 "+reminderSoundLabel(x.sound_type)
+        : "🔇 Sound OFF"}
+       · ${Number(x.sound_volume??80)}%
+       · 🚦 ${reminderPriorityLabel(x.priority)}
+       · 💤 ${reminderSnoozeLabel(x.snooze_minutes)}
+      </div>
+
      </div>
 
      <span class="badge">
@@ -434,11 +741,31 @@ async function loadReminders(){
 
      <button
       class="secondary"
+      onclick="snoozeReminder(${x.id},${Number(x.snooze_minutes)||5})">
+      💤 Snooze
+     </button>
+
+     <button
+      class="secondary"
+      onclick='testReminderSound(
+       ${JSON.stringify(x.sound_type||"bell")},
+       ${Number(x.sound_volume??80)}
+      )'>
+      🔊 Test
+     </button>
+
+     <button
+      class="secondary"
       onclick='editReminder(
        ${x.id},
        ${JSON.stringify(x.title)},
        ${JSON.stringify(x.reminder_time || "")},
-       ${JSON.stringify(x.repeat)}
+       ${JSON.stringify(x.repeat)},
+       ${JSON.stringify(x.sound_enabled !== false)},
+       ${JSON.stringify(x.sound_type || "bell")},
+       ${Number(x.sound_volume ?? 80)},
+       ${JSON.stringify(x.priority || "normal")},
+       ${Number(x.snooze_minutes || 5)}
       )'>
       ✏️ Edit
      </button>
@@ -477,38 +804,17 @@ function reminderRepeatLabel(value){
 }
 
 
-async function addReminder(){
-
- const title=$("rmTitle").value.trim();
-
- if(!title){
-  status("Enter a reminder title.");
-  return;
- }
-
- const result=await json("/api/reminders",{
-  method:"POST",
-  headers:{
-   "Content-Type":"application/json"
-  },
-  body:JSON.stringify({
-   title,
-   reminder_time:$("rmTime").value,
-   repeat:$("rmRepeat").value,
-   enabled:true
-  })
- });
-
- if(result?.error){
-  status(result.error);
-  return;
- }
-
- await loadReminders();
-}
-
-
-async function editReminder(id,title,time,repeat){
+async function editReminder(
+ id,
+ title,
+ time,
+ repeat,
+ soundEnabled,
+ soundType,
+ volume,
+ priority,
+ snoozeMinutes
+){
 
  const newTitle=prompt(
   "Reminder title:",
@@ -538,6 +844,95 @@ async function editReminder(id,title,time,repeat){
 
  if(newRepeat===null)return;
 
+ const newSound=confirm(
+  "Sound ON?\n\nOK = ON\nCancel = OFF"
+ );
+
+ const soundChoices=[
+  ["bell","🔔 Classic Bell"],
+  ["siren","🚨 Siren"],
+  ["alarm","⏰ Alarm"],
+  ["chime","✨ Soft Chime"]
+ ];
+
+ const soundText=soundChoices
+  .map((item,index)=>`${index+1}. ${item[1]}`)
+  .join("\n");
+
+ const soundChoice=prompt(
+  "Sound type:\n"+soundText,
+  String(
+   Math.max(
+    1,
+    soundChoices.findIndex(
+     item=>item[0]===soundType
+    )+1
+   )
+  )
+ );
+
+ if(soundChoice===null)return;
+
+ const soundIndex=Number(soundChoice)-1;
+
+ if(
+  !Number.isInteger(soundIndex) ||
+  !soundChoices[soundIndex]
+ ){
+  status("Invalid sound type.");
+  return;
+ }
+
+ const newVolume=prompt(
+  "Volume (0-100):",
+  String(volume ?? 80)
+ );
+
+ if(newVolume===null)return;
+
+ const volumeNumber=Number(newVolume);
+
+ if(
+  !Number.isFinite(volumeNumber) ||
+  volumeNumber<0 ||
+  volumeNumber>100
+ ){
+  status("Volume must be between 0 and 100.");
+  return;
+ }
+
+ const newPriority=prompt(
+  "Priority: low / normal / high / urgent",
+  priority || "normal"
+ );
+
+ if(newPriority===null)return;
+
+ const validPriorities=["low","normal","high","urgent"];
+
+ if(!validPriorities.includes(newPriority.trim().toLowerCase())){
+  status("Invalid priority.");
+  return;
+ }
+
+ const newSnooze=prompt(
+  "Snooze minutes (1-180):",
+  String(snoozeMinutes || 5)
+ );
+
+ if(newSnooze===null)return;
+
+ const snoozeNumber=Number(newSnooze);
+
+ if(
+  !Number.isInteger(snoozeNumber) ||
+  snoozeNumber<1 ||
+  snoozeNumber>180
+ ){
+  status("Snooze must be between 1 and 180 minutes.");
+  return;
+ }
+
  const result=await json(
   "/api/reminders/"+id,
   {
@@ -548,7 +943,63 @@ async function editReminder(id,title,time,repeat){
    body:JSON.stringify({
     title:cleanTitle,
     reminder_time:newTime.trim(),
-    repeat:newRepeat.trim().toLowerCase()
+    repeat:newRepeat.trim().toLowerCase(),
+    sound_enabled:newSound,
+    sound_type:soundChoices[soundIndex][0],
+    sound_volume:Math.round(volumeNumber),
+    priority:newPriority.trim().toLowerCase(),
+    snooze_minutes:snoozeNumber
+   })
+  }
+ );
+
+ if(result?.error){
+  status(result.error);
+  return;
+ }
+
+ await loadReminders();
+}
+
+
+async function snoozeReminder(id,defaultMinutes){
+
+ const options="5 / 10 / 15 / 30 / custom";
+ const raw=prompt(
+  "Snooze minutes:\n"+options,
+  String(defaultMinutes||5)
+ );
+
+ if(raw===null)return;
+
+ let minutes;
+
+ if(raw.trim().toLowerCase()==="custom"){
+  minutes=Number(
+   prompt("Custom snooze minutes (1-180):","5")
+  );
+ }else{
+  minutes=Number(raw);
+ }
+
+ if(
+  !Number.isInteger(minutes) ||
+  minutes<1 ||
+  minutes>180
+ ){
+  status("Snooze must be between 1 and 180 minutes.");
+  return;
+ }
+
+ const result=await json(
+  "/api/reminders/"+id+"/snooze",
+  {
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json"
+   },
+   body:JSON.stringify({
+    minutes
    })
   }
  );
